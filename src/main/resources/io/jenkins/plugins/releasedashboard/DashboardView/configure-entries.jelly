@@ -1,0 +1,65 @@
+<!--
+  Edit View Page
+-->
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+    <st:include page="configure-entries.jelly" class="${it.class.superclass}"/>
+
+    <f:section title="${%Dashboard Portlets}">
+        <f:block>
+            <f:checkbox name="includeStdJobList" field="includeStdJobList" />
+            ${%Show standard Jenkins list at the top of the page}
+        </f:block>
+        <!--<f:block>
+            <f:checkbox name="hideJenkinsPanels" field="hideJenkinsPanels" />
+            ${%Full screen view - hide standard Jenkins panels}
+        </f:block>
+        <f:optionalBlock name="useCssStyle" title="${%Set CSS custom parameters}"
+                         checked="${it.useCssStyle}">
+            <f:entry title="${%Left portlet width}" help="/plugin/dashboard-view/help/help-configPortletWidth.html">
+                <f:textbox name="leftPortletWidth" field="leftPortletWidth" />
+            </f:entry>
+
+            <f:entry title="${%Right portlet width}" help="/plugin/dashboard-view/help/help-configPortletWidth.html">
+                <f:textbox name="rightPortletWidth" field="rightPortletWidth" />
+            </f:entry>
+        </f:optionalBlock>-->
+    </f:section>
+<!--
+    <j:set var="descriptors" value="${it.getSortedDashboardPortletDescriptors()}" />
+
+    <f:section title="${%Portlets at the top of the page}">
+        <f:block>
+            <f:hetero-list name="topPortlet" hasHeader="true"
+                           descriptors="${descriptors}"
+                           items="${it.topPortlets}"
+                           addCaption="${%Add Dashboard Portlet to the top of the view}"/>
+        </f:block>
+    </f:section>
+    <f:section title="${%Portlets in the left column}">
+        <f:block>
+            <f:hetero-list name="leftPortlet" hasHeader="true"
+                           descriptors="${descriptors}"
+                           items="${it.leftPortlets}"
+                           addCaption="${%Add Dashboard Portlet to left column}"/>
+        </f:block>
+    </f:section>
+    <f:section title="${%Portlets in the right column}">
+        <f:block>
+            <f:hetero-list name="rightPortlet" hasHeader="true"
+                           descriptors="${descriptors}"
+                           items="${it.rightPortlets}"
+                           addCaption="${%Add Dashboard Portlet to right column}"/>
+        </f:block>
+    </f:section>
+    <f:section title="${%Portlets at the bottom of the page}">
+        <f:block>
+            <f:hetero-list name="bottomPortlet" hasHeader="true"
+                           descriptors="${descriptors}"
+                           items="${it.bottomPortlets}"
+                           addCaption="${%Add Dashboard Portlet to bottom of the view}"/>
+        </f:block>
+        <p/>
+    </f:section>
+-->
+</j:jelly>
