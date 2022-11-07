@@ -46,7 +46,7 @@ public class DashboardView extends View {
 
         @Override
         public String getDisplayName() {
-            return Messages.DashboardView_DescriptorImpl_DisplayName();
+            return Messages.DashboardView_DisplayName();
         }
     }
 

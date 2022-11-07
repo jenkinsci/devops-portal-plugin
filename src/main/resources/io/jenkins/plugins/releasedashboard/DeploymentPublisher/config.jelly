@@ -1,0 +1,5 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form">
+    <f:entry title="Test Release Plugin" field="configName">
+        <f:optionalProperty title="Test" field="sshRetry"/>
+    </f:entry>
+</j:jelly>
