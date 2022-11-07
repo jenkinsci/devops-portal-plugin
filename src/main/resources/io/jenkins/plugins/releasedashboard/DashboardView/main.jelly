@@ -54,16 +54,11 @@
                     <th>Date</th>
                 </tr>
                 <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
-                <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
                 <j:forEach var="service" indexVar="j" items="${services}">
+                    <j:set var="status" value="${it.descriptor.getMonitoringByService(service.id)}"/>
                     <tr class="release-entry">
                         <td style="text-align:center">
-                            <l:icon alt="Warning" class="icon-red icon-md"/>
-                            <!--
-                            <l:icon alt="Failure" class="icon-red icon-md"/>
-                            <l:icon alt="Warning" class="icon-yellow icon-md"/>
-                            <l:icon alt="Disabled" class="icon-disabled icon-md"/>
-                            -->
+                            <l:icon class="${status.icon} icon-md"/>
                         </td>
                         <td>
                             <span class="service-label">${service.label}</span>

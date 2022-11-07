@@ -59,6 +59,10 @@ public class DashboardView extends View {
             return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
         }
 
+        public ServiceMonitoring.DescriptorImpl getMonitoringDescriptor() {
+            return Jenkins.get().getDescriptorByType(ServiceMonitoring.DescriptorImpl.class);
+        }
+
         public List<String> getConfigurationCategories() {
             return getServiceDescriptor().getServiceConfigurations().stream().map(ServiceConfiguration::getCategory)
                     .map(String::trim).distinct().sorted().collect(Collectors.toList());
@@ -68,6 +72,10 @@ public class DashboardView extends View {
             return getServiceDescriptor().getServiceConfigurations().stream()
                     .filter(item -> category.trim().equals(item.getCategory().trim()))
                     .sorted(Comparator.comparing(ServiceConfiguration::getLabel)).collect(Collectors.toList());
+        }
+
+        public ServiceMonitoring getMonitoringByService(String id) {
+            return getMonitoringDescriptor().getMonitoringByService(id).orElse(new ServiceMonitoring(id));
         }
         
     }

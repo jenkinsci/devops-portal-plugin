@@ -147,6 +147,14 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
                 .toString();
     }
 
+    public boolean isServiceMonitoringAvailable() {
+        return enableServiceMonitoring && !url.trim().isEmpty();
+    }
+
+    public boolean isHostMonitoringAvailable() {
+        return enableHostMonitoring && !url.trim().isEmpty();
+    }
+
     @Symbol("serviceconfiguration")
     @Extension
     public static final class DescriptorImpl extends Descriptor<ServiceConfiguration> {

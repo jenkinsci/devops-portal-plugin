@@ -22,7 +22,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ServiceDeployment implements Describable<ServiceDeployment> {
-
+/*
+    private String serviceId;
+    private String jobName;
+    private String buildNumber;
+    private String buildURL;
+ */
     private String label;
     private String category;
     private String url;
