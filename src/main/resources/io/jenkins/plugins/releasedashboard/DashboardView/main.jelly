@@ -12,6 +12,24 @@
         </div>
     </j:if>-->
 
-    <h1>YEAH !</h1>
+    <table>
+        <tbody>
+            <tr>
+                <th>production</th>
+            </tr>
+            <tr>
+                <td>
+                    <span>myserver.mydomain.org</span>
+                    <span class="badge">
+                        <l:icon alt="Success" class="icon-blue icon-sm"/>
+                        Success
+                    </span>
+                    <l:icon alt="Failure" class="icon-red icon-md"/>
+                    <l:icon alt="Warning" class="icon-yellow icon-md"/>
+                    <l:icon alt="Disabled" class="icon-disabled icon-md"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
 </j:jelly>
