@@ -27,7 +27,7 @@ public class DeploymentPublisher implements Serializable, Describable<Deployment
 
     @Override
     public DeploymentPublisher.DescriptorImpl getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(DeploymentPublisher.DescriptorImpl.class);
+        return Jenkins.get().getDescriptorByType(DeploymentPublisher.DescriptorImpl.class);
     }
 
     @Symbol("deploymentpublisher")
