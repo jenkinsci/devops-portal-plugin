@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import hudson.util.CopyOnWriteList;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -13,6 +14,10 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class ServiceConfiguration implements Describable<ServiceConfiguration> {
 
@@ -107,6 +112,8 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
     @Extension
     public static final class DescriptorImpl extends Descriptor<ServiceConfiguration> {
 
+        private final CopyOnWriteList<ServiceConfiguration> serviceConfigurations = new CopyOnWriteList<>();
+
         public DescriptorImpl() {
             super(ServiceConfiguration.class);
         }
@@ -119,6 +126,18 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
 
         public boolean getDefaultEnabled() {
             return true;
+        }
+
+        public List<ServiceConfiguration> getServiceConfigurations() {
+            List<ServiceConfiguration> retVal = new ArrayList<>(serviceConfigurations.getView());
+            retVal.sort(Comparator.comparing(ServiceConfiguration::getLabel));
+            return retVal;
+        }
+
+        public void setServiceConfigurations(List<ServiceConfiguration> services) {
+            serviceConfigurations.clear();
+            serviceConfigurations.addAll(services);
+            save();
         }
 
     }

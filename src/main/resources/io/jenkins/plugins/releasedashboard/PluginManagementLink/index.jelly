@@ -1,0 +1,50 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:f="/lib/form">
+    <l:layout title="" permission="${app.ADMINISTER}" norefresh="true">
+        <st:include it="${app}" page="sidepanel.jelly"/>
+        <l:main-panel>
+
+            <h1>${%title}</h1>
+            <f:form name="saveSettings" method="post" action="saveSettings">
+
+                <!-- HOSTS -->
+                <f:section title="${%hosts}">
+                    <f:entry title="">
+                        <j:scope>
+                            <j:set var="descriptor" value="${it.hostConfigurationDescriptor}"/>
+                            <f:repeatable items="${descriptor.hostConfigurations}" var="instance" name="hosts" minimum="0" header="${%hostHeader}" add="${m.addHost()}">
+                                <st:include page="config.jelly" class="${descriptor.clazz}"/>
+                                <f:entry title="">
+                                    <div align="right" class="show-if-not-only">
+                                        <f:repeatableDeleteButton value="${m.deleteHost()}"/>
+                                    </div>
+                                </f:entry>
+                            </f:repeatable>
+                        </j:scope>
+                    </f:entry>
+                </f:section>
+
+                <!-- WEB SERVICES -->
+                <f:section title="${%services}">
+                    <f:entry title="">
+                        <j:scope>
+                            <j:set var="descriptor" value="${it.serviceConfigurationDescriptor}"/>
+                            <f:repeatable items="${descriptor.serviceConfigurations}" var="instance" name="services" minimum="0" header="${%serviceHeader}" add="${m.addService()}">
+                                <st:include page="config.jelly" class="${descriptor.clazz}"/>
+                                <f:entry title="">
+                                    <div align="right" class="show-if-not-only">
+                                        <f:repeatableDeleteButton value="${m.deleteService()}"/>
+                                    </div>
+                                </f:entry>
+                            </f:repeatable>
+                        </j:scope>
+                    </f:entry>
+                </f:section>
+
+                <f:entry>
+                    <f:submit value="Save"/>
+                </f:entry>
+            </f:form>
+        </l:main-panel>
+    </l:layout>
+</j:jelly>

@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import hudson.util.CopyOnWriteList;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -13,8 +14,12 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
-public class HostConfiguration implements Describable<HostConfiguration> {
+public class HostConfiguration implements Describable<HostConfiguration>, Serializable {
 
     private String label;
     private String hostname;
@@ -93,8 +98,11 @@ public class HostConfiguration implements Describable<HostConfiguration> {
     @Extension
     public static final class DescriptorImpl extends Descriptor<HostConfiguration> {
 
+        private final CopyOnWriteList<HostConfiguration> hostConfigurations = new CopyOnWriteList<>();
+
         public DescriptorImpl() {
             super(HostConfiguration.class);
+            load();
         }
 
         @NonNull
@@ -105,6 +113,18 @@ public class HostConfiguration implements Describable<HostConfiguration> {
 
         public boolean getDefaultEnabled() {
             return true;
+        }
+
+        public List<HostConfiguration> getHostConfigurations() {
+            List<HostConfiguration> retVal = new ArrayList<>(hostConfigurations.getView());
+            retVal.sort(Comparator.comparing(HostConfiguration::getLabel));
+            return retVal;
+        }
+
+        public void setHostConfigurations(List<HostConfiguration> hosts) {
+            hostConfigurations.clear();
+            hostConfigurations.addAll(hosts);
+            save();
         }
 
     }
