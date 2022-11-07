@@ -40,113 +40,60 @@
 
     <table class="release-table">
         <tbody>
-            <tr class="group-title">
-                <th colspan="6"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> production</th>
-            </tr>
-            <tr class="group-headers">
-                <th width="0%">Status</th>
-                <th>Service</th>
-                <th>Host</th>
-                <th>Application</th>
-                <th>Build</th>
-                <th>Date</th>
-            </tr>
-            <tr class="release-entry">
-                <td style="text-align:center">
-                    <l:icon alt="Success" class="icon-blue icon-md"/>
-                    <!--
-                    <l:icon alt="Failure" class="icon-red icon-md"/>
-                    <l:icon alt="Warning" class="icon-yellow icon-md"/>
-                    <l:icon alt="Disabled" class="icon-disabled icon-md"/>
-                    -->
-                </td>
-                <td>
-                    <span class="service-label">Nom du service</span>
-                </td>
-                <td>
-                    <span class="host-label">Nom de l'hôte</span>
-                </td>
-                <td>
-                    <span class="application-label">
-                        <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/> Application déployée
-                    </span>
-                    <span class="version-label">1.0.2</span>
-                </td>
-                <td>
-                    <span class="build-label">
-                        <l:icon class="symbol-refresh-circle-outline plugin-ionicons-api icon-sm"/>
-                        <a href="#">#45189</a>
-                    </span>
-                </td>
-                <td>
-                    <span class="build-date">
-                        <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/> 2022/10/11 15:30
-                    </span>
-                </td>
-            </tr>
-            <tr class="release-entry">
-                <td style="text-align:center">
-                    <l:icon alt="Warning" class="icon-yellow icon-md"/>
-                </td>
-                <td>
-                    <span class="service-label">Nom du service</span>
-                </td>
-                <td>
-                    <span class="host-label">Nom de l'hôte</span>
-                </td>
-                <td>
-                    <span class="application-label">
-                        -
-                    </span>
-                </td>
-                <td>
-                    <span class="build-label">
-                        -
-                    </span>
-                </td>
-                <td>
-                    <span class="build-date">
-                        -
-                    </span>
-                </td>
-            </tr>
-            <tr class="group-title">
-                <th colspan="6"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> staging</th>
-            </tr>
-            <tr class="group-headers">
-                <th width="0%">Status</th>
-                <th>Service</th>
-                <th>Host</th>
-                <th>Application</th>
-                <th>Build</th>
-                <th>Date</th>
-            </tr>
-            <tr class="release-entry">
-                <td style="text-align:center">
-                    <l:icon alt="Warning" class="icon-red icon-md"/>
-                </td>
-                <td>
-                    <span class="service-label">Nom du service</span>
-                </td>
-                <td>
-                    <span class="host-label">Nom de l'hôte</span>
-                </td>
-                <td>
-                    <span class="application-label">
-                        -
-                    </span>
-                </td>
-                <td>
-                    <span class="build-label">
-                        -
-                    </span>
-                </td>
-                <td>
-                    <span class="build-date">
-                        -
-                    </span>
-                </td>
-            </tr>
+            <j:set var="categories" value="${it.descriptor.getConfigurationCategories()}"/>
+            <j:forEach var="category" indexVar="i" items="${categories}">
+                <tr class="group-title">
+                    <th colspan="6"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${category}</th>
+                </tr>
+                <tr class="group-headers">
+                    <th width="0%">Status</th>
+                    <th>Service</th>
+                    <th>Host</th>
+                    <th>Application</th>
+                    <th>Build</th>
+                    <th>Date</th>
+                </tr>
+                <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
+                <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
+                <j:forEach var="service" indexVar="j" items="${services}">
+                    <tr class="release-entry">
+                        <td style="text-align:center">
+                            <l:icon alt="Warning" class="icon-red icon-md"/>
+                            <!--
+                            <l:icon alt="Failure" class="icon-red icon-md"/>
+                            <l:icon alt="Warning" class="icon-yellow icon-md"/>
+                            <l:icon alt="Disabled" class="icon-disabled icon-md"/>
+                            -->
+                        </td>
+                        <td>
+                            <span class="service-label">${service.label}</span>
+                        </td>
+                        <td>
+                            <span class="host-label">${service.hostname}</span>
+                        </td>
+                        <td>
+                            <!--<j:if test="${service.}">
+
+                            </j:if>-->
+                            <span class="application-label">
+                                <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/> Application déployée
+                            </span>
+                            <span class="version-label">1.0.2</span>
+                        </td>
+                        <td>
+                            <span class="build-label">
+                                <l:icon class="symbol-refresh-circle-outline plugin-ionicons-api icon-sm"/>
+                                <a href="#">#45189</a>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="build-date">
+                                <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/> 2022/10/11 15:30
+                            </span>
+                        </td>
+                    </tr>
+                </j:forEach>
+            </j:forEach>
         </tbody>
     </table>
 

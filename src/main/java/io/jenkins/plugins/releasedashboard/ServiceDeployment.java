@@ -20,11 +20,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
-public class ServiceConfiguration implements Describable<ServiceConfiguration> {
+public class ServiceDeployment implements Describable<ServiceDeployment> {
 
-    private String id;
     private String label;
     private String category;
     private String url;
@@ -32,23 +30,13 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
     private boolean enableHostMonitoring;
 
     @DataBoundConstructor
-    public ServiceConfiguration(String label, String category, String url, boolean enableServiceMonitoring,
-                                boolean enableHostMonitoring) {
-        this.id = UUID.randomUUID().toString();
+    public ServiceDeployment(String label, String category, String url, boolean enableServiceMonitoring,
+                             boolean enableHostMonitoring) {
         this.label = label;
         this.category = category;
         this.url = url;
         this.enableServiceMonitoring = enableServiceMonitoring;
         this.enableHostMonitoring = enableHostMonitoring;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    @DataBoundSetter
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getLabel() {
@@ -107,15 +95,15 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
     }
 
     @Override
-    public Descriptor<ServiceConfiguration> getDescriptor() {
-        return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
+    public Descriptor<ServiceDeployment> getDescriptor() {
+        return Jenkins.get().getDescriptorByType(ServiceDeployment.DescriptorImpl.class);
     }
 
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final ServiceConfiguration other = (ServiceConfiguration) that;
+        final ServiceDeployment other = (ServiceDeployment) that;
         return new EqualsBuilder()
                 .append(label, other.label)
                 .append(category, other.category)
@@ -147,41 +135,21 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
                 .toString();
     }
 
-    @Symbol("serviceconfiguration")
+    @Symbol("servicedeployment")
     @Extension
-    public static final class DescriptorImpl extends Descriptor<ServiceConfiguration> {
+    public static final class DescriptorImpl extends Descriptor<ServiceDeployment> {
 
-        private final CopyOnWriteList<ServiceConfiguration> serviceConfigurations = new CopyOnWriteList<>();
+        private final CopyOnWriteList<ServiceDeployment> serviceDeployments = new CopyOnWriteList<>();
 
         public DescriptorImpl() {
-            super(ServiceConfiguration.class);
+            super(ServiceDeployment.class);
             load();
         }
 
         @NonNull
         @Override
         public String getDisplayName() {
-            return Messages.ServiceConfiguration_DisplayName();
-        }
-
-        public boolean getDefaultEnableServiceMonitoring() {
-            return true;
-        }
-
-        public boolean getDefaultEnableHostMonitoring() {
-            return false;
-        }
-
-        public List<ServiceConfiguration> getServiceConfigurations() {
-            List<ServiceConfiguration> retVal = new ArrayList<>(serviceConfigurations.getView());
-            retVal.sort(Comparator.comparing(ServiceConfiguration::getLabel));
-            return retVal;
-        }
-
-        public void setServiceConfigurations(List<ServiceConfiguration> services) {
-            serviceConfigurations.clear();
-            serviceConfigurations.addAll(services);
-            save();
+            return Messages.DeploymentPublisher_DisplayName();
         }
 
     }

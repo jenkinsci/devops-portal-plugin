@@ -3,6 +3,7 @@ package io.jenkins.plugins.releasedashboard;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.*;
+import jenkins.model.Jenkins;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
@@ -10,8 +11,8 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DashboardView extends View {
 
@@ -52,6 +53,21 @@ public class DashboardView extends View {
         @Override
         public String getDisplayName() {
             return Messages.DashboardView_DisplayName();
+        }
+
+        public ServiceConfiguration.DescriptorImpl getServiceDescriptor() {
+            return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
+        }
+
+        public List<String> getConfigurationCategories() {
+            return getServiceDescriptor().getServiceConfigurations().stream().map(ServiceConfiguration::getCategory)
+                    .map(String::trim).distinct().sorted().collect(Collectors.toList());
+        }
+
+        public List<ServiceConfiguration> getConfigurationsByCategory(@NonNull String category) {
+            return getServiceDescriptor().getServiceConfigurations().stream()
+                    .filter(item -> category.trim().equals(item.getCategory().trim()))
+                    .sorted(Comparator.comparing(ServiceConfiguration::getLabel)).collect(Collectors.toList());
         }
         
     }

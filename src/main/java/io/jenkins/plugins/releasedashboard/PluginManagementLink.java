@@ -38,10 +38,6 @@ public class PluginManagementLink extends ManagementLink {
         return Messages.PluginManagement_Description();
     }
 
-    public Descriptor<HostConfiguration> getHostConfigurationDescriptor() {
-        return Jenkins.get().getDescriptorByType(HostConfiguration.DescriptorImpl.class);
-    }
-
     public Descriptor<ServiceConfiguration> getServiceConfigurationDescriptor() {
         return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
     }
@@ -60,9 +56,7 @@ public class PluginManagementLink extends ManagementLink {
         jenkins.checkPermission(Jenkins.ADMINISTER);
         LOGGER.info("Plugin settings saved");
         JSONObject request = JSONObject.fromObject(req.getParameter("json"));
-        List<HostConfiguration> hosts = req.bindJSONToList(HostConfiguration.class, request.get("hosts"));
         List<ServiceConfiguration> services = req.bindJSONToList(ServiceConfiguration.class, request.get("services"));
-        ((HostConfiguration.DescriptorImpl) getHostConfigurationDescriptor()).setHostConfigurations(hosts);
         ((ServiceConfiguration.DescriptorImpl) getServiceConfigurationDescriptor()).setServiceConfigurations(services);
         rsp.sendRedirect(req.getContextPath() + "/" + getUrlName());
     }
