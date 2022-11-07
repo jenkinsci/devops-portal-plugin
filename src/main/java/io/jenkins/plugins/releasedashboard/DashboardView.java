@@ -44,6 +44,10 @@ public class DashboardView extends View {
     @Extension
     public static final class DescriptorImpl extends ViewDescriptor {
 
+        public DescriptorImpl() {
+            super(DashboardView.class);
+        }
+
         @NonNull
         @Override
         public String getDisplayName() {
