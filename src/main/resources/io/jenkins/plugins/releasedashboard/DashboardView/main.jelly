@@ -13,7 +13,7 @@
         .release-table .group-headers {
             font-size: 80%;
             text-align: left;
-            color: #ccc;
+            color: #bbb;
         }
         .release-table .release-entry {
             border-top: 1px solid #ccc;
@@ -22,19 +22,16 @@
         .release-table .service-label {
             font-weight: bolder;
         }
-        .release-table .host-label {
-            font-weight: bolder;
-        }
-        .release-table .application-label {
-        }
-        .release-table .version-label {
-            background-color: #ccc;
+        .release-table .badge {
+            background-color: #ddd;
             border-radius: 5px;
             padding: 2px 4px;
+            margin-left: .25rem;
+            color: #333;
+            font-size: 90%;
         }
-        .release-table .build-label {
-        }
-        .release-table .build-date {
+        .icon-sm {
+            vertical-align: sub !important;
         }
     </style>
 
@@ -45,18 +42,20 @@
                 <tr class="group-title">
                     <th colspan="6"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${category}</th>
                 </tr>
-                <tr class="group-headers">
-                    <th width="0%">Status</th>
-                    <th>Service</th>
-                    <th>Host</th>
-                    <th>Application</th>
-                    <th>Build</th>
-                    <th>Date</th>
-                </tr>
+                <j:if test="${i == 0}">
+                    <tr class="group-headers">
+                        <th width="0%">Status</th>
+                        <th>Service</th>
+                        <th>Host</th>
+                        <th>Application</th>
+                        <th>Build</th>
+                        <th>Date</th>
+                    </tr>
+                </j:if>
                 <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
                 <j:forEach var="service" indexVar="j" items="${services}">
                     <j:set var="status" value="${it.descriptor.getMonitoringByService(service.id)}"/>
-                    <tr class="release-entry">
+                    <tr class="release-entry" category="${category}">
                         <td style="text-align:center">
                             <l:icon class="${status.icon} icon-md"/>
                         </td>
@@ -73,12 +72,20 @@
                             <span class="application-label">
                                 <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/> Application déployée
                             </span>
-                            <span class="version-label">1.0.2</span>
+                            <span class="version-label badge">
+                                <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/>1.0.2
+                            </span>
+                            <span class="application-branch badge">
+                                <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>master
+                            </span>
+                            <span class="application-commit badge">
+                                <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>0d581c59
+                            </span>
                         </td>
                         <td>
                             <span class="build-label">
-                                <l:icon class="symbol-refresh-circle-outline plugin-ionicons-api icon-sm"/>
-                                <a href="#">#45189</a>
+                                <l:icon class="icon-blue icon-sm"/>
+                                <a href="#">Nom du Job #45189</a>
                             </span>
                         </td>
                         <td>
