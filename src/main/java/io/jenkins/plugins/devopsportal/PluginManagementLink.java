@@ -13,6 +13,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Plugin settings screen, used to define the list of application services.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 @Extension
 public class PluginManagementLink extends ManagementLink {
 

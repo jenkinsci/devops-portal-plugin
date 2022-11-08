@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.*;
 import jenkins.model.Jenkins;
-import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -17,6 +16,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Type of view displaying information on the progress of the various versions of the software developed.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class BuildDashboard extends View {
 
     @DataBoundConstructor
@@ -44,7 +48,6 @@ public class BuildDashboard extends View {
         return null;
     }
 
-    @Symbol("builddashboard")
     @Extension
     public static final class DescriptorImpl extends ViewDescriptor {
 
@@ -58,8 +61,41 @@ public class BuildDashboard extends View {
             return Messages.BuildDashboard_DisplayName();
         }
 
-        public ServiceConfiguration.DescriptorImpl getServiceDescriptor() {
-            return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
+        public BuildStatus.DescriptorImpl getBuildStatusDescriptor() {
+            return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
+        }
+
+        public List<String> getApplicationNames() {
+            return getBuildStatusDescriptor()
+                    .getBuildStatus()
+                    .stream()
+                    .map(BuildStatus::getApplicationName)
+                    .map(String::trim)
+                    .distinct()
+                    .sorted()
+                    .collect(Collectors.toList());
+        }
+
+        public List<String> getApplicationVersions(String applicationName) {
+            return getBuildStatusDescriptor()
+                    .getBuildStatus()
+                    .stream()
+                    .filter(item -> applicationName.trim().equals(item.getApplicationName()))
+                    .sorted(Comparator.comparingLong(BuildStatus::getBuildTimestamp))
+                    .map(BuildStatus::getApplicationVersion)
+                    .map(String::trim)
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+
+        public BuildStatus getApplicationVersion(String applicationName, String applicationVersion) {
+            return getBuildStatusDescriptor()
+                    .getBuildStatus()
+                    .stream()
+                    .filter(item -> applicationName.trim().equals(item.getApplicationName()))
+                    .filter(item -> applicationVersion.trim().equals(item.getApplicationVersion()))
+                    .findFirst()
+                    .orElse(null);
         }
 
     }

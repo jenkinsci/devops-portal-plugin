@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.net.*;
 import java.util.logging.Logger;
 
+/**
+ * Scheduled task that performs the monitoring of application services.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 @Extension
 public class MonitoringPeriodicWork extends AsyncPeriodicWork {
 

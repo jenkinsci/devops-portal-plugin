@@ -2,6 +2,11 @@ package io.jenkins.plugins.devopsportal;
 
 import java.io.Serializable;
 
+/**
+ * List of possible states for monitored services.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public enum MonitoringStatus implements Serializable {
 
     SUCCESS("icon-blue"),

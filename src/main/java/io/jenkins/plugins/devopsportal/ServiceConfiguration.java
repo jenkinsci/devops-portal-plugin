@@ -22,6 +22,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * A persistent record of an application service.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class ServiceConfiguration implements Describable<ServiceConfiguration> {
 
     private String id;

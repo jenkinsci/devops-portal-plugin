@@ -1,5 +1,10 @@
 package io.jenkins.plugins.devopsportal;
 
+/**
+ * A persisted record of an exploitation operation performed on a run platform.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class ServiceOperation {
 
     private String serviceId;

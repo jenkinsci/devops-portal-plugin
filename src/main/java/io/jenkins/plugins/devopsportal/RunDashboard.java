@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.*;
 import jenkins.model.Jenkins;
-import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -14,6 +13,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Type of view displaying information on application deployments and the status of monitored services.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class RunDashboard extends View {
 
     @DataBoundConstructor
@@ -41,7 +45,6 @@ public class RunDashboard extends View {
         return null;
     }
 
-    @Symbol("rundashboard")
     @Extension
     public static final class DescriptorImpl extends ViewDescriptor {
 

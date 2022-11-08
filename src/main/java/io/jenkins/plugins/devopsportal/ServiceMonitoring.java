@@ -10,7 +10,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -18,6 +17,11 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.Optional;
 
+/**
+ * A persistent record of the availability state of an application service.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class ServiceMonitoring implements Describable<ServiceMonitoring> {
 
     private String serviceId;
@@ -144,7 +148,6 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
                 .toString();
     }
 
-    @Symbol("servicemonitoring")
     @Extension
     public static final class DescriptorImpl extends Descriptor<ServiceMonitoring> {
 

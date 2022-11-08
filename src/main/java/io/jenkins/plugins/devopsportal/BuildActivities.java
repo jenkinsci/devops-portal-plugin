@@ -1,5 +1,10 @@
 package io.jenkins.plugins.devopsportal;
 
+/**
+ * List of all development activities leading to a finalized version.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public enum BuildActivities {
 
     INTEGRATION("Features integration"),

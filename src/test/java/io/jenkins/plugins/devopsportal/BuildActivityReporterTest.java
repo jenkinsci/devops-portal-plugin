@@ -10,7 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
-public class HelloWorldBuilderTest {
+public class BuildActivityReporterTest {
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -22,10 +22,10 @@ public class HelloWorldBuilderTest {
     @Test
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        project.getBuildersList().add(new HelloWorldBuilder(applicationName, applicationVersion, activity));
+        project.getBuildersList().add(new BuildActivityReporter(applicationName, applicationVersion, activity));
         project = jenkins.configRoundtrip(project);
         jenkins.assertEqualDataBoundBeans(
-            new HelloWorldBuilder(applicationName, applicationVersion, activity),
+            new BuildActivityReporter(applicationName, applicationVersion, activity),
             project.getBuildersList().get(0)
         );
     }
@@ -33,12 +33,12 @@ public class HelloWorldBuilderTest {
     @Test
     public void testConfigRoundtripStatus() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(applicationName, applicationVersion, activity);
+        BuildActivityReporter builder = new BuildActivityReporter(applicationName, applicationVersion, activity);
         builder.setStatus(BuildActivityStatus.FAIL);
         project.getBuildersList().add(builder);
         project = jenkins.configRoundtrip(project);
 
-        HelloWorldBuilder lhs = new HelloWorldBuilder(applicationName, applicationVersion, activity);
+        BuildActivityReporter lhs = new BuildActivityReporter(applicationName, applicationVersion, activity);
         lhs.setStatus(BuildActivityStatus.FAIL);
         jenkins.assertEqualDataBoundBeans(lhs, project.getBuildersList().get(0));
     }
@@ -46,7 +46,7 @@ public class HelloWorldBuilderTest {
     @Test
     public void testBuildStatusAuto() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(applicationName, applicationVersion, activity);
+        BuildActivityReporter builder = new BuildActivityReporter(applicationName, applicationVersion, activity);
         project.getBuildersList().add(builder);
 
         FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
@@ -56,7 +56,7 @@ public class HelloWorldBuilderTest {
     @Test
     public void testBuildStatusManual() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(applicationName, applicationVersion, activity);
+        BuildActivityReporter builder = new BuildActivityReporter(applicationName, applicationVersion, activity);
         builder.setStatus(BuildActivityStatus.UNSTABLE);
         project.getBuildersList().add(builder);
 
@@ -71,7 +71,7 @@ public class HelloWorldBuilderTest {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
         String pipelineScript
                 = "node {\n"
-                + "  greet '" + applicationName + "', '" + applicationVersion + "', '" + activity + "'\n"
+                + "  reportBuildActivity '" + applicationName + "', '" + applicationVersion + "', '" + activity + "'\n"
                 + "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
         WorkflowRun completedBuild = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
