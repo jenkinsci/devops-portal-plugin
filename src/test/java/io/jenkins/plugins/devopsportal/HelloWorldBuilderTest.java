@@ -15,49 +15,53 @@ public class HelloWorldBuilderTest {
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
 
-    final String name = "Bobby";
+    final String applicationName = "My Application";
+    final String applicationVersion = "1.0.3";
+    final BuildActivities activity = BuildActivities.BUILD;
 
     @Test
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        project.getBuildersList().add(new HelloWorldBuilder(name));
+        project.getBuildersList().add(new HelloWorldBuilder(applicationName, applicationVersion, activity));
         project = jenkins.configRoundtrip(project);
-        jenkins.assertEqualDataBoundBeans(new HelloWorldBuilder(name), project.getBuildersList().get(0));
+        jenkins.assertEqualDataBoundBeans(
+            new HelloWorldBuilder(applicationName, applicationVersion, activity),
+            project.getBuildersList().get(0)
+        );
     }
 
     @Test
-    public void testConfigRoundtripFrench() throws Exception {
+    public void testConfigRoundtripStatus() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(name);
-        builder.setUseFrench(true);
+        HelloWorldBuilder builder = new HelloWorldBuilder(applicationName, applicationVersion, activity);
+        builder.setStatus(BuildActivityStatus.FAIL);
         project.getBuildersList().add(builder);
         project = jenkins.configRoundtrip(project);
 
-        HelloWorldBuilder lhs = new HelloWorldBuilder(name);
-        lhs.setUseFrench(true);
+        HelloWorldBuilder lhs = new HelloWorldBuilder(applicationName, applicationVersion, activity);
+        lhs.setStatus(BuildActivityStatus.FAIL);
         jenkins.assertEqualDataBoundBeans(lhs, project.getBuildersList().get(0));
     }
 
     @Test
-    public void testBuild() throws Exception {
+    public void testBuildStatusAuto() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(name);
+        HelloWorldBuilder builder = new HelloWorldBuilder(applicationName, applicationVersion, activity);
         project.getBuildersList().add(builder);
 
         FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
-        jenkins.assertLogContains("Hello, " + name, build);
+        jenkins.assertLogContains("OK TODO", build);
     }
 
     @Test
-    public void testBuildFrench() throws Exception {
-
+    public void testBuildStatusManual() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(name);
-        builder.setUseFrench(true);
+        HelloWorldBuilder builder = new HelloWorldBuilder(applicationName, applicationVersion, activity);
+        builder.setStatus(BuildActivityStatus.UNSTABLE);
         project.getBuildersList().add(builder);
 
         FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
-        jenkins.assertLogContains("Bonjour, " + name, build);
+        jenkins.assertLogContains("OK TODO", build);
     }
 
     @Test
@@ -67,11 +71,11 @@ public class HelloWorldBuilderTest {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
         String pipelineScript
                 = "node {\n"
-                + "  greet '" + name + "'\n"
+                + "  greet '" + applicationName + "', '" + applicationVersion + "', '" + activity + "'\n"
                 + "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
         WorkflowRun completedBuild = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
-        String expectedString = "Hello, " + name + "!";
+        String expectedString = "OK TODO";
         jenkins.assertLogContains(expectedString, completedBuild);
     }
 

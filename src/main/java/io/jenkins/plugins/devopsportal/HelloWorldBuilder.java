@@ -1,5 +1,6 @@
 package io.jenkins.plugins.devopsportal;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Launcher;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -10,7 +11,6 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
-import io.jenkins.plugins.devopsportal.Messages;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -22,49 +22,69 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
-    private final String name;
-    private boolean useFrench;
+    private String applicationName;
+    private String applicationVersion;
+    private BuildActivities activity;
+    private BuildActivityStatus status;
 
     @DataBoundConstructor
-    public HelloWorldBuilder(String name) {
-        this.name = name;
+    public HelloWorldBuilder(String applicationName, String applicationVersion, BuildActivities activity) {
+        this.applicationName = applicationName;
+        this.applicationVersion = applicationVersion;
+        this.activity = activity;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public boolean isUseFrench() {
-        return useFrench;
+    public String getApplicationName() {
+        return applicationName;
     }
 
     @DataBoundSetter
-    public void setUseFrench(boolean useFrench) {
-        this.useFrench = useFrench;
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    public String getApplicationVersion() {
+        return applicationVersion;
+    }
+
+    @DataBoundSetter
+    public void setApplicationVersion(String applicationVersion) {
+        this.applicationVersion = applicationVersion;
+    }
+
+    public BuildActivities getActivity() {
+        return activity;
+    }
+
+    @DataBoundSetter
+    public void setActivity(BuildActivities activity) {
+        this.activity = activity;
+    }
+
+    public BuildActivityStatus getStatus() {
+        return status;
+    }
+
+    @DataBoundSetter
+    public void setStatus(BuildActivityStatus status) {
+        this.status = status;
     }
 
     @Override
-    public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-        if (useFrench) {
-            listener.getLogger().println("Bonjour, " + name + "!");
-        } else {
-            listener.getLogger().println("Hello, " + name + "!");
-        }
+    public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env,
+                        @NonNull Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
+        listener.getLogger().println("OK TODO");
     }
 
-    @Symbol("greet")
+    @Symbol("buildActivity")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
-        public FormValidation doCheckName(@QueryParameter String value, @QueryParameter boolean useFrench)
+        public FormValidation doCheckName(@QueryParameter String applicationName,
+                                          @QueryParameter boolean applicationVersion, @QueryParameter boolean activity)
                 throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error(io.jenkins.plugins.devopsportal.Messages.HelloWorldBuilder_DescriptorImpl_errors_missingName());
-            if (value.length() < 4)
-                return FormValidation.warning(io.jenkins.plugins.devopsportal.Messages.HelloWorldBuilder_DescriptorImpl_warnings_tooShort());
-            if (!useFrench && value.matches(".*[éáàç].*")) {
-                return FormValidation.warning(io.jenkins.plugins.devopsportal.Messages.HelloWorldBuilder_DescriptorImpl_warnings_reallyFrench());
-            }
+            // FormValidation.error
+            // FormValidation.warning
             return FormValidation.ok();
         }
 
@@ -73,9 +93,11 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
             return true;
         }
 
+
+        @NonNull
         @Override
         public String getDisplayName() {
-            return Messages.HelloWorldBuilder_DescriptorImpl_DisplayName();
+            return Messages.BuildPublisher_DisplayName();
         }
 
     }

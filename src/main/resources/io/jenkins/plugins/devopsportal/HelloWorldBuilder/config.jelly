@@ -1,12 +1,19 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <f:entry title="${%Name}" field="name">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+    <f:entry title="${%ApplicationName_Label}" field="applicationName">
         <f:textbox />
     </f:entry>
-    <f:advanced>
-        <f:entry title="${%French}" field="useFrench"
-                 description="${%FrenchDescr}">
-            <f:checkbox />
-        </f:entry>
-    </f:advanced>
+    <f:entry title="${%ApplicationVersion_Label}" field="applicationVersion">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="${%Activity_Label}" field="activity">
+        <f:select>
+        </f:select>
+    </f:entry>
+    <f:entry title="${%Status_Label}" field="status" description="${%Status_Desc}">
+        <f:select>
+        </f:select>
+    </f:entry>
+
 </j:jelly>
