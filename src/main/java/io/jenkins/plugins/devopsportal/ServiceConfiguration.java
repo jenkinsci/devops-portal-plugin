@@ -1,4 +1,4 @@
-package io.jenkins.plugins.releasedashboard;
+package io.jenkins.plugins.devopsportal;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
@@ -20,14 +20,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
-public class ServiceDeployment implements Describable<ServiceDeployment> {
-/*
-    private String serviceId;
-    private String jobName;
-    private String buildNumber;
-    private String buildURL;
- */
+public class ServiceConfiguration implements Describable<ServiceConfiguration> {
+
+    private String id;
     private String label;
     private String category;
     private String url;
@@ -35,13 +32,23 @@ public class ServiceDeployment implements Describable<ServiceDeployment> {
     private boolean enableHostMonitoring;
 
     @DataBoundConstructor
-    public ServiceDeployment(String label, String category, String url, boolean enableServiceMonitoring,
-                             boolean enableHostMonitoring) {
+    public ServiceConfiguration(String label, String category, String url, boolean enableServiceMonitoring,
+                                boolean enableHostMonitoring) {
+        this.id = UUID.randomUUID().toString();
         this.label = label;
         this.category = category;
         this.url = url;
         this.enableServiceMonitoring = enableServiceMonitoring;
         this.enableHostMonitoring = enableHostMonitoring;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @DataBoundSetter
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getLabel() {
@@ -100,15 +107,15 @@ public class ServiceDeployment implements Describable<ServiceDeployment> {
     }
 
     @Override
-    public Descriptor<ServiceDeployment> getDescriptor() {
-        return Jenkins.get().getDescriptorByType(ServiceDeployment.DescriptorImpl.class);
+    public Descriptor<ServiceConfiguration> getDescriptor() {
+        return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
     }
 
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final ServiceDeployment other = (ServiceDeployment) that;
+        final ServiceConfiguration other = (ServiceConfiguration) that;
         return new EqualsBuilder()
                 .append(label, other.label)
                 .append(category, other.category)
@@ -140,21 +147,49 @@ public class ServiceDeployment implements Describable<ServiceDeployment> {
                 .toString();
     }
 
-    @Symbol("servicedeployment")
-    @Extension
-    public static final class DescriptorImpl extends Descriptor<ServiceDeployment> {
+    public boolean isServiceMonitoringAvailable() {
+        return enableServiceMonitoring && !url.trim().isEmpty();
+    }
 
-        private final CopyOnWriteList<ServiceDeployment> serviceDeployments = new CopyOnWriteList<>();
+    public boolean isHostMonitoringAvailable() {
+        return enableHostMonitoring && !url.trim().isEmpty();
+    }
+
+    @Symbol("serviceconfiguration")
+    @Extension
+    public static final class DescriptorImpl extends Descriptor<ServiceConfiguration> {
+
+        private final CopyOnWriteList<ServiceConfiguration> serviceConfigurations = new CopyOnWriteList<>();
 
         public DescriptorImpl() {
-            super(ServiceDeployment.class);
+            super(ServiceConfiguration.class);
             load();
         }
 
         @NonNull
         @Override
         public String getDisplayName() {
-            return Messages.DeploymentPublisher_DisplayName();
+            return Messages.ServiceConfiguration_DisplayName();
+        }
+
+        public boolean getDefaultEnableServiceMonitoring() {
+            return true;
+        }
+
+        public boolean getDefaultEnableHostMonitoring() {
+            return false;
+        }
+
+        public List<ServiceConfiguration> getServiceConfigurations() {
+            List<ServiceConfiguration> retVal = new ArrayList<>(serviceConfigurations.getView());
+            retVal.sort(Comparator.comparing(ServiceConfiguration::getLabel));
+            return retVal;
+        }
+
+        public void setServiceConfigurations(List<ServiceConfiguration> services) {
+            serviceConfigurations.clear();
+            serviceConfigurations.addAll(services);
+            save();
         }
 
     }

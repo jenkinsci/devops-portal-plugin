@@ -1,4 +1,4 @@
-package io.jenkins.plugins.releasedashboard;
+package io.jenkins.plugins.devopsportal;
 
 import hudson.Extension;
 import hudson.model.AsyncPeriodicWork;

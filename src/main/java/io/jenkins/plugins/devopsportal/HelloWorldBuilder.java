@@ -1,4 +1,4 @@
-package io.jenkins.plugins.releasedashboard;
+package io.jenkins.plugins.devopsportal;
 
 import hudson.Launcher;
 import hudson.EnvVars;
@@ -10,7 +10,7 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
-import io.jenkins.plugins.releasedashboard.Messages;
+import io.jenkins.plugins.devopsportal.Messages;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -59,11 +59,11 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckName(@QueryParameter String value, @QueryParameter boolean useFrench)
                 throws IOException, ServletException {
             if (value.length() == 0)
-                return FormValidation.error(io.jenkins.plugins.releasedashboard.Messages.HelloWorldBuilder_DescriptorImpl_errors_missingName());
+                return FormValidation.error(io.jenkins.plugins.devopsportal.Messages.HelloWorldBuilder_DescriptorImpl_errors_missingName());
             if (value.length() < 4)
-                return FormValidation.warning(io.jenkins.plugins.releasedashboard.Messages.HelloWorldBuilder_DescriptorImpl_warnings_tooShort());
+                return FormValidation.warning(io.jenkins.plugins.devopsportal.Messages.HelloWorldBuilder_DescriptorImpl_warnings_tooShort());
             if (!useFrench && value.matches(".*[éáàç].*")) {
-                return FormValidation.warning(io.jenkins.plugins.releasedashboard.Messages.HelloWorldBuilder_DescriptorImpl_warnings_reallyFrench());
+                return FormValidation.warning(io.jenkins.plugins.devopsportal.Messages.HelloWorldBuilder_DescriptorImpl_warnings_reallyFrench());
             }
             return FormValidation.ok();
         }

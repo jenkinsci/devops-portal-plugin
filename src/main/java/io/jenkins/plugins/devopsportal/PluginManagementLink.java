@@ -1,4 +1,4 @@
-package io.jenkins.plugins.releasedashboard;
+package io.jenkins.plugins.devopsportal;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;

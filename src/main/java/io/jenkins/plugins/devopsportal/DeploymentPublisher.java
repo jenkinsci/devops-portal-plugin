@@ -1,11 +1,8 @@
-package io.jenkins.plugins.releasedashboard;
+package io.jenkins.plugins.devopsportal;
 
 import hudson.Extension;
-import hudson.model.AbstractProject;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.Publisher;
 import jenkins.model.Jenkins;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;

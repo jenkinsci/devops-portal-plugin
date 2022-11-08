@@ -1,4 +1,4 @@
-package io.jenkins.plugins.releasedashboard;
+package io.jenkins.plugins.devopsportal;
 
 public enum MonitoringStatus {
     OK,
