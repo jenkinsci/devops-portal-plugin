@@ -2,27 +2,27 @@
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
 
     <style type="text/css" rel="stylesheet">
-        .release-table {
+        .run-dashboard {
             width: 100%;
             border-collapse: collapse;
         }
-        .release-table .group-title th {
+        .run-dashboard .group-title th {
             text-align: left;
             padding: 1rem 0;
         }
-        .release-table .group-headers {
+        .run-dashboard .group-headers {
             font-size: 80%;
             text-align: left;
             color: #bbb;
         }
-        .release-table .release-entry {
+        .run-dashboard .service-entry {
             border-top: 1px solid #ccc;
             line-height: 2.5rem;
         }
-        .release-table .service-label {
+        .run-dashboard .service-label {
             font-weight: bolder;
         }
-        .release-table .badge {
+        .run-dashboard .badge {
             background-color: #ddd;
             border-radius: 5px;
             padding: 2px 4px;
@@ -35,7 +35,10 @@
         }
     </style>
 
-    <table class="release-table">
+    <h1>
+        Run: ${it.displayName}
+    </h1>
+    <table class="run-dashboard">
         <tbody>
             <j:set var="categories" value="${it.descriptor.getConfigurationCategories()}"/>
             <j:forEach var="category" indexVar="i" items="${categories}">
@@ -55,7 +58,7 @@
                 <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
                 <j:forEach var="service" indexVar="j" items="${services}">
                     <j:set var="status" value="${it.descriptor.getMonitoringByService(service.id)}"/>
-                    <tr class="release-entry" category="${category}">
+                    <tr class="service-entry" category="${category}">
                         <td style="text-align:center">
                             <l:icon class="${status.icon} icon-md"/>
                         </td>

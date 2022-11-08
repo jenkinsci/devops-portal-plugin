@@ -21,9 +21,11 @@ import java.util.Optional;
 public class ServiceMonitoring implements Describable<ServiceMonitoring> {
 
     private String serviceId;
-    private long timestamp;
-    private Boolean serviceMonitoringStatus;
-    private Boolean hostMonitoringStatus;
+    private MonitoringStatus currentMonitoringStatus;
+    private long lastSuccessTimestamp;
+    private long lastFailureTimestamp;
+    private String lastFailureReason;
+    private int failureCount;
 
     @DataBoundConstructor
     public ServiceMonitoring() {
@@ -42,44 +44,60 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
         this.serviceId = serviceId;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public MonitoringStatus getCurrentMonitoringStatus() {
+        return currentMonitoringStatus;
     }
 
     @DataBoundSetter
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setCurrentMonitoringStatus(MonitoringStatus currentMonitoringStatus) {
+        this.currentMonitoringStatus = currentMonitoringStatus;
     }
 
-    public Boolean getServiceMonitoringStatus() {
-        return serviceMonitoringStatus;
-    }
-
-    @DataBoundSetter
-    public void setServiceMonitoringStatus(Boolean serviceMonitoringStatus) {
-        this.serviceMonitoringStatus = serviceMonitoringStatus;
-    }
-
-    public Boolean getHostMonitoringStatus() {
-        return hostMonitoringStatus;
+    public long getLastSuccessTimestamp() {
+        return lastSuccessTimestamp;
     }
 
     @DataBoundSetter
-    public void setHostMonitoringStatus(Boolean hostMonitoringStatus) {
-        this.hostMonitoringStatus = hostMonitoringStatus;
+    public void setLastSuccessTimestamp(long lastSuccessTimestamp) {
+        this.lastSuccessTimestamp = lastSuccessTimestamp;
+    }
+
+    public long getLastFailureTimestamp() {
+        return lastFailureTimestamp;
+    }
+
+    @DataBoundSetter
+    public void setLastFailureTimestamp(long lastFailureTimestamp) {
+        this.lastFailureTimestamp = lastFailureTimestamp;
+    }
+
+    public String getLastFailureReason() {
+        return lastFailureReason;
+    }
+
+    @DataBoundSetter
+    public void setLastFailureReason(String lastFailureReason) {
+        this.lastFailureReason = lastFailureReason;
+    }
+
+    public int getFailureCount() {
+        return failureCount;
+    }
+
+    @DataBoundSetter
+    public void setFailureCount(int failureCount) {
+        this.failureCount = failureCount;
     }
 
     public String getIcon() {
-        if (serviceMonitoringStatus == null) {
-            if (hostMonitoringStatus == null) {
-                return "icon-disabled";
-            }
-            return hostMonitoringStatus ? "icon-blue" : "icon-red";
+        if (currentMonitoringStatus == null) {
+            return MonitoringStatus.defaultIcon();
         }
-        else {
-            return serviceMonitoringStatus ? "icon-blue" : "icon-red";
-        }
-        // "icon-yellow"
+        return currentMonitoringStatus.getIcon();
+    }
+
+    public long getLastTimestamp() {
+        return Math.max(lastSuccessTimestamp, lastFailureTimestamp);
     }
 
     @Override
@@ -94,9 +112,11 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
         final ServiceMonitoring other = (ServiceMonitoring) that;
         return new EqualsBuilder()
                 .append(serviceId, other.serviceId)
-                .append(timestamp, other.timestamp)
-                .append(serviceMonitoringStatus, other.serviceMonitoringStatus)
-                .append(hostMonitoringStatus, other.hostMonitoringStatus)
+                .append(currentMonitoringStatus, other.currentMonitoringStatus)
+                .append(lastSuccessTimestamp, other.lastSuccessTimestamp)
+                .append(lastFailureTimestamp, other.lastFailureTimestamp)
+                .append(lastFailureReason, other.lastFailureReason)
+                .append(failureCount, other.failureCount)
                 .isEquals();
     }
 
@@ -104,9 +124,11 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(serviceId)
-                .append(timestamp)
-                .append(serviceMonitoringStatus)
-                .append(hostMonitoringStatus)
+                .append(currentMonitoringStatus)
+                .append(lastSuccessTimestamp)
+                .append(lastFailureTimestamp)
+                .append(lastFailureReason)
+                .append(failureCount)
                 .toHashCode();
     }
 
@@ -114,9 +136,11 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append(serviceId)
-                .append(timestamp)
-                .append(serviceMonitoringStatus)
-                .append(hostMonitoringStatus)
+                .append(currentMonitoringStatus)
+                .append(lastSuccessTimestamp)
+                .append(lastFailureTimestamp)
+                .append(lastFailureReason)
+                .append(failureCount)
                 .toString();
     }
 
@@ -137,7 +161,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
             return Messages.ServiceMonitoring_DisplayName();
         }
 
-        public void update(ServiceConfiguration service, MonitoringStatus serviceStatus, Boolean hostStatus) {
+        public void update(@NonNull ServiceConfiguration service, @NonNull MonitoringStatus status, String failureReason) {
             ServiceMonitoring item = getMonitoringByService(service.getId()).orElse(null);
             boolean create = false;
             if (item == null) {
@@ -145,9 +169,16 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
                 item.setServiceId(service.getId());
                 create = true;
             }
-            item.setTimestamp(Instant.now().getEpochSecond());
-            item.setServiceMonitoringStatus(serviceStatus == null ? null : serviceStatus == MonitoringStatus.OK);
-            item.setHostMonitoringStatus(hostStatus);
+            if (status == MonitoringStatus.SUCCESS) {
+                item.setLastSuccessTimestamp(Instant.now().getEpochSecond());
+                item.setFailureCount(0);
+            }
+            else {
+                item.setLastFailureTimestamp(Instant.now().getEpochSecond());
+                item.setFailureCount(item.getFailureCount() + 1);
+            }
+            item.setCurrentMonitoringStatus(status);
+            item.setLastFailureReason(failureReason);
             if (create) {
                 servicesMonitoring.add(item);
             }
@@ -156,7 +187,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
 
         public Optional<ServiceMonitoring> getMonitoringByService(String id) {
             return servicesMonitoring.getView().stream().filter(item -> id.equals(item.getServiceId()))
-                    .max(Comparator.comparing(ServiceMonitoring::getTimestamp));
+                    .max(Comparator.comparing(ServiceMonitoring::getLastTimestamp));
         }
 
     }

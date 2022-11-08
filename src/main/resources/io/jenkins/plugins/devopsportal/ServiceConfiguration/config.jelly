@@ -12,11 +12,16 @@
     <f:entry title="${%url}" field="url">
         <f:textbox/>
     </f:entry>
-    <f:entry title="${%enableServiceMonitoring}" field="enableServiceMonitoring">
-        <f:checkbox default="${descriptor.getDefaultEnableServiceMonitoring()}" />
+    <f:entry title="${%enableMonitoring}" field="enableMonitoring">
+        <f:checkbox default="${descriptor.getDefaultEnableMonitoring()}" />
     </f:entry>
-    <f:entry title="${%enableHostMonitoring}" field="enableHostMonitoring">
-        <f:checkbox default="${descriptor.getDefaultEnableHostMonitoring()}" />
-    </f:entry>
+    <f:advanced>
+        <f:entry title="${%delayMonitoringMinutes}" field="delayMonitoringMinutes">
+            <f:number default="${descriptor.getDefaultDelayMonitoringMinutes()}" />
+        </f:entry>
+        <f:entry title="${%acceptInvalidCertificate}" field="acceptInvalidCertificate">
+            <f:checkbox default="${descriptor.getDefaultAcceptInvalidCertificate()}" />
+        </f:entry>
+    </f:advanced>
 
 </j:jelly>

@@ -1,0 +1,164 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
+
+    <style type="text/css" rel="stylesheet">
+        .build-dashboard {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .build-dashboard .group-title th {
+            text-align: left;
+            padding: 1rem 0;
+        }
+        .build-dashboard .group-headers {
+            font-size: 80%;
+            text-align: left;
+            color: #bbb;
+        }
+        .build-dashboard .version-entry {
+            border-top: 1px solid #ccc;
+            line-height: 2.5rem;
+        }
+        .build-dashboard .version-label {
+            font-weight: bolder;
+        }
+        .build-dashboard .badge {
+            background-color: #ddd;
+            border-radius: 5px;
+            padding: 2px 4px;
+            margin-left: .25rem;
+            color: #333;
+            font-size: 90%;
+        }
+        .build-dashboard .activity-steps > span, .build-dashboard .activity-legend > span {
+            display: inline-block;
+            background: #ccc;
+            border: 1px solid #bbb;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: .2rem;
+            cursor: help;
+        }
+        .build-dashboard .activity-steps .todo, .build-dashboard .activity-legend .todo {
+        }
+        .build-dashboard .activity-steps .done, .build-dashboard .activity-legend .done {
+            background: #59ba73;
+            border-color: #348549;
+        }
+        .build-dashboard .activity-steps .unstable, .build-dashboard .activity-legend .unstable {
+            background: #dbc85a;
+            border-color: #7d7236;
+        }
+        .build-dashboard .activity-steps .fail, .build-dashboard .activity-legend .fail {
+            background: #c75656;
+            border-color: #9e4646;
+        }
+    </style>
+    <h1>
+        Build: ${it.displayName}
+    </h1>
+    <table class="build-dashboard">
+        <tbody>
+            <tr class="group-title">
+                <th colspan="4"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> Nom de l'application</th>
+            </tr>
+            <tr class="group-headers">
+                <th>${%column_version}</th>
+                <th>${%column_build}</th>
+                <th>${%column_activity}</th>
+                <th>${%column_deployment}</th>
+            </tr>
+            <tr class="version-entry">
+                <td class="version-label">1.0.2</td>
+                <td>
+                    <span class="application-commit badge">
+                        <a href="#">
+                            <l:icon class="icon-blue icon-sm"/>#15948
+                        </a>
+                    </span>
+                    <span class="application-branch badge">
+                        <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>master
+                    </span>
+                    <span class="application-commit badge">
+                        <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>0d581c59
+                    </span>
+                </td>
+                <td>
+                    <div class="activity-steps">
+                        <span title="${%activity_int}" class="done"></span>
+                        <span title="${%activity_build}" class="done"></span>
+                        <span title="${%activity_ut}" class="done"></span>
+                        <span title="${%activity_qa}" class="done"></span>
+                        <span title="${%activity_secu}" class="done"></span>
+                        <span title="${%activity_deploy}" class="done"></span>
+                        <span title="${%activity_perf}" class="done"></span>
+                        <span title="${%activity_qualif}" class="unstable"></span>
+                        <span title="${%activity_uat}" class="todo"></span>
+                    </div>
+                </td>
+                <td>
+                    <span class="deployment-environment">
+                        <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>production
+                    </span>
+                    <span class="deployment-tag badge">
+                        ansible
+                    </span>
+                </td>
+            </tr>
+            <tr class="version-entry">
+                <td class="version-label">1.0.3</td>
+                <td>
+                    <span class="application-commit badge">
+                        <a href="#">
+                            <l:icon class="icon-red icon-sm"/>#16001
+                        </a>
+                    </span>
+                    <span class="application-branch badge">
+                        <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>develop
+                    </span>
+                    <span class="application-commit badge">
+                        <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>9d56c48
+                    </span>
+                </td>
+                <td>
+                    <div class="activity-steps">
+                        <span title="${%activity_int}" class="todo"></span>
+                        <span title="${%activity_build}" class="fail"></span>
+                        <span title="${%activity_ut}" class="unstable"></span>
+                        <span title="${%activity_qa}" class="done"></span>
+                        <span title="${%activity_secu}" class="done"></span>
+                        <span title="${%activity_deploy}" class="todo"></span>
+                        <span title="${%activity_perf}" class="todo"></span>
+                        <span title="${%activity_qual}" class="todo"></span>
+                        <span title="${%activity_uat}" class="todo"></span>
+                    </div>
+                </td>
+                <td>
+                    <span class="deployment-environment">
+                        <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>staging
+                    </span>
+                    <span class="deployment-tag badge">
+                        pipeline
+                    </span>
+                    <span class="deployment-tag badge">
+                        ssh
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="2">
+                    <div class="activity-legend">
+                        <span title="${%status_todo}" class="todo"></span> ${%status_todo}
+                        <span title="${%status_done}" class="done"></span> ${%status_done}
+                        <span title="${%status_unstable}" class="unstable"></span> ${%status_unstable}
+                        <span title="${%status_fail}" class="fail"></span> ${%status_fail}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+</j:jelly>

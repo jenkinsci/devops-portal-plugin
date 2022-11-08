@@ -1,0 +1,10 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+    <f:section title="${%label_header}">
+        <f:entry title="${%entry_filter}" description="${%entry_filter_desc}">
+            <f:textbox name="filter" field="filter" />
+        </f:entry>
+    </f:section>
+
+</j:jelly>

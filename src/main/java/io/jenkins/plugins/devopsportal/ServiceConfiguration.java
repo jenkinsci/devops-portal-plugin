@@ -28,18 +28,20 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
     private String label;
     private String category;
     private String url;
-    private boolean enableServiceMonitoring;
-    private boolean enableHostMonitoring;
+    private boolean enableMonitoring;
+    private int delayMonitoringMinutes;
+    private boolean acceptInvalidCertificate;
 
     @DataBoundConstructor
-    public ServiceConfiguration(String label, String category, String url, boolean enableServiceMonitoring,
-                                boolean enableHostMonitoring) {
+    public ServiceConfiguration(String label, String category, String url, boolean enableMonitoring,
+                                int delayMonitoringMinutes, boolean acceptInvalidCertificate) {
         this.id = UUID.randomUUID().toString();
         this.label = label;
         this.category = category;
         this.url = url;
-        this.enableServiceMonitoring = enableServiceMonitoring;
-        this.enableHostMonitoring = enableHostMonitoring;
+        this.enableMonitoring = enableMonitoring;
+        this.delayMonitoringMinutes = delayMonitoringMinutes;
+        this.acceptInvalidCertificate = acceptInvalidCertificate;
     }
 
     public String getId() {
@@ -48,7 +50,9 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
 
     @DataBoundSetter
     public void setId(String id) {
-        this.id = id;
+        if (id != null && !id.isEmpty()) {
+            this.id = id;
+        }
     }
 
     public String getLabel() {
@@ -78,22 +82,31 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
         this.url = url;
     }
 
-    public boolean isEnableServiceMonitoring() {
-        return enableServiceMonitoring;
+    public boolean isEnableMonitoring() {
+        return enableMonitoring;
     }
 
     @DataBoundSetter
-    public void setEnableServiceMonitoring(boolean enableServiceMonitoring) {
-        this.enableServiceMonitoring = enableServiceMonitoring;
+    public void setEnableMonitoring(boolean enableMonitoring) {
+        this.enableMonitoring = enableMonitoring;
     }
 
-    public boolean isEnableHostMonitoring() {
-        return enableHostMonitoring;
+    public int getDelayMonitoringMinutes() {
+        return delayMonitoringMinutes;
     }
 
     @DataBoundSetter
-    public void setEnableHostMonitoring(boolean enableHostMonitoring) {
-        this.enableHostMonitoring = enableHostMonitoring;
+    public void setDelayMonitoringMinutes(int delayMonitoringMinutes) {
+        this.delayMonitoringMinutes = delayMonitoringMinutes;
+    }
+
+    public boolean isAcceptInvalidCertificate() {
+        return acceptInvalidCertificate;
+    }
+
+    @DataBoundSetter
+    public void setAcceptInvalidCertificate(boolean acceptInvalidCertificate) {
+        this.acceptInvalidCertificate = acceptInvalidCertificate;
     }
 
     public String getHostname() {
@@ -120,8 +133,9 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
                 .append(label, other.label)
                 .append(category, other.category)
                 .append(url, other.url)
-                .append(enableServiceMonitoring, other.enableServiceMonitoring)
-                .append(enableHostMonitoring, other.enableHostMonitoring)
+                .append(enableMonitoring, other.enableMonitoring)
+                .append(delayMonitoringMinutes, other.delayMonitoringMinutes)
+                .append(acceptInvalidCertificate, other.acceptInvalidCertificate)
                 .isEquals();
     }
 
@@ -131,8 +145,9 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
                 .append(label)
                 .append(category)
                 .append(url)
-                .append(enableServiceMonitoring)
-                .append(enableHostMonitoring)
+                .append(enableMonitoring)
+                .append(delayMonitoringMinutes)
+                .append(acceptInvalidCertificate)
                 .toHashCode();
     }
 
@@ -142,17 +157,14 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
                 .append(label)
                 .append(category)
                 .append(url)
-                .append(enableServiceMonitoring)
-                .append(enableHostMonitoring)
+                .append(enableMonitoring)
+                .append(delayMonitoringMinutes)
+                .append(acceptInvalidCertificate)
                 .toString();
     }
 
-    public boolean isServiceMonitoringAvailable() {
-        return enableServiceMonitoring && !url.trim().isEmpty();
-    }
-
-    public boolean isHostMonitoringAvailable() {
-        return enableHostMonitoring && !url.trim().isEmpty();
+    public boolean isMonitoringAvailable() {
+        return enableMonitoring && !url.trim().isEmpty();
     }
 
     @Symbol("serviceconfiguration")
@@ -172,11 +184,15 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
             return Messages.ServiceConfiguration_DisplayName();
         }
 
-        public boolean getDefaultEnableServiceMonitoring() {
+        public boolean getDefaultEnableMonitoring() {
             return true;
         }
 
-        public boolean getDefaultEnableHostMonitoring() {
+        public int getDefaultDelayMonitoringMinutes() {
+            return 5;
+        }
+
+        public boolean getDefaultAcceptInvalidCertificate() {
             return false;
         }
 

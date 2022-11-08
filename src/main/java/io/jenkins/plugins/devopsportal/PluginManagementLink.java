@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 @Extension
 public class PluginManagementLink extends ManagementLink {
 
-    private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.releasedashboard");
+    private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
     @Override
     public String getIconFileName() {

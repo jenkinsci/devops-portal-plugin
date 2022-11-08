@@ -11,13 +11,16 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public class DashboardView extends View {
+public class BuildDashboard extends View {
 
     @DataBoundConstructor
-    public DashboardView(String name) {
+    public BuildDashboard(String name) {
         super(name);
     }
 
@@ -41,43 +44,24 @@ public class DashboardView extends View {
         return null;
     }
 
-    @Symbol("releasedashboard")
+    @Symbol("builddashboard")
     @Extension
     public static final class DescriptorImpl extends ViewDescriptor {
 
         public DescriptorImpl() {
-            super(DashboardView.class);
+            super(BuildDashboard.class);
         }
 
         @NonNull
         @Override
         public String getDisplayName() {
-            return Messages.DashboardView_DisplayName();
+            return Messages.BuildDashboard_DisplayName();
         }
 
         public ServiceConfiguration.DescriptorImpl getServiceDescriptor() {
             return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
         }
 
-        public ServiceMonitoring.DescriptorImpl getMonitoringDescriptor() {
-            return Jenkins.get().getDescriptorByType(ServiceMonitoring.DescriptorImpl.class);
-        }
-
-        public List<String> getConfigurationCategories() {
-            return getServiceDescriptor().getServiceConfigurations().stream().map(ServiceConfiguration::getCategory)
-                    .map(String::trim).distinct().sorted().collect(Collectors.toList());
-        }
-
-        public List<ServiceConfiguration> getConfigurationsByCategory(@NonNull String category) {
-            return getServiceDescriptor().getServiceConfigurations().stream()
-                    .filter(item -> category.trim().equals(item.getCategory().trim()))
-                    .sorted(Comparator.comparing(ServiceConfiguration::getLabel)).collect(Collectors.toList());
-        }
-
-        public ServiceMonitoring getMonitoringByService(String id) {
-            return getMonitoringDescriptor().getMonitoringByService(id).orElse(new ServiceMonitoring(id));
-        }
-        
     }
 
 }
