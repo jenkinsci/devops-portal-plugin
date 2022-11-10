@@ -11,10 +11,10 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.UUID;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class ServiceConfiguration implements Describable<ServiceConfiguration> {
+public class ServiceConfiguration implements Describable<ServiceConfiguration>, Serializable {
 
     private String id;
     private String label;
@@ -182,9 +182,8 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
         return enableMonitoring && !url.trim().isEmpty();
     }
 
-    @Symbol("serviceconfiguration")
     @Extension
-    public static final class DescriptorImpl extends Descriptor<ServiceConfiguration> {
+    public static final class DescriptorImpl extends Descriptor<ServiceConfiguration> implements Serializable {
 
         private final CopyOnWriteList<ServiceConfiguration> serviceConfigurations = new CopyOnWriteList<>();
 

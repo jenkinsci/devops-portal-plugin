@@ -54,6 +54,13 @@
             background: #c75656;
             border-color: #9e4646;
         }
+        .build-dashboard .application-build .build-status-icon__wrapper {
+            margin-right: 5px;
+        }
+        .muted {
+            font-size: 80%;
+            color: #555;
+        }
     </style>
     <h1>
         Build: ${it.displayName}
@@ -79,17 +86,21 @@
                     <tr class="version-entry">
                         <td class="version-label">${status.applicationVersion}</td>
                         <td>
-                            <span class="application-commit badge">
+                            <span class="application-build badge">
                                 <a href="${status.buildURL}">
                                     <l:icon class="${status.getBuildStatusClass()} icon-sm"/>#${status.buildNumber}
                                 </a>
                             </span>
-                            <span class="application-branch badge">
-                                <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>${status.buildBranch}
-                            </span>
-                            <span class="application-commit badge">
-                                <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>${status.buildCommit}
-                            </span>
+                            <j:if test="status.buildBranchPresent">
+                                <span class="application-branch badge">
+                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>${status.buildBranch}
+                                </span>
+                            </j:if>
+                            <j:if test="status.buildCommitPresent">
+                                <span class="application-commit badge">
+                                    <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>${status.buildCommit}
+                                </span>
+                            </j:if>
                         </td>
                         <td>
                             <div class="activity-steps">
@@ -105,12 +116,15 @@
                             </div>
                         </td>
                         <td>
+                            <!--
                             <span class="deployment-environment">
                                 <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>production
                             </span>
                             <span class="deployment-tag badge">
                                 ansible
                             </span>
+                            -->
+                            <span class="muted">${%label_no_deployment}</span>
                         </td>
                     </tr>
                 </j:forEach>

@@ -82,15 +82,14 @@ public class BuildActivityReporter extends Builder implements SimpleBuildStep {
 
     @Override
     public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env,
-                        @NonNull Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-
+                        @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
 
         getBuildStatusDescriptor().update(applicationName, applicationVersion, item -> {
             item.setBuildJob(env.get("JOB_NAME"));
             item.setBuildNumber(env.get("BUILD_NUMBER"));
             item.setBuildURL(env.get("RUN_DISPLAY_URL"));
-            item.setBuildBranch("?");// TODO
-            item.setBuildCommit("?");//TODO
+            item.setBuildBranch("");// TODO
+            item.setBuildCommit("");//TODO
             if (status != null) {
                 // Manually
                 item.setActivityStatus(activity, status);
@@ -100,7 +99,7 @@ public class BuildActivityReporter extends Builder implements SimpleBuildStep {
                 item.setActivityStatus(activity, getActivityStatus(activity, run, env));
             }
             listener.getLogger().printf(
-                    "Update build activity '%s' to '%s' for application '%s' version %s%n",
+                    "Update build activity '%s' to state '%s' for application '%s' version %s%n",
                     activity,
                     item.getActivityStatus(activity),
                     item.getApplicationName(),

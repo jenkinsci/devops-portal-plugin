@@ -1,11 +1,13 @@
 package io.jenkins.plugins.devopsportal;
 
+import java.io.Serializable;
+
 /**
  * A persisted record of an exploitation operation performed on a run platform.
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class ServiceOperation {
+public class ServiceOperation implements Serializable {
 
     private String serviceId;
 

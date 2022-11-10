@@ -4,7 +4,9 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import hudson.model.Run;
 import hudson.util.CopyOnWriteList;
+import io.jenkins.plugins.devopsportal.utils.JenkinsUtils;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -13,6 +15,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;
@@ -22,7 +25,7 @@ import java.util.function.Consumer;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class BuildStatus implements Describable<BuildStatus>  {
+public class BuildStatus implements Describable<BuildStatus>, Serializable {
 
     private String applicationName;
     private String applicationVersion;
@@ -120,6 +123,14 @@ public class BuildStatus implements Describable<BuildStatus>  {
         return activitiesStatus;
     }
 
+    public boolean isBuildBranchPresent() {
+        return buildBranch != null && !buildBranch.isEmpty();
+    }
+
+    public boolean isBuildCommitPresent() {
+        return buildCommit != null && !buildCommit.isEmpty();
+    }
+
     @Override
     public Descriptor<BuildStatus> getDescriptor() {
         return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
@@ -176,11 +187,15 @@ public class BuildStatus implements Describable<BuildStatus>  {
     }
 
     public String getBuildStatusClass() {
-        return "icon-disabled"; // TODO
+        Run<?, ?> job = JenkinsUtils.getBuild(buildJob, buildBranch, buildNumber).orElse(null);
+        if (job != null) {
+            return job.getBuildStatusIconClassName();
+        }
+        return "icon-disabled";
     }
 
     @Extension
-    public static final class DescriptorImpl extends Descriptor<BuildStatus> {
+    public static final class DescriptorImpl extends Descriptor<BuildStatus> implements Serializable {
 
         private final CopyOnWriteList<BuildStatus> buildStatus = new CopyOnWriteList<>();
 

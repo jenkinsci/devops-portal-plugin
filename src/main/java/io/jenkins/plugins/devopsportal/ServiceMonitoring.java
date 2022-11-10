@@ -13,6 +13,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import java.util.function.Consumer;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class ServiceMonitoring implements Describable<ServiceMonitoring> {
+public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serializable {
 
     private String serviceId;
     private MonitoringStatus currentMonitoringStatus;
@@ -192,7 +193,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
     }
 
     @Extension
-    public static final class DescriptorImpl extends Descriptor<ServiceMonitoring> {
+    public static final class DescriptorImpl extends Descriptor<ServiceMonitoring> implements Serializable {
 
         private final CopyOnWriteList<ServiceMonitoring> servicesMonitoring = new CopyOnWriteList<>();
 
