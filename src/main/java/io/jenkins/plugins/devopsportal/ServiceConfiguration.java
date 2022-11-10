@@ -114,6 +114,16 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration> {
         this.acceptInvalidCertificate = acceptInvalidCertificate;
     }
 
+    public boolean isHttps() {
+        try {
+            URI uri = new URI(url);
+            return uri.getScheme().equalsIgnoreCase("https");
+        }
+        catch (URISyntaxException ex) {
+            return false;
+        }
+    }
+
     public String getHostname() {
         try {
             URI uri = new URI(url);

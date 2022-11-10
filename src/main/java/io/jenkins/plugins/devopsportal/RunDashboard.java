@@ -10,6 +10,7 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,9 @@ import java.util.stream.Collectors;
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
 public class RunDashboard extends View {
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(Messages.DateFormatter_Date());
+    private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(Messages.DateFormatter_DateTime());
 
     @DataBoundConstructor
     public RunDashboard(String name) {
@@ -43,6 +47,14 @@ public class RunDashboard extends View {
     @Override
     public Item doCreateItem(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         return null;
+    }
+
+    public String formatDateMs(long timestamp) {
+        return dateFormat.format(new java.util.Date(timestamp));
+    }
+
+    public String formatDatetimeSec(long timestamp) {
+        return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
     }
 
     @Extension

@@ -16,6 +16,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * A persistent record of the availability state of an application service.
@@ -26,10 +27,12 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
 
     private String serviceId;
     private MonitoringStatus currentMonitoringStatus;
-    private long lastSuccessTimestamp;
-    private long lastFailureTimestamp;
+    private long lastSuccessTimestamp; // seconds
+    private long lastFailureTimestamp; // seconds
     private String lastFailureReason;
     private int failureCount;
+    private long lastCertificateCheckTimestamp; // seconds
+    private long certificateExpiration; // ms
 
     @DataBoundConstructor
     public ServiceMonitoring() {
@@ -93,6 +96,28 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
         this.failureCount = failureCount;
     }
 
+    public void addFailureCount() {
+        this.failureCount++;
+    }
+
+    public long getLastCertificateCheckTimestamp() {
+        return lastCertificateCheckTimestamp;
+    }
+
+    @DataBoundSetter
+    public void setLastCertificateCheckTimestamp(long lastCertificateCheckTimestamp) {
+        this.lastCertificateCheckTimestamp = lastCertificateCheckTimestamp;
+    }
+
+    public long getCertificateExpiration() {
+        return certificateExpiration;
+    }
+
+    @DataBoundSetter
+    public void setCertificateExpiration(long certificateExpiration) {
+        this.certificateExpiration = certificateExpiration;
+    }
+
     public String getIcon() {
         if (currentMonitoringStatus == null) {
             return MonitoringStatus.defaultIcon();
@@ -121,6 +146,8 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
                 .append(lastFailureTimestamp, other.lastFailureTimestamp)
                 .append(lastFailureReason, other.lastFailureReason)
                 .append(failureCount, other.failureCount)
+                .append(lastCertificateCheckTimestamp, other.lastCertificateCheckTimestamp)
+                .append(certificateExpiration, other.certificateExpiration)
                 .isEquals();
     }
 
@@ -133,6 +160,8 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
                 .append(lastFailureTimestamp)
                 .append(lastFailureReason)
                 .append(failureCount)
+                .append(lastCertificateCheckTimestamp)
+                .append(certificateExpiration)
                 .toHashCode();
     }
 
@@ -145,7 +174,21 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
                 .append(lastFailureTimestamp)
                 .append(lastFailureReason)
                 .append(failureCount)
+                .append(lastCertificateCheckTimestamp)
+                .append(certificateExpiration)
                 .toString();
+    }
+
+    public long getLastUpdateTimestamp() {
+        return Math.max(lastSuccessTimestamp, lastFailureTimestamp);
+    }
+
+    public boolean isAvailabilityUpdateRequired(int delayMonitoringMinutes) {
+        return getLastUpdateTimestamp() + delayMonitoringMinutes * 60L <= Instant.now().getEpochSecond();
+    }
+
+    public boolean isCertificateUpdateRequired() {
+        return getLastCertificateCheckTimestamp() + 3600L <= Instant.now().getEpochSecond();
     }
 
     @Extension
@@ -164,27 +207,14 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring> {
             return Messages.ServiceMonitoring_DisplayName();
         }
 
-        public void update(@NonNull ServiceConfiguration service, @NonNull MonitoringStatus status, String failureReason) {
-            ServiceMonitoring item = getMonitoringByService(service.getId()).orElse(null);
-            boolean create = false;
+        public void update(@NonNull String serviceId, Consumer<ServiceMonitoring> updater) {
+            ServiceMonitoring item = getMonitoringByService(serviceId).orElse(null);
             if (item == null) {
                 item = new ServiceMonitoring();
-                item.setServiceId(service.getId());
-                create = true;
-            }
-            if (status == MonitoringStatus.SUCCESS) {
-                item.setLastSuccessTimestamp(Instant.now().getEpochSecond());
-                item.setFailureCount(0);
-            }
-            else {
-                item.setLastFailureTimestamp(Instant.now().getEpochSecond());
-                item.setFailureCount(item.getFailureCount() + 1);
-            }
-            item.setCurrentMonitoringStatus(status);
-            item.setLastFailureReason(failureReason);
-            if (create) {
+                item.setServiceId(serviceId);
                 servicesMonitoring.add(item);
             }
+            updater.accept(item);
             save();
         }
 

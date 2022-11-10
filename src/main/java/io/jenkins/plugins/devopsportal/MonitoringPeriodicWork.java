@@ -9,20 +9,21 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.net.*;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.Instant;
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -59,49 +60,99 @@ public class MonitoringPeriodicWork extends AsyncPeriodicWork {
             return;
         }
         for (ServiceConfiguration service : getServicesDescriptor().getServiceConfigurations()) {
-            // Service monitoring
-            if (service.isMonitoringAvailable()) {
-                MonitoringStatus serviceStatus;
-                String failureReason;
-                try {
-                    int httpStatus = executeServiceMonitoring(service.getUrl(), service.isAcceptInvalidCertificate());
-                    if (HttpURLConnection.HTTP_OK == httpStatus) {
-                        serviceStatus = MonitoringStatus.SUCCESS;
-                        failureReason = null;
+            getMonitoringDescriptor().update(service.getId(), record -> {
+                // Service monitoring must be enabled
+                if (!service.isMonitoringAvailable()) {
+                    if (record.getCurrentMonitoringStatus() != MonitoringStatus.DISABLED) {
+                        record.setCurrentMonitoringStatus(MonitoringStatus.DISABLED);
                     }
-                    else {
-                        serviceStatus = MonitoringStatus.FAILURE;
-                        failureReason = "HTTP Status: " + httpStatus;
-                    }
+                    return;
                 }
-                catch (MalformedURLException ex) {
-                    serviceStatus = MonitoringStatus.INVALID_CONFIGURATION;
-                    failureReason = "Invalid URL";
+                // Update URL availability
+                if (record.isAvailabilityUpdateRequired(service.getDelayMonitoringMinutes())) {
+                    updateAvailabilityState(service, record);
                 }
-                catch (Exception ex) {
-                    serviceStatus = MonitoringStatus.FAILURE;
-                    failureReason = ex.getMessage();
+                // Update certificate expiration
+                if (record.isCertificateUpdateRequired()) {
+                    updateCertificateExpiration(service, record);
                 }
-                LOGGER.info("Monitor service: " + service.getLabel() + " (id: " + service.getId() + ", url: '"
-                        + service.getUrl() + "', status: " + serviceStatus + ")");
-                getMonitoringDescriptor().update(service, serviceStatus, failureReason);
-            }
+            });
         }
     }
 
-    private int executeServiceMonitoring(String urlString, boolean acceptInvalidCertificate)
+    private void updateAvailabilityState(ServiceConfiguration service, ServiceMonitoring record) {
+        try {
+            int httpStatus = getHttpResponseCode(service.getUrl(), service.isAcceptInvalidCertificate());
+            if (httpStatus == HttpURLConnection.HTTP_OK) {
+                record.setCurrentMonitoringStatus(MonitoringStatus.SUCCESS);
+                record.setLastSuccessTimestamp(Instant.now().getEpochSecond());
+                record.setLastFailureReason(null);
+                record.setFailureCount(0);
+            }
+            else {
+                record.setCurrentMonitoringStatus(MonitoringStatus.FAILURE);
+                record.setLastFailureTimestamp(Instant.now().getEpochSecond());
+                record.setLastFailureReason("HTTP Status: " + httpStatus);
+                record.addFailureCount();
+            }
+        }
+        catch (MalformedURLException ex) {
+            record.setCurrentMonitoringStatus(MonitoringStatus.INVALID_CONFIGURATION);
+            record.setLastFailureTimestamp(Instant.now().getEpochSecond());
+            record.setLastFailureReason("Malformed URL");
+            record.addFailureCount();
+        }
+        catch (SSLHandshakeException ex) {
+            record.setCurrentMonitoringStatus(MonitoringStatus.INVALID_HTTPS);
+            record.setLastFailureTimestamp(Instant.now().getEpochSecond());
+            record.setLastFailureReason("Invalid HTTPS configuration");
+            record.addFailureCount();
+        }
+        catch (Exception ex) {
+            record.setCurrentMonitoringStatus(MonitoringStatus.FAILURE);
+            record.setLastFailureTimestamp(Instant.now().getEpochSecond());
+            record.setLastFailureReason(ex.getMessage());
+            record.addFailureCount();
+        }
+    }
+
+    private void updateCertificateExpiration(ServiceConfiguration service, ServiceMonitoring record) {
+        try {
+            URL url = new URL(service.getUrl());
+            if (url.getProtocol().equalsIgnoreCase("https")) {
+                record.setLastCertificateCheckTimestamp(Instant.now().getEpochSecond());
+                Date lastExpiration = null;
+                for (X509Certificate cert : CertificateUtils.getCertificate(service.getUrl()).get(service.getUrl())) {
+                    LOGGER.fine(url.getHost() + " > " + cert.getSubjectX500Principal() + " > " + cert.getNotAfter());
+                    if (lastExpiration == null || cert.getNotAfter().before(lastExpiration)) {
+                        lastExpiration = cert.getNotAfter();
+                    }
+                }
+                if (lastExpiration != null) {
+                    record.setCertificateExpiration(lastExpiration.getTime());
+                }
+            }
+        }
+        catch (Throwable ex) {
+            LOGGER.warning("Unable to fetch certificates for: " + service.getUrl());
+        }
+    }
+
+    private int getHttpResponseCode(String urlString, boolean acceptInvalidCertificate)
             throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         URL url = new URL(urlString);
-        if (url.getProtocol().equalsIgnoreCase("https")) {
-            LOGGER.info("List certificates for URL: " + urlString);
-            for (Certificate cert : CertificateUtils.getCertificate(urlString).get(urlString)) {
-                LOGGER.info(" -> " + cert);
-            }
-            LOGGER.info("URL ping: " + urlString);
-            org.apache.http.conn.ssl.TrustStrategy strategy = (x509Certificates, s) -> true;
+        // HTTP
+        if (url.getProtocol().equalsIgnoreCase("http")) {
+            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.connect();
+            return urlConn.getResponseCode();
+        }
+        // Unsafe HTTPS
+        else if (acceptInvalidCertificate) {
             HttpClientBuilder builder = HttpClients
                     .custom()
-                    .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, strategy).build())
+                    .setSSLContext(new SSLContextBuilder().loadTrustMaterial(
+                            null, (x509Certificates, s) -> true).build())
                     .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
             try (CloseableHttpClient httpClient = builder.build()) {
                 HttpUriRequest request = new HttpGet(urlString);
@@ -109,8 +160,9 @@ public class MonitoringPeriodicWork extends AsyncPeriodicWork {
                 return response.getStatusLine().getStatusCode();
             }
         }
+        // Safe HTTPS
         else {
-            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection urlConn = (HttpsURLConnection) url.openConnection();
             urlConn.connect();
             return urlConn.getResponseCode();
         }
