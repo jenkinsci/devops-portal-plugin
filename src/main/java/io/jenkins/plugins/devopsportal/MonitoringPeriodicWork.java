@@ -4,9 +4,25 @@ import hudson.Extension;
 import hudson.model.AsyncPeriodicWork;
 import hudson.model.TaskListener;
 import jenkins.model.Jenkins;
+import nl.altindag.ssl.util.CertificateUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 
 import java.io.IOException;
 import java.net.*;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.logging.Logger;
 
 /**
@@ -48,7 +64,7 @@ public class MonitoringPeriodicWork extends AsyncPeriodicWork {
                 MonitoringStatus serviceStatus;
                 String failureReason;
                 try {
-                    int httpStatus = executeServiceMonitoring(service.getUrl());
+                    int httpStatus = executeServiceMonitoring(service.getUrl(), service.isAcceptInvalidCertificate());
                     if (HttpURLConnection.HTTP_OK == httpStatus) {
                         serviceStatus = MonitoringStatus.SUCCESS;
                         failureReason = null;
@@ -73,11 +89,31 @@ public class MonitoringPeriodicWork extends AsyncPeriodicWork {
         }
     }
 
-    private int executeServiceMonitoring(String urlString) throws IOException {
+    private int executeServiceMonitoring(String urlString, boolean acceptInvalidCertificate)
+            throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         URL url = new URL(urlString);
-        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-        urlConn.connect();
-        return urlConn.getResponseCode();
+        if (url.getProtocol().equalsIgnoreCase("https")) {
+            LOGGER.info("List certificates for URL: " + urlString);
+            for (Certificate cert : CertificateUtils.getCertificate(urlString).get(urlString)) {
+                LOGGER.info(" -> " + cert);
+            }
+            LOGGER.info("URL ping: " + urlString);
+            org.apache.http.conn.ssl.TrustStrategy strategy = (x509Certificates, s) -> true;
+            HttpClientBuilder builder = HttpClients
+                    .custom()
+                    .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, strategy).build())
+                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+            try (CloseableHttpClient httpClient = builder.build()) {
+                HttpUriRequest request = new HttpGet(urlString);
+                HttpResponse response = httpClient.execute(request);
+                return response.getStatusLine().getStatusCode();
+            }
+        }
+        else {
+            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.connect();
+            return urlConn.getResponseCode();
+        }
     }
 
 }
