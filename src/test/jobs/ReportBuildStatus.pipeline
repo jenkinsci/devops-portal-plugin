@@ -3,7 +3,7 @@ pipeline {
     parameters {
         string(name: 'APPLICATION', defaultValue: 'MyApp', description: 'Application name')
         text(name: 'VERSION', defaultValue: '1.0.3', description: 'Application version')
-        choice(name: 'ACTIVITY', choices: ['INTEGRATION', 'BUILD', 'UT', 'QA', 'SECU', 'DEPLOY', 'PERF', 'QUALIF', 'UAT'], description: 'Build activity')
+        choice(name: 'ACTIVITY', choices: ['BUILD', 'UT', 'QA', 'SECU', 'DEPLOY', 'PERF'], description: 'Build activity')
         choice(name: 'STATUS', choices: ['', 'PENDING', 'DONE', 'UNSTABLE', 'FAIL'], description: 'Activity result')
     }
     stages {
