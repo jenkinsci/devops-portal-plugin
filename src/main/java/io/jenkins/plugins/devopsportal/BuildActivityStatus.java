@@ -6,6 +6,7 @@ package io.jenkins.plugins.devopsportal;
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
 public enum BuildActivityStatus {
+
     PENDING("Pending"),
     DONE("Done"),
     UNSTABLE("Unstable"),

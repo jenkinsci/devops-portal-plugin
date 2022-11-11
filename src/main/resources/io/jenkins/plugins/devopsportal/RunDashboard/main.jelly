@@ -17,12 +17,12 @@
         }
         .run-dashboard .service-entry {
             border-top: 1px solid #ccc;
-            line-height: 2.5rem;
+            line-height: 2.8rem;
         }
         .run-dashboard .service-label {
             font-weight: bolder;
         }
-        .run-dashboard .host-information, .run-dashboard .application-information, .run-dashboard .deployment-information {
+        .run-dashboard .host-information, .run-dashboard .deployment-information {
             line-height: 1.3rem;
         }
         .run-dashboard .badge {
@@ -36,9 +36,17 @@
         .icon-sm {
             vertical-align: sub !important;
         }
+        .run-dashboard .build-label .build-status-icon__wrapper {
+            margin-right: 5px;
+        }
         .muted {
             font-size: 80%;
             color: #555;
+        }
+        .run-dashboard .service-category {
+            background: #666;
+            color: #fff;
+            font-weight: bolder;
         }
     </style>
 
@@ -63,51 +71,60 @@
                 </j:if>
                 <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
                 <j:forEach var="service" indexVar="j" items="${services}">
-                    <j:set var="status" value="${it.descriptor.getMonitoringByService(service.id)}"/>
+                    <j:set var="monitoring" value="${it.descriptor.getMonitoringByService(service.id)}"/>
+                    <j:set var="deployment" value="${it.descriptor.getLastDeploymentByService(service.id)}"/>
                     <tr class="service-entry" category="${category}">
                         <td style="text-align:center">
-                            <l:icon class="${status.icon} icon-md"/>
+                            <l:icon class="${monitoring.icon} icon-md"/>
                         </td>
                         <td>
                             <span class="service-label">${service.label}</span>
+                            <span class="badge service-category">${service.category}</span>
                         </td>
                         <td class="host-information">
                             <span class="host-label">${service.hostname}</span>
-                            <j:if test="${status.getCertificateExpiration() != null}">
+                            <j:if test="${monitoring.getCertificateExpiration() != null}">
                                 <br/>
                                 <span class="certificate-expiration" title="${%label_cert_expiration}">
                                     <l:icon class="symbol-ribbon-outline plugin-ionicons-api icon-sm"/>
-                                    ${it.formatDateMs(status.getCertificateExpiration())}
+                                    ${it.formatDateMs(monitoring.getCertificateExpiration())}
                                 </span>
                             </j:if>
                         </td>
                         <td class="application-information">
-                            <!--
-                            <span class="application-label">
-                                <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/> Application déployée
-                            </span>
-                            <span class="version-label badge">
-                                <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/>1.0.2
-                            </span>
-                            <span class="application-branch badge">
-                                <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>master
-                            </span>
-                            <span class="application-commit badge">
-                                <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>0d581c59
-                            </span>-->
-                            <span class="muted">${%label_no_app}</span>
+                            <j:if test="${deployment != null}">
+                                <span class="application-label">
+                                    <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/> ${deployment.applicationName}
+                                </span>
+                                <span class="version-label badge">
+                                    <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/> ${deployment.applicationVersion}
+                                </span>
+                                <span class="application-branch badge">
+                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/> ${deployment.buildBranch}
+                                </span>
+                                <span class="application-commit badge">
+                                    <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/> ${deployment.buildCommit}
+                                </span>
+                            </j:if>
+                            <j:if test="${deployment == null}">
+                                <span class="muted">${%label_no_app}</span>
+                            </j:if>
                         </td>
                         <td class="deployment-information">
-                            <!--
-                            <span class="build-label">
-                                <l:icon class="icon-blue icon-sm"/>
-                                <a href="#">Nom du Job #45189</a>
-                            </span>
-                            <br/>
-                            <span class="build-date">
-                                <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/> 2022/10/11 15:30
-                            </span>-->
-                            <span class="muted">${%label_no_deployment}</span>
+                            <j:if test="${deployment != null}">
+                                <span class="build-label">
+                                    <l:icon class="${deployment.getBuildStatusClass()} icon-sm"/>
+                                    <a href="${deployment.buildURL}">${deployment.buildJob} #${deployment.buildNumber}</a>
+                                </span>
+                                <br/>
+                                <span class="build-date">
+                                    <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
+                                    ${it.formatDatetimeSec(deployment.timestamp)}
+                                </span>
+                            </j:if>
+                            <j:if test="${deployment == null}">
+                                <span class="muted">${%label_no_deployment}</span>
+                            </j:if>
                         </td>
                     </tr>
                 </j:forEach>

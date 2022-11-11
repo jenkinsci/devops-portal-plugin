@@ -207,7 +207,7 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable {
         @NonNull
         @Override
         public String getDisplayName() {
-            return Messages.ApplicationBuildStatus_DisplayName();
+            return Messages.BuildStatus_DisplayName();
         }
 
         public List<BuildStatus> getBuildStatus() {
@@ -233,6 +233,10 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable {
             updater.accept(status);
             status.setBuildTimestamp(Instant.now().getEpochSecond());
             save();
+        }
+
+        public boolean isApplicationExists(String applicationName) {
+            return getBuildStatus().stream().anyMatch(item -> applicationName.equals(item.getApplicationName()));
         }
 
     }

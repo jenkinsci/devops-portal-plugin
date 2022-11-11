@@ -17,10 +17,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A persistent record of an application service.
@@ -220,6 +217,13 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration>, 
             serviceConfigurations.clear();
             serviceConfigurations.addAll(services);
             save();
+        }
+
+        public Optional<ServiceConfiguration> getService(String labelOrId) {
+            return getServiceConfigurations()
+                    .stream()
+                    .filter(item -> item.getId().equals(labelOrId) || item.getLabel().equals(labelOrId))
+                    .findFirst();
         }
 
     }

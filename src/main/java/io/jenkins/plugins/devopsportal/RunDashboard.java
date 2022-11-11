@@ -78,6 +78,10 @@ public class RunDashboard extends View {
             return Jenkins.get().getDescriptorByType(ServiceMonitoring.DescriptorImpl.class);
         }
 
+        public ServiceOperation.DescriptorImpl getOperationDescriptor() {
+            return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
+        }
+
         public List<String> getConfigurationCategories() {
             return getServiceDescriptor().getServiceConfigurations().stream().map(ServiceConfiguration::getCategory)
                     .map(String::trim).distinct().sorted().collect(Collectors.toList());
@@ -89,8 +93,18 @@ public class RunDashboard extends View {
                     .sorted(Comparator.comparing(ServiceConfiguration::getLabel)).collect(Collectors.toList());
         }
 
-        public ServiceMonitoring getMonitoringByService(String id) {
-            return getMonitoringDescriptor().getMonitoringByService(id).orElse(new ServiceMonitoring(id));
+        public ServiceMonitoring getMonitoringByService(String serviceId) {
+            return getMonitoringDescriptor().getMonitoringByService(serviceId).orElse(new ServiceMonitoring(serviceId));
+        }
+
+        public ServiceOperation getLastDeploymentByService(String serviceId) {
+            return getOperationDescriptor()
+                    .getRunOperations()
+                    .stream()
+                    .filter(item -> serviceId.equals(item.getServiceId()))
+                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
+                    .min(Comparator.comparingLong(ServiceOperation::getTimestamp))
+                    .orElse(null);
         }
         
     }
