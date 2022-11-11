@@ -6,6 +6,9 @@
             width: 100%;
             border-collapse: collapse;
         }
+        .build-dashboard td {
+            vertical-align: middle;
+        }
         .build-dashboard .group-title th {
             text-align: left;
             padding: 1rem 0;
@@ -60,7 +63,7 @@
         .build-dashboard .deployment-environment {
             font-weight: bolder;
         }
-        .build-dashboard .build-information {
+        .build-dashboard .build-information, .build-dashboard .deployment-information {
             line-height: 1.3rem;
         }
         .muted {
@@ -71,6 +74,10 @@
             padding-top: 1rem;
             font-weight: bolder;
         }
+        .build-dashboard .actions {
+            padding-top: 10px;
+            text-align: right;
+        }
     </style>
     <h1>
         Build: ${it.displayName}
@@ -80,12 +87,12 @@
             <j:set var="applications" value="${it.descriptor.getApplicationNames(it.filter)}"/>
             <j:if test="${applications.isEmpty()}">
                 <tr>
-                    <td colspan="4">${%label_empty_list}</td>
+                    <td colspan="5">${%label_empty_list}</td>
                 </tr>
             </j:if>
             <j:forEach var="application" indexVar="i" items="${applications}">
                 <tr class="group-title">
-                    <th colspan="4"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${application}</th>
+                    <th colspan="5"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${application}</th>
                 </tr>
                 <j:if test="${i == 0}">
                     <tr class="group-headers">
@@ -94,6 +101,7 @@
                         <th></th>
                         <th>${%column_activity}</th>
                         <th>${%column_deployment}</th>
+                        <th width="0%"></th>
                     </tr>
                 </j:if>
                 <j:set var="versions" value="${it.descriptor.getApplicationVersions(application)}"/>
@@ -112,7 +120,7 @@
                             <br/>
                             <span class="build-date">
                                 <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
-                                ${it.formatDatetimeSec(build.buildTimestamp)}
+                                ${it.formatDatetimeSeconds(build.buildTimestamp)}
                             </span>
                         </td>
                         <td>
@@ -140,7 +148,7 @@
                                 <!--<span title="${%activity_uat}" class="${build.getActivityStatusClass('UAT')}"></span>-->
                             </div>
                         </td>
-                        <td>
+                        <td class="deployment-information">
                             <j:if test="${deployment != null}">
                                 <j:if test="${service != null}">
                                     <span class="deployment-environment">
@@ -153,17 +161,29 @@
                                         ${tag}
                                     </span>
                                 </j:forEach>
+                                <br/>
+                                <span class="build-date">
+                                    <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
+                                    ${it.formatDatetimeSeconds(deployment.timestamp)}
+                                </span>
                             </j:if>
                             <j:if test="${deployment == null}">
                                 <span class="muted">${%label_no_deployment}</span>
                             </j:if>
+                        </td>
+                        <td class="actions">
+                            <l:isAdmin>
+                                <a class="jenkins-button" href="?delete=${application}::${version}">
+                                    <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
+                                </a>
+                            </l:isAdmin>
                         </td>
                     </tr>
                 </j:forEach>
             </j:forEach>
             <tr>
                 <td colspan="3"></td>
-                <td colspan="2">
+                <td colspan="3">
                     <div class="activity-legend">
                         <span title="${%status_todo}" class="todo"></span> ${%status_todo}
                         <span title="${%status_done}" class="done"></span> ${%status_done}

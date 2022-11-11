@@ -6,6 +6,9 @@
             width: 100%;
             border-collapse: collapse;
         }
+        .run-dashboard td {
+            vertical-align: middle;
+        }
         .run-dashboard .group-title th {
             text-align: left;
             padding: 1rem 0;
@@ -109,8 +112,9 @@
                                     <l:icon class="symbol-caret-up-outline plugin-ionicons-api icon-sm status-up"/>
                                     Up
                                 </j:if>
-                                since
-                                ${it.formatDatetimeSec(monitoring.lastTimestamp)}
+                                <span title="${it.formatDatetimeSeconds(monitoring.sinceTimestamp)}">
+                                    ${it.formatUptime(monitoring.sinceTimestamp)}
+                                </span>
                             </span>
                             <j:if test="${monitoring.failure}">
                                 <br/>
@@ -135,12 +139,11 @@
                                 <span class="version-label badge">
                                     <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/> ${deployment.applicationVersion}
                                 </span>
-                                <span class="application-branch badge">
-                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/> ${deployment.buildBranch}
-                                </span>
-                                <span class="application-commit badge">
-                                    <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/> ${deployment.buildCommit}
-                                </span>
+                                <j:if test="${deployment.branchProvided}">
+                                    <span class="application-branch badge">
+                                        <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/> ${deployment.buildBranch}
+                                    </span>
+                                </j:if>
                             </j:if>
                             <j:if test="${deployment == null}">
                                 <span class="muted">${%label_no_app}</span>
@@ -155,7 +158,7 @@
                                 <br/>
                                 <span class="build-date">
                                     <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
-                                    ${it.formatDatetimeSec(deployment.timestamp)}
+                                    ${it.formatDatetimeSeconds(deployment.timestamp)}
                                 </span>
                             </j:if>
                             <j:if test="${deployment == null}">

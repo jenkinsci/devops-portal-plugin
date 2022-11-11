@@ -66,7 +66,7 @@ public class BuildDashboard extends View {
         this.filter = filter;
     }
 
-    public String formatDatetimeSec(long timestamp) {
+    public String formatDatetimeSeconds(long timestamp) {
         return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
     }
 

@@ -4,12 +4,14 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.*;
 import hudson.util.FormValidation;
+import io.jenkins.plugins.devopsportal.utils.TimeAgoUtils;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.*;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -66,9 +68,15 @@ public class RunDashboard extends View {
     public String formatDateMs(long timestamp) {
         return dateFormat.format(new java.util.Date(timestamp));
     }
-
-    public String formatDatetimeSec(long timestamp) {
+    public String formatDatetimeSeconds(long timestamp) {
         return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
+    }
+
+    public String formatUptime(long timestamp) {
+        if (timestamp <= 0) {
+            return Messages.TimeAgo_Never();
+        }
+        return TimeAgoUtils.toDuration((Instant.now().getEpochSecond() - timestamp) * 1000L);
     }
 
     @Extension

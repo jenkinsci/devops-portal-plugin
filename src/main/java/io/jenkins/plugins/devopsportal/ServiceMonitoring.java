@@ -130,6 +130,13 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         return Math.max(lastSuccessTimestamp, lastFailureTimestamp);
     }
 
+    public long getSinceTimestamp() {
+        if (isFailure()) {
+            return lastSuccessTimestamp;
+        }
+        return lastFailureTimestamp;
+    }
+
     public boolean isFailure() {
         return currentMonitoringStatus != MonitoringStatus.DISABLED
                 && currentMonitoringStatus != MonitoringStatus.SUCCESS;
@@ -225,7 +232,10 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         }
 
         public Optional<ServiceMonitoring> getMonitoringByService(String id) {
-            return servicesMonitoring.getView().stream().filter(item -> id.equals(item.getServiceId()))
+            return servicesMonitoring
+                    .getView()
+                    .stream()
+                    .filter(item -> id.equals(item.getServiceId()))
                     .max(Comparator.comparing(ServiceMonitoring::getLastTimestamp));
         }
 

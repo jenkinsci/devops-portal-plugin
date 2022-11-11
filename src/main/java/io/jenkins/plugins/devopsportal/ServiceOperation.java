@@ -162,6 +162,10 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
         }
     }
 
+    public boolean isBranchProvided() {
+        return buildBranch != null && !buildBranch.isEmpty();
+    }
+
     @Override
     public Descriptor<ServiceOperation> getDescriptor() {
         return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
