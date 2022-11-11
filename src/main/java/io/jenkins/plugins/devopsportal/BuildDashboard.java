@@ -10,6 +10,7 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +23,9 @@ import java.util.stream.Collectors;
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
 public class BuildDashboard extends View {
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(Messages.DateFormatter_Date());
+    private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(Messages.DateFormatter_DateTime());
 
     @DataBoundConstructor
     public BuildDashboard(String name) {
@@ -46,6 +50,10 @@ public class BuildDashboard extends View {
     @Override
     public Item doCreateItem(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         return null;
+    }
+
+    public String formatDatetimeSec(long timestamp) {
+        return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
     }
 
     @Extension

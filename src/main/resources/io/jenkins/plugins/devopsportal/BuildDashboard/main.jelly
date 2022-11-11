@@ -60,6 +60,9 @@
         .build-dashboard .deployment-environment {
             font-weight: bolder;
         }
+        .build-dashboard .build-information {
+            line-height: 1.3rem;
+        }
         .muted {
             font-size: 80%;
             color: #555;
@@ -79,6 +82,7 @@
                     <tr class="group-headers">
                         <th>${%column_version}</th>
                         <th>${%column_build}</th>
+                        <th></th>
                         <th>${%column_activity}</th>
                         <th>${%column_deployment}</th>
                     </tr>
@@ -90,12 +94,19 @@
                     <j:set var="service" value="${it.descriptor.getDeploymentService(deployment)}"/>
                     <tr class="version-entry">
                         <td class="version-label">${build.applicationVersion}</td>
-                        <td>
+                        <td class="build-information">
                             <span class="application-build">
                                 <a href="${build.buildURL}">
                                     <l:icon class="${build.getBuildStatusClass()} icon-sm"/>#${build.buildJob} #${build.buildNumber}
                                 </a>
                             </span>
+                            <br/>
+                            <span class="build-date">
+                                <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
+                                ${it.formatDatetimeSec(build.buildTimestamp)}
+                            </span>
+                        </td>
+                        <td>
                             <j:if test="build.buildBranchPresent">
                                 <span class="application-branch badge">
                                     <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>${build.buildBranch}
