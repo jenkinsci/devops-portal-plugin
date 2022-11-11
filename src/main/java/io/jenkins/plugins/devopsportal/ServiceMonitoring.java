@@ -130,6 +130,11 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         return Math.max(lastSuccessTimestamp, lastFailureTimestamp);
     }
 
+    public boolean isFailure() {
+        return currentMonitoringStatus != MonitoringStatus.DISABLED
+                && currentMonitoringStatus != MonitoringStatus.SUCCESS;
+    }
+
     @Override
     public Descriptor<ServiceMonitoring> getDescriptor() {
         return Jenkins.get().getDescriptorByType(ServiceMonitoring.DescriptorImpl.class);

@@ -101,7 +101,7 @@
                         <td class="build-information">
                             <span class="application-build">
                                 <a href="${build.buildURL}">
-                                    <l:icon class="${build.getBuildStatusClass()} icon-sm"/>#${build.buildJob} #${build.buildNumber}
+                                    <l:icon class="${build.getBuildStatusClass()} icon-sm"/>${build.buildJob} #${build.buildNumber}
                                 </a>
                             </span>
                             <br/>

@@ -5,6 +5,7 @@ import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.util.CopyOnWriteList;
+import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -13,6 +14,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -220,10 +222,36 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration>, 
         }
 
         public Optional<ServiceConfiguration> getService(String labelOrId) {
+            if (labelOrId == null || labelOrId.trim().isEmpty()) {
+                return Optional.empty();
+            }
             return getServiceConfigurations()
                     .stream()
-                    .filter(item -> item.getId().equals(labelOrId) || item.getLabel().equals(labelOrId))
+                    .filter(item -> item.getId().equals(labelOrId.trim()) || item.getLabel().equals(labelOrId.trim()))
                     .findFirst();
+        }
+
+        public FormValidation doCheckLabel(@QueryParameter String label, @QueryParameter String id) {
+            if (label == null || label.trim().isEmpty()) {
+                return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
+            }
+            ServiceConfiguration config = getService(id).orElse(null);
+            if (config != null) {
+                if (config.getLabel().equals(label)) {
+                    return FormValidation.ok();
+                }
+            }
+            if (getService(label).isPresent()) {
+                return FormValidation.error(Messages.FormValidation_Error_UniqueValueAlreadyExists());
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckDelayMonitoringMinutes(@QueryParameter int delayMonitoringMinutes) {
+            if (delayMonitoringMinutes <= 0) {
+                return FormValidation.error(Messages.FormValidation_Error_InvalidValue());
+            }
+            return FormValidation.ok();
         }
 
     }

@@ -22,7 +22,7 @@
         .run-dashboard .service-label {
             font-weight: bolder;
         }
-        .run-dashboard .host-information, .run-dashboard .deployment-information {
+        .run-dashboard .host-information, .run-dashboard .deployment-information, .run-dashboard .health-information {
             line-height: 1.3rem;
         }
         .run-dashboard .badge {
@@ -48,6 +48,19 @@
             color: #fff;
             font-weight: bolder;
         }
+        .run-dashboard .health-status {
+            text-align: center;
+        }
+        .run-dashboard .health-time .status-up {
+            color: green;
+        }
+        .run-dashboard .health-time .status-down {
+            color: red;
+        }
+        .run-dashboard .health-failure {
+            color: red;
+            font-size: 80%;
+        }
     </style>
 
     <h1>
@@ -58,12 +71,13 @@
             <j:set var="categories" value="${it.descriptor.getConfigurationCategories()}"/>
             <j:forEach var="category" indexVar="i" items="${categories}">
                 <tr class="group-title">
-                    <th colspan="5"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${category}</th>
+                    <th colspan="6"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${category}</th>
                 </tr>
                 <j:if test="${i == 0}">
                     <tr class="group-headers">
-                        <th width="0%">${%header_status}</th>
+                        <th width="0%"></th>
                         <th>${%header_service}</th>
+                        <th>${%header_health}</th>
                         <th>${%header_host}</th>
                         <th>${%header_application}</th>
                         <th>${%header_deployment}</th>
@@ -74,11 +88,29 @@
                     <j:set var="monitoring" value="${it.descriptor.getMonitoringByService(service.id)}"/>
                     <j:set var="deployment" value="${it.descriptor.getLastDeploymentByService(service.id)}"/>
                     <tr class="service-entry" category="${category}">
-                        <td style="text-align:center">
+                        <td class="health-status">
                             <l:icon class="${monitoring.icon} icon-md"/>
                         </td>
                         <td>
                             <span class="service-label">${service.label}</span>
+                        </td>
+                        <td class="health-information">
+                            <span class="health-time">
+                                <j:if test="${monitoring.failure}">
+                                    <l:icon class="symbol-caret-down-outline plugin-ionicons-api icon-sm status-down"/>
+                                    Down
+                                </j:if>
+                                <j:if test="${!monitoring.failure}">
+                                    <l:icon class="symbol-caret-up-outline plugin-ionicons-api icon-sm status-up"/>
+                                    Up
+                                </j:if>
+                                since
+                                ${it.formatDatetimeSec(monitoring.lastTimestamp)}
+                            </span>
+                            <j:if test="${monitoring.failure}">
+                                <br/>
+                                <span class="health-failure">${monitoring.lastFailureReason}</span>
+                            </j:if>
                         </td>
                         <td class="host-information">
                             <span class="host-label">${service.hostname}</span>

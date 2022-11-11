@@ -3,8 +3,10 @@ package io.jenkins.plugins.devopsportal;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.*;
+import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -15,6 +17,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 /**
@@ -124,6 +128,18 @@ public class BuildDashboard extends View {
                 return getServiceConfigurationDescriptor().getService(operation.getServiceId()).orElse(null);
             }
             return null;
+        }
+
+        public FormValidation doCheckFilter(@QueryParameter String filter) {
+            if (filter != null && !filter.isEmpty()) {
+                try {
+                    Pattern.compile(filter);
+                }
+                catch (PatternSyntaxException pse) {
+                    return FormValidation.error(pse.getMessage());
+                }
+            }
+            return FormValidation.ok();
         }
 
     }
