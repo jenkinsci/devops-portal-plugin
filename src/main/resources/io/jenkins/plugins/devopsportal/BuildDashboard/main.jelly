@@ -77,7 +77,12 @@
     </h1>
     <table class="build-dashboard">
         <tbody>
-            <j:set var="applications" value="${it.descriptor.getApplicationNames()}"/>
+            <j:set var="applications" value="${it.descriptor.getApplicationNames(it.filter)}"/>
+            <j:if test="${applications.isEmpty()}">
+                <tr>
+                    <td colspan="4">${%label_empty_list}</td>
+                </tr>
+            </j:if>
             <j:forEach var="application" indexVar="i" items="${applications}">
                 <tr class="group-title">
                     <th colspan="4"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${application}</th>
@@ -124,15 +129,15 @@
                         </td>
                         <td>
                             <div class="activity-steps">
-                                <span title="${%activity_int}" class="${build.getActivityStatusClass('INTEGRATION')}"></span>
+                                <!--<span title="${%activity_int}" class="${build.getActivityStatusClass('INTEGRATION')}"></span>-->
                                 <span title="${%activity_build}" class="${build.getActivityStatusClass('BUILD')}"></span>
                                 <span title="${%activity_ut}" class="${build.getActivityStatusClass('UT')}"></span>
                                 <span title="${%activity_qa}" class="${build.getActivityStatusClass('QA')}"></span>
                                 <span title="${%activity_secu}" class="${build.getActivityStatusClass('SECU')}"></span>
                                 <span title="${%activity_deploy}" class="${build.getActivityStatusClass('DEPLOY')}"></span>
                                 <span title="${%activity_perf}" class="${build.getActivityStatusClass('PERF')}"></span>
-                                <span title="${%activity_qualif}" class="${build.getActivityStatusClass('QUALIF')}"></span>
-                                <span title="${%activity_uat}" class="${build.getActivityStatusClass('UAT')}"></span>
+                                <!--<span title="${%activity_qualif}" class="${build.getActivityStatusClass('QUALIF')}"></span>-->
+                                <!--<span title="${%activity_uat}" class="${build.getActivityStatusClass('UAT')}"></span>-->
                             </div>
                         </td>
                         <td>

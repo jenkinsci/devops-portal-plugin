@@ -68,7 +68,12 @@
     </h1>
     <table class="run-dashboard">
         <tbody>
-            <j:set var="categories" value="${it.descriptor.getConfigurationCategories()}"/>
+            <j:set var="categories" value="${it.descriptor.getConfigurationCategories(it.filter)}"/>
+            <j:if test="${categories.isEmpty()}">
+                <tr>
+                    <td colspan="6">${%label_empty_list}</td>
+                </tr>
+            </j:if>
             <j:forEach var="category" indexVar="i" items="${categories}">
                 <tr class="group-title">
                     <th colspan="6"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${category}</th>

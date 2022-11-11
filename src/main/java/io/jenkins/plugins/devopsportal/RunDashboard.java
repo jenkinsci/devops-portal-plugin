@@ -5,10 +5,7 @@ import hudson.Extension;
 import hudson.model.*;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.*;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -17,6 +14,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Type of view displaying information on application deployments and the status of monitored services.
@@ -27,6 +25,8 @@ public class RunDashboard extends View {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(Messages.DateFormatter_Date());
     private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(Messages.DateFormatter_DateTime());
+
+    private String filter = "";
 
     @DataBoundConstructor
     public RunDashboard(String name) {
@@ -46,11 +46,21 @@ public class RunDashboard extends View {
 
     @Override
     protected void submit(StaplerRequest req) throws IOException, ServletException, Descriptor.FormException {
+        this.filter = req.getParameter("filter");
     }
 
     @Override
     public Item doCreateItem(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         return null;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    @DataBoundSetter
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     public String formatDateMs(long timestamp) {
@@ -86,15 +96,31 @@ public class RunDashboard extends View {
             return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
         }
 
-        public List<String> getConfigurationCategories() {
-            return getServiceDescriptor().getServiceConfigurations().stream().map(ServiceConfiguration::getCategory)
-                    .map(String::trim).distinct().sorted().collect(Collectors.toList());
+        public List<String> getConfigurationCategories(String filter) {
+            Stream<String> stream = getServiceDescriptor()
+                    .getServiceConfigurations()
+                    .stream().map(ServiceConfiguration::getCategory)
+                    .map(String::trim)
+                    .filter(category -> !category.isEmpty())
+                    .distinct()
+                    .sorted();
+            if (filter != null && !filter.isEmpty()) {
+                try {
+                    Pattern pattern = Pattern.compile(filter);
+                    stream = stream.filter(category -> pattern.matcher(category).matches());
+                }
+                catch (PatternSyntaxException ignored) { }
+            }
+            return stream.collect(Collectors.toList());
         }
 
         public List<ServiceConfiguration> getConfigurationsByCategory(@NonNull String category) {
-            return getServiceDescriptor().getServiceConfigurations().stream()
+            return getServiceDescriptor()
+                    .getServiceConfigurations()
+                    .stream()
                     .filter(item -> category.trim().equals(item.getCategory().trim()))
-                    .sorted(Comparator.comparing(ServiceConfiguration::getLabel)).collect(Collectors.toList());
+                    .sorted(Comparator.comparing(ServiceConfiguration::getLabel))
+                    .collect(Collectors.toList());
         }
 
         public ServiceMonitoring getMonitoringByService(String serviceId) {

@@ -5,10 +5,7 @@ import hudson.Extension;
 import hudson.model.*;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.*;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -20,6 +17,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Type of view displaying information on the progress of the various versions of the software developed.
@@ -30,6 +28,8 @@ public class BuildDashboard extends View {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(Messages.DateFormatter_Date());
     private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(Messages.DateFormatter_DateTime());
+
+    private String filter = "";
 
     @DataBoundConstructor
     public BuildDashboard(String name) {
@@ -49,11 +49,21 @@ public class BuildDashboard extends View {
 
     @Override
     protected void submit(StaplerRequest req) throws IOException, ServletException, Descriptor.FormException {
+        this.filter = req.getParameter("filter");
     }
 
     @Override
     public Item doCreateItem(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         return null;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    @DataBoundSetter
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     public String formatDatetimeSec(long timestamp) {
@@ -85,15 +95,23 @@ public class BuildDashboard extends View {
             return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
         }
 
-        public List<String> getApplicationNames() {
-            return getBuildStatusDescriptor()
+        public List<String> getApplicationNames(String filter) {
+            Stream<String> stream = getBuildStatusDescriptor()
                     .getBuildStatus()
                     .stream()
                     .map(BuildStatus::getApplicationName)
                     .map(String::trim)
+                    .filter(name -> !name.isEmpty())
                     .distinct()
-                    .sorted()
-                    .collect(Collectors.toList());
+                    .sorted();
+            if (filter != null && !filter.isEmpty()) {
+                try {
+                    Pattern pattern = Pattern.compile(filter);
+                    stream = stream.filter(name -> pattern.matcher(name).matches());
+                }
+                catch (PatternSyntaxException ignored) { }
+            }
+            return stream.collect(Collectors.toList());
         }
 
         public List<String> getApplicationVersions(String applicationName) {
