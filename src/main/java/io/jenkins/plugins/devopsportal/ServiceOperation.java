@@ -16,10 +16,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -244,6 +241,23 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
             runOperations.add(record);
             updater.accept(record);
             save();
+        }
+
+        public Optional<ServiceOperation> getLastDeploymentByService(String serviceId) {
+            return getRunOperations()
+                    .stream()
+                    .filter(item -> serviceId.equals(item.getServiceId()))
+                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
+                    .max(Comparator.comparingLong(ServiceOperation::getTimestamp));
+        }
+
+        public Optional<ServiceOperation> getLastDeploymentByApplication(String applicationName, String applicationVersion) {
+            return getRunOperations()
+                    .stream()
+                    .filter(item -> item.getApplicationName().equals(applicationName))
+                    .filter(item -> item.getApplicationVersion().equals(applicationVersion))
+                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
+                    .max(Comparator.comparingLong(ServiceOperation::getTimestamp));
         }
 
     }

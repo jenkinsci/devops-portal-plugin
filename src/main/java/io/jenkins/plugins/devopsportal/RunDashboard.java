@@ -98,13 +98,7 @@ public class RunDashboard extends View {
         }
 
         public ServiceOperation getLastDeploymentByService(String serviceId) {
-            return getOperationDescriptor()
-                    .getRunOperations()
-                    .stream()
-                    .filter(item -> serviceId.equals(item.getServiceId()))
-                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
-                    .min(Comparator.comparingLong(ServiceOperation::getTimestamp))
-                    .orElse(null);
+            return getOperationDescriptor().getLastDeploymentByService(serviceId).orElse(null);
         }
         
     }

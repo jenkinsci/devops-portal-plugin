@@ -57,6 +57,9 @@
         .build-dashboard .application-build .build-status-icon__wrapper {
             margin-right: 5px;
         }
+        .build-dashboard .deployment-environment {
+            font-weight: bolder;
+        }
         .muted {
             font-size: 80%;
             color: #555;
@@ -82,49 +85,58 @@
                 </j:if>
                 <j:set var="versions" value="${it.descriptor.getApplicationVersions(application)}"/>
                 <j:forEach var="version" indexVar="i" items="${versions}">
-                    <j:set var="status" value="${it.descriptor.getApplicationVersion(application, version)}"/>
+                    <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
+                    <j:set var="deployment" value="${it.descriptor.getLastDeploymentByApplication(application, version)}"/>
+                    <j:set var="service" value="${it.descriptor.getDeploymentService(deployment)}"/>
                     <tr class="version-entry">
-                        <td class="version-label">${status.applicationVersion}</td>
+                        <td class="version-label">${build.applicationVersion}</td>
                         <td>
-                            <span class="application-build badge">
-                                <a href="${status.buildURL}">
-                                    <l:icon class="${status.getBuildStatusClass()} icon-sm"/>#${status.buildNumber}
+                            <span class="application-build">
+                                <a href="${build.buildURL}">
+                                    <l:icon class="${build.getBuildStatusClass()} icon-sm"/>#${build.buildJob} #${build.buildNumber}
                                 </a>
                             </span>
-                            <j:if test="status.buildBranchPresent">
+                            <j:if test="build.buildBranchPresent">
                                 <span class="application-branch badge">
-                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>${status.buildBranch}
+                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>${build.buildBranch}
                                 </span>
                             </j:if>
-                            <j:if test="status.buildCommitPresent">
+                            <j:if test="build.buildCommitPresent">
                                 <span class="application-commit badge">
-                                    <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>${status.buildCommit}
+                                    <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>${build.buildCommit}
                                 </span>
                             </j:if>
                         </td>
                         <td>
                             <div class="activity-steps">
-                                <span title="${%activity_int}" class="${status.getActivityStatusClass('INTEGRATION')}"></span>
-                                <span title="${%activity_build}" class="${status.getActivityStatusClass('BUILD')}"></span>
-                                <span title="${%activity_ut}" class="${status.getActivityStatusClass('UT')}"></span>
-                                <span title="${%activity_qa}" class="${status.getActivityStatusClass('QA')}"></span>
-                                <span title="${%activity_secu}" class="${status.getActivityStatusClass('SECU')}"></span>
-                                <span title="${%activity_deploy}" class="${status.getActivityStatusClass('DEPLOY')}"></span>
-                                <span title="${%activity_perf}" class="${status.getActivityStatusClass('PERF')}"></span>
-                                <span title="${%activity_qualif}" class="${status.getActivityStatusClass('QUALIF')}"></span>
-                                <span title="${%activity_uat}" class="${status.getActivityStatusClass('UAT')}"></span>
+                                <span title="${%activity_int}" class="${build.getActivityStatusClass('INTEGRATION')}"></span>
+                                <span title="${%activity_build}" class="${build.getActivityStatusClass('BUILD')}"></span>
+                                <span title="${%activity_ut}" class="${build.getActivityStatusClass('UT')}"></span>
+                                <span title="${%activity_qa}" class="${build.getActivityStatusClass('QA')}"></span>
+                                <span title="${%activity_secu}" class="${build.getActivityStatusClass('SECU')}"></span>
+                                <span title="${%activity_deploy}" class="${build.getActivityStatusClass('DEPLOY')}"></span>
+                                <span title="${%activity_perf}" class="${build.getActivityStatusClass('PERF')}"></span>
+                                <span title="${%activity_qualif}" class="${build.getActivityStatusClass('QUALIF')}"></span>
+                                <span title="${%activity_uat}" class="${build.getActivityStatusClass('UAT')}"></span>
                             </div>
                         </td>
                         <td>
-                            <!--
-                            <span class="deployment-environment">
-                                <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>production
-                            </span>
-                            <span class="deployment-tag badge">
-                                ansible
-                            </span>
-                            -->
-                            <span class="muted">${%label_no_deployment}</span>
+                            <j:if test="${deployment != null}">
+                                <j:if test="${service != null}">
+                                    <span class="deployment-environment">
+                                        <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>
+                                        ${service.category}
+                                    </span>
+                                </j:if>
+                                <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
+                                    <span class="deployment-tag badge">
+                                        ${tag}
+                                    </span>
+                                </j:forEach>
+                            </j:if>
+                            <j:if test="${deployment == null}">
+                                <span class="muted">${%label_no_deployment}</span>
+                            </j:if>
                         </td>
                     </tr>
                 </j:forEach>

@@ -61,8 +61,16 @@ public class BuildDashboard extends View {
             return Messages.BuildDashboard_DisplayName();
         }
 
+        public ServiceConfiguration.DescriptorImpl getServiceConfigurationDescriptor() {
+            return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
+        }
+
         public BuildStatus.DescriptorImpl getBuildStatusDescriptor() {
             return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
+        }
+
+        public ServiceOperation.DescriptorImpl getServiceOperationDescriptor() {
+            return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
         }
 
         public List<String> getApplicationNames() {
@@ -88,7 +96,7 @@ public class BuildDashboard extends View {
                     .collect(Collectors.toList());
         }
 
-        public BuildStatus getApplicationVersion(String applicationName, String applicationVersion) {
+        public BuildStatus getApplicationBuild(String applicationName, String applicationVersion) {
             return getBuildStatusDescriptor()
                     .getBuildStatus()
                     .stream()
@@ -96,6 +104,18 @@ public class BuildDashboard extends View {
                     .filter(item -> applicationVersion.trim().equals(item.getApplicationVersion()))
                     .findFirst()
                     .orElse(null);
+        }
+
+        public ServiceOperation getLastDeploymentByApplication(String applicationName, String applicationVersion) {
+            return getServiceOperationDescriptor()
+                    .getLastDeploymentByApplication(applicationName, applicationVersion).orElse(null);
+        }
+
+        public ServiceConfiguration getDeploymentService(ServiceOperation operation) {
+            if (operation != null) {
+                return getServiceConfigurationDescriptor().getService(operation.getServiceId()).orElse(null);
+            }
+            return null;
         }
 
     }
