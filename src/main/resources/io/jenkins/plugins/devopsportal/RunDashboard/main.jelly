@@ -79,7 +79,6 @@
                         </td>
                         <td>
                             <span class="service-label">${service.label}</span>
-                            <span class="badge service-category">${service.category}</span>
                         </td>
                         <td class="host-information">
                             <span class="host-label">${service.hostname}</span>

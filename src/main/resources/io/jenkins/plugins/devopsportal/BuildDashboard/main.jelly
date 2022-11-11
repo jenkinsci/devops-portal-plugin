@@ -67,6 +67,10 @@
             font-size: 80%;
             color: #555;
         }
+        .build-dashboard .activity-legend {
+            padding-top: 1rem;
+            font-weight: bolder;
+        }
     </style>
     <h1>
         Build: ${it.displayName}
@@ -152,6 +156,17 @@
                     </tr>
                 </j:forEach>
             </j:forEach>
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="2">
+                    <div class="activity-legend">
+                        <span title="${%status_todo}" class="todo"></span> ${%status_todo}
+                        <span title="${%status_done}" class="done"></span> ${%status_done}
+                        <span title="${%status_unstable}" class="unstable"></span> ${%status_unstable}
+                        <span title="${%status_fail}" class="fail"></span> ${%status_fail}
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 
