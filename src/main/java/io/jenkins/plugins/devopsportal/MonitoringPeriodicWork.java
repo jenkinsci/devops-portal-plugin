@@ -92,29 +92,27 @@ public class MonitoringPeriodicWork extends AsyncPeriodicWork {
                 record.setFailureCount(0);
             }
             else {
-                record.setCurrentMonitoringStatus(MonitoringStatus.FAILURE);
-                record.setLastFailureTimestamp(Instant.now().getEpochSecond());
-                record.setLastFailureReason("HTTP Status: " + httpStatus);
-                record.addFailureCount();
+                final String message = Messages.ServiceMonitoring_Error_InvalidHttpResponse()
+                    .replace("%status%", "" + httpStatus);
+                record.setFailure(MonitoringStatus.FAILURE, message);
             }
         }
         catch (MalformedURLException ex) {
-            record.setCurrentMonitoringStatus(MonitoringStatus.INVALID_CONFIGURATION);
-            record.setLastFailureTimestamp(Instant.now().getEpochSecond());
-            record.setLastFailureReason("Malformed URL");
-            record.addFailureCount();
+            final String message = Messages.ServiceMonitoring_Error_InvalidConfigurationURL()
+                .replace("%url%", service.getUrl());
+            record.setFailure(MonitoringStatus.INVALID_CONFIGURATION, message);
         }
         catch (SSLHandshakeException ex) {
-            record.setCurrentMonitoringStatus(MonitoringStatus.INVALID_HTTPS);
-            record.setLastFailureTimestamp(Instant.now().getEpochSecond());
-            record.setLastFailureReason("Invalid HTTPS configuration");
-            record.addFailureCount();
+            final String message = Messages.ServiceMonitoring_Error_InvalidConfigurationURL()
+                    .replace("%exception%", ex.getClass().getSimpleName())
+                    .replace("%message%", ex.getMessage());
+            record.setFailure(MonitoringStatus.INVALID_HTTPS, message);
         }
         catch (Exception ex) {
-            record.setCurrentMonitoringStatus(MonitoringStatus.FAILURE);
-            record.setLastFailureTimestamp(Instant.now().getEpochSecond());
-            record.setLastFailureReason(ex.getMessage());
-            record.addFailureCount();
+            final String message = Messages.ServiceMonitoring_Error_OtherException()
+                    .replace("%exception%", ex.getClass().getSimpleName())
+                    .replace("%message%", ex.getMessage());
+            record.setFailure(MonitoringStatus.FAILURE, message);
         }
     }
 

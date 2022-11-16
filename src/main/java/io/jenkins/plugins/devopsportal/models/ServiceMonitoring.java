@@ -206,6 +206,15 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         return getLastCertificateCheckTimestamp() + 3600L <= Instant.now().getEpochSecond();
     }
 
+    public void setFailure(MonitoringStatus status, String message) {
+        if (status != null) {
+            setCurrentMonitoringStatus(status);
+            setLastFailureTimestamp(Instant.now().getEpochSecond());
+            setLastFailureReason(message);
+            addFailureCount();
+        }
+    }
+
     @Extension
     public static final class DescriptorImpl extends Descriptor<ServiceMonitoring> implements Serializable {
 
