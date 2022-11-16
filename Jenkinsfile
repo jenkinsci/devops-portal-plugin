@@ -73,6 +73,21 @@ pipeline {
             }
         }
 
+        stage('Release') {
+            steps {
+                script {
+                    reportImageRelease(
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION,
+                        applicationComponent: "plugin",
+                        registryName: "registry.mydomain.com",
+                        imageName: env.APPLICATION_NAME,
+                        tags: [ "latest", env.APPLICATION_VERSION ]
+                    )
+                }
+            }
+        }
+
     }
 
 }
