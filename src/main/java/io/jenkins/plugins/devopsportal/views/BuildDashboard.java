@@ -1,9 +1,11 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.views;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.*;
 import hudson.util.FormValidation;
+import io.jenkins.plugins.devopsportal.Messages;
+import io.jenkins.plugins.devopsportal.models.*;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.*;
 
@@ -26,8 +28,8 @@ import java.util.stream.Stream;
  */
 public class BuildDashboard extends View {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(Messages.DateFormatter_Date());
-    private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(Messages.DateFormatter_DateTime());
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_Date());
+    private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
 
     private String filter = "";
 
@@ -136,12 +138,16 @@ public class BuildDashboard extends View {
                     .orElse(null);
         }
 
+        public List<AbstractActivity> getBuildActivities(BuildStatus build, String category) {
+            return build.getActivitiesByCategory(ActivityCategory.valueOf(category));
+        }
+
         public ServiceOperation getLastDeploymentByApplication(String applicationName, String applicationVersion) {
             return getServiceOperationDescriptor()
                     .getLastDeploymentByApplication(applicationName, applicationVersion).orElse(null);
         }
 
-        public ServiceConfiguration getDeploymentService(ServiceOperation operation) {
+        public ServiceConfiguration getDeploymentTarget(ServiceOperation operation) {
             if (operation != null) {
                 return getServiceConfigurationDescriptor().getService(operation.getServiceId()).orElse(null);
             }

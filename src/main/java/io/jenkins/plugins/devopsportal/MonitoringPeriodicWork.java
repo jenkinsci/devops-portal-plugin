@@ -3,6 +3,8 @@ package io.jenkins.plugins.devopsportal;
 import hudson.Extension;
 import hudson.model.AsyncPeriodicWork;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
+import io.jenkins.plugins.devopsportal.models.ServiceMonitoring;
 import jenkins.model.Jenkins;
 import nl.altindag.ssl.util.CertificateUtils;
 import org.apache.http.HttpResponse;

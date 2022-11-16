@@ -1,9 +1,13 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.views;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.*;
 import hudson.util.FormValidation;
+import io.jenkins.plugins.devopsportal.Messages;
+import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
+import io.jenkins.plugins.devopsportal.models.ServiceMonitoring;
+import io.jenkins.plugins.devopsportal.models.ServiceOperation;
 import io.jenkins.plugins.devopsportal.utils.TimeAgoUtils;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.*;
@@ -25,8 +29,8 @@ import java.util.stream.Stream;
  */
 public class RunDashboard extends View {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(Messages.DateFormatter_Date());
-    private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(Messages.DateFormatter_DateTime());
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_Date());
+    private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
 
     private String filter = "";
 
@@ -74,7 +78,7 @@ public class RunDashboard extends View {
 
     public String formatUptime(long timestamp) {
         if (timestamp <= 0) {
-            return Messages.TimeAgo_Never();
+            return io.jenkins.plugins.devopsportal.Messages.TimeAgo_Never();
         }
         return TimeAgoUtils.toDuration((Instant.now().getEpochSecond() - timestamp) * 1000L);
     }

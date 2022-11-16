@@ -105,10 +105,10 @@
                     </tr>
                 </j:if>
                 <j:set var="versions" value="${it.descriptor.getApplicationVersions(application)}"/>
-                <j:forEach var="version" indexVar="i" items="${versions}">
+                <j:forEach var="version" indexVar="j" items="${versions}">
                     <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
                     <j:set var="deployment" value="${it.descriptor.getLastDeploymentByApplication(application, version)}"/>
-                    <j:set var="service" value="${it.descriptor.getDeploymentService(deployment)}"/>
+                    <j:set var="target" value="${it.descriptor.getDeploymentTarget(deployment)}"/>
                     <tr class="version-entry">
                         <td class="version-label">${build.applicationVersion}</td>
                         <td class="build-information">
@@ -137,23 +137,20 @@
                         </td>
                         <td>
                             <div class="activity-steps">
-                                <!--<span title="${%activity_int}" class="${build.getActivityStatusClass('INTEGRATION')}"></span>-->
-                                <span title="${%activity_build}" class="${build.getActivityStatusClass('BUILD')}"></span>
-                                <span title="${%activity_ut}" class="${build.getActivityStatusClass('UT')}"></span>
-                                <span title="${%activity_qa}" class="${build.getActivityStatusClass('QA')}"></span>
-                                <span title="${%activity_secu}" class="${build.getActivityStatusClass('SECU')}"></span>
-                                <span title="${%activity_deploy}" class="${build.getActivityStatusClass('DEPLOY')}"></span>
-                                <span title="${%activity_perf}" class="${build.getActivityStatusClass('PERF')}"></span>
-                                <!--<span title="${%activity_qualif}" class="${build.getActivityStatusClass('QUALIF')}"></span>-->
-                                <!--<span title="${%activity_uat}" class="${build.getActivityStatusClass('UAT')}"></span>-->
+                                <j:set var="activities" value="${it.descriptor.getBuildActivities(build, 'BUILD')}"/>
+                                <j:forEach var="activity" indexVar="k" items="${activities}">
+                                    ${activity.category}
+                                    ${activity.timestamp}
+                                    ${activity.artifactFileName}
+                                </j:forEach>
                             </div>
                         </td>
                         <td class="deployment-information">
                             <j:if test="${deployment != null}">
-                                <j:if test="${service != null}">
+                                <j:if test="${target != null}">
                                     <span class="deployment-environment">
                                         <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>
-                                        ${service.category}
+                                        ${target.category}
                                     </span>
                                 </j:if>
                                 <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
@@ -181,19 +178,7 @@
                     </tr>
                 </j:forEach>
             </j:forEach>
-            <tr>
-                <td colspan="3"></td>
-                <td colspan="3">
-                    <div class="activity-legend">
-                        <span title="${%status_todo}" class="todo"></span> ${%status_todo}
-                        <span title="${%status_done}" class="done"></span> ${%status_done}
-                        <span title="${%status_unstable}" class="unstable"></span> ${%status_unstable}
-                        <span title="${%status_fail}" class="fail"></span> ${%status_fail}
-                    </div>
-                </td>
-            </tr>
         </tbody>
     </table>
-
 
 </j:jelly>

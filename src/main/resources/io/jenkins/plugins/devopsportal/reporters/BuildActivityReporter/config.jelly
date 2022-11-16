@@ -7,13 +7,15 @@
     <f:entry title="${%ApplicationVersion_Label}" field="applicationVersion">
         <f:textbox />
     </f:entry>
-    <f:entry title="${%Activity_Label}" field="activity">
-        <f:select>
-        </f:select>
+    <f:entry title="${%ApplicationComponent_Label}" field="applicationComponent">
+        <f:textbox />
     </f:entry>
-    <f:entry title="${%Status_Label}" field="status" description="${%Status_Desc}">
-        <f:select>
-        </f:select>
+
+    <f:entry title="${%ArtifactFileName_Label}" field="artifactFileName">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="${%DependenciesToUpdate_Label}" field="dependenciesToUpdate">
+        <f:number />
     </f:entry>
 
 </j:jelly>

@@ -1,4 +1,4 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.models;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
@@ -6,6 +6,7 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Run;
 import hudson.util.CopyOnWriteList;
+import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.utils.JenkinsUtils;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -37,13 +38,24 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable {
     private String buildCommit;
     private long buildTimestamp; // seconds
 
-    private final Map<BuildActivities, BuildActivityStatus> activitiesStatus;
+    /*private final List<BuildActivity> buildActivities;
+    private final List<UnitTestActivity> unitTestActivities;
+    private final List<QualityAuditActivity> qualityAuditActivities;
+    private final List<PerformanceTestActivity> performanceTestActivities;
+    private final List<ImageReleaseActivity> imageReleaseActivities;*/
+
+    private final Map<ActivityCategory, List<AbstractActivity>> activities;
 
     @DataBoundConstructor
     public BuildStatus() {
-        activitiesStatus = new HashMap<>();
-        for (BuildActivities activity : BuildActivities.values()) {
-            activitiesStatus.put(activity, BuildActivityStatus.getDefault());
+        /*this.buildActivities = new ArrayList<>();
+        this.unitTestActivities = new ArrayList<>();
+        this.qualityAuditActivities = new ArrayList<>();
+        this.performanceTestActivities = new ArrayList<>();
+        this.imageReleaseActivities = new ArrayList<>();*/
+        activities = new HashMap<>();
+        for (ActivityCategory category : ActivityCategory.values()) {
+            activities.put(category, new ArrayList<>());
         }
     }
 
@@ -119,10 +131,62 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable {
         this.buildTimestamp = buildTimestamp;
     }
 
-    public Map<BuildActivities, BuildActivityStatus> getActivitiesStatus() {
-        return activitiesStatus;
+    public Map<ActivityCategory, List<AbstractActivity>> getActivities() {
+        return activities;
     }
 
+    /*
+        public List<BuildActivity> getBuildActivities() {
+            return buildActivities;
+        }
+
+        public void addBuildActivity(BuildActivity buildActivity) {
+            if (buildActivity != null) {
+                this.buildActivities.add(buildActivity);
+            }
+        }
+
+        public List<UnitTestActivity> getUnitTestActivities() {
+            return unitTestActivities;
+        }
+
+        public void addUnitTestActivity(UnitTestActivity unitTestActivity) {
+            if (unitTestActivity != null) {
+                this.unitTestActivities.add(unitTestActivity);
+            }
+        }
+
+        public List<QualityAuditActivity> getQualityAuditActivities() {
+            return qualityAuditActivities;
+        }
+
+        public void addQualityAuditActivity(QualityAuditActivity qualityAuditActivity) {
+            if (qualityAuditActivity != null) {
+                this.qualityAuditActivities.add(qualityAuditActivity);
+            }
+        }
+
+        public List<PerformanceTestActivity> getPerformanceTestActivities() {
+            return performanceTestActivities;
+        }
+
+        public void addPerformanceTestActivity(PerformanceTestActivity performanceTestActivity) {
+            if (performanceTestActivity != null) {
+                this.performanceTestActivities.add(performanceTestActivity);
+            }
+        }
+
+        public List<ImageReleaseActivity> getImageReleaseActivities() {
+            return imageReleaseActivities;
+        }
+
+        @DataBoundSetter
+        public void addImageReleaseActivity(ImageReleaseActivity imageReleaseActivity) {
+            if (imageReleaseActivity != null) {
+                this.imageReleaseActivities.add(imageReleaseActivity);
+            }
+        }
+    */
     public boolean isBuildBranchPresent() {
         return buildBranch != null && !buildBranch.isEmpty();
     }
@@ -174,24 +238,37 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable {
                 .toString();
     }
 
-    public void setActivityStatus(@NonNull BuildActivities activity, @NonNull BuildActivityStatus status) {
-        activitiesStatus.put(activity, status);
-    }
-
-    public BuildActivityStatus getActivityStatus(BuildActivities activity) {
-        return activitiesStatus.getOrDefault(activity, BuildActivityStatus.getDefault());
-    }
-
-    public String getActivityStatusClass(String activity) {
-        return getActivityStatus(BuildActivities.valueOf(activity)).name().toLowerCase();
-    }
-
     public String getBuildStatusClass() {
         Run<?, ?> job = JenkinsUtils.getBuild(buildJob, buildBranch, buildNumber).orElse(null);
         if (job != null) {
             return job.getBuildStatusIconClassName();
         }
         return "icon-disabled";
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AbstractActivity> void updateActivity(String applicationComponent, ActivityCategory category, Consumer<T> updater) {
+        T activity = (T) activities.getOrDefault(category, new ArrayList<>())
+                .stream()
+                .filter(item -> item.getApplicationComponent().equals(applicationComponent))
+                .findFirst()
+                .orElse(null);
+        if (activity == null) {
+            try {
+                assert category.getClazz() != null;
+                activity = (T) category.getClazz().getConstructor(String.class).newInstance(applicationComponent);
+                activities.get(category).add(activity);
+                updater.accept(activity);
+                getDescriptor().save();
+            }
+            catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public List<AbstractActivity> getActivitiesByCategory(ActivityCategory category) {
+        return this.activities.get(category);
     }
 
     @Extension

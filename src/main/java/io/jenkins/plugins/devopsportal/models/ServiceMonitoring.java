@@ -1,10 +1,12 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.models;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.util.CopyOnWriteList;
+import io.jenkins.plugins.devopsportal.Messages;
+import io.jenkins.plugins.devopsportal.MonitoringStatus;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;

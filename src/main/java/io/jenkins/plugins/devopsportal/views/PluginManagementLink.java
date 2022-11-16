@@ -1,9 +1,11 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.views;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.ManagementLink;
+import io.jenkins.plugins.devopsportal.Messages;
+import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest;

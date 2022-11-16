@@ -1,4 +1,4 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.reporters;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
@@ -12,6 +12,11 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.devopsportal.Messages;
+import io.jenkins.plugins.devopsportal.RunOperations;
+import io.jenkins.plugins.devopsportal.models.BuildStatus;
+import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
+import io.jenkins.plugins.devopsportal.models.ServiceOperation;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;

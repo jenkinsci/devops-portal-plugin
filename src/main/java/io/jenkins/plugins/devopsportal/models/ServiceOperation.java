@@ -1,4 +1,4 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.models;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
@@ -6,6 +6,8 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Run;
 import hudson.util.CopyOnWriteList;
+import io.jenkins.plugins.devopsportal.Messages;
+import io.jenkins.plugins.devopsportal.RunOperations;
 import io.jenkins.plugins.devopsportal.utils.JenkinsUtils;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.builder.EqualsBuilder;
