@@ -6,7 +6,7 @@ import jenkins.model.Jenkins;
 import java.util.Collection;
 import java.util.Optional;
 
-public class JenkinsUtils {
+public final class JenkinsUtils {
 
     public static Optional<Run<?, ?>> getBuild(String jobName, String branchName, String buildNumber) {
         if (Jenkins.getInstanceOrNull() == null) {

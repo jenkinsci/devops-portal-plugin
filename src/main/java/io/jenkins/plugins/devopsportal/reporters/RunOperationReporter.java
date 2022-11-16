@@ -137,7 +137,7 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
             record.setBuildCommit("");//TODO
             record.setTags(tags);
             listener.getLogger().printf(
-                    "Report run operation '%s' on application '%s' to environment '%s' (%s) : %s",
+                    "Report run operation '%s' on application '%s' to environment '%s' (%s) : %s\n",
                     operation,
                     applicationName,
                     service.getCategory(),

@@ -1,7 +1,11 @@
 package io.jenkins.plugins.devopsportal.models;
 
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class BuildActivity extends AbstractActivity {
 
@@ -39,6 +43,17 @@ public class BuildActivity extends AbstractActivity {
     @DataBoundSetter
     public void setDependenciesToUpdate(int dependenciesToUpdate) {
         this.dependenciesToUpdate = dependenciesToUpdate;
+    }
+
+    public String getArtifactFileNameStr() {
+        if (artifactFileName != null && !artifactFileName.isEmpty()) {
+            return Paths.get(artifactFileName).getFileName().toString();
+        }
+        return "";
+    }
+
+    public String getArtifactFileSizeStr() {
+        return MiscUtils.readableFileSize(artifactFileSize);
     }
 
 }

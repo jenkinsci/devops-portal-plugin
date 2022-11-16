@@ -258,13 +258,13 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable {
                 assert category.getClazz() != null;
                 activity = (T) category.getClazz().getConstructor(String.class).newInstance(applicationComponent);
                 activities.get(category).add(activity);
-                updater.accept(activity);
-                getDescriptor().save();
             }
             catch (ReflectiveOperationException e) {
                 throw new RuntimeException(e);
             }
         }
+        updater.accept(activity);
+        getDescriptor().save();
     }
 
     public List<AbstractActivity> getActivitiesByCategory(ActivityCategory category) {

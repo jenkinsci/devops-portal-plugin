@@ -45,6 +45,7 @@ public class ImageReleaseActivity extends AbstractActivity {
     @DataBoundSetter
     public void setTags(String tags) {
         if (tags != null && !tags.isEmpty()) {
+            this.tags.clear();
             this.tags.addAll(Arrays.stream(tags.split(","))
                     .map(String::trim)
                     .filter(tag -> !tag.isEmpty())

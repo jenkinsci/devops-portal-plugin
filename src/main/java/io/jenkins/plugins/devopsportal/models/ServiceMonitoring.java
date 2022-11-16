@@ -206,6 +206,13 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         return getLastCertificateCheckTimestamp() + 3600L <= Instant.now().getEpochSecond();
     }
 
+    public boolean isCertificateExpired() {
+        if (certificateExpiration > 0) {
+            return Instant.now().toEpochMilli() > certificateExpiration;
+        }
+        return false;
+    }
+
     public void setFailure(MonitoringStatus status, String message) {
         if (status != null) {
             setCurrentMonitoringStatus(status);

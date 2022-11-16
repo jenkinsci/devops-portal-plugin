@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class TimeAgoUtils {
+public final class TimeAgoUtils {
 
     public static final List<Long> TIMES = Arrays.asList(
         TimeUnit.DAYS.toMillis(365),

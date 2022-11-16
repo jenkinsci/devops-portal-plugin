@@ -58,6 +58,9 @@
             background: #f0f0f0;
             line-height: 1.6rem;
         }
+        .version-activities[hidden] {
+            display: none;
+        }
         .version-activities td:nth-child(1) {
             background: #fff;
         }
@@ -114,11 +117,11 @@
                 </tr>
                 <j:if test="${i == 0}">
                     <tr class="group-headers">
-                        <th>${%column_version}</th>
-                        <th>${%column_build}</th>
-                        <th>${%column_commit}</th>
+                        <th width="8%">${%column_version}</th>
+                        <th width="25%">${%column_build}</th>
+                        <th width="30%">${%column_commit}</th>
                         <th>${%column_deployment}</th>
-                        <th width="0%"></th>
+                        <th width="0%"/>
                     </tr>
                 </j:if>
                 <j:set var="versions" value="${it.descriptor.getApplicationVersions(application)}"/>
@@ -157,14 +160,10 @@
                                 <j:if test="${target != null}">
                                     <span class="deployment-environment">
                                         <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>
-                                        ${target.category}
+                                        ${target.hostname}
                                     </span>
+                                    (${target.category})
                                 </j:if>
-                                <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
-                                    <span class="deployment-tag badge">
-                                        ${tag}
-                                    </span>
-                                </j:forEach>
                                 <br/>
                                 <span class="build-date">
                                     <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
@@ -176,11 +175,11 @@
                             </j:if>
                         </td>
                         <td class="actions">
-                            <a class="jenkins-button" href="javascript:;">
+                            <a class="jenkins-button" href="javascript:toggleVisibility('${application}-${version}')">
                                 <l:icon class="symbol-apps-outline plugin-ionicons-api icon-sm" />
                             </a>
                             <l:isAdmin>
-                                <a class="jenkins-button" style="margin-left: .2rem" href="?delete=${application}::${version}">
+                                <a class="jenkins-button" style="margin-left: .2rem" href="javascript:document.location.href='?delete='+escape('${application}::${version}')">
                                     <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
                                 </a>
                             </l:isAdmin>
@@ -188,44 +187,55 @@
                     </tr>
                     <!-- BUILD activities -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'BUILD')}">
-                        <tr class="version-activities">
+                        <tr class="version-activities" hidden="true" version="${application}-${version}">
                             <td />
                             <td>
-                                ${%column_activity_build}
-                                <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/>
+                                <span class="activity-category">
+                                    <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/>
+                                    ${%column_activity_build} :
+                                </span>
                                 <strong>${activity.applicationComponent}</strong>
                             </td>
                             <td>
-                                ${activity.artifactFileName} ${activity.artifactFileSize}
+                                ${activity.artifactFileNameStr}
+                                <j:if test="${activity.artifactFileSize > 0}">
+                                    (${activity.artifactFileSizeStr})
+                                </j:if>
                             </td>
-                            <td>
-                                ${activity.dependenciesToUpdate}
+                            <td colspan="2">
+                                ${%quality_item_dependenciesToUpdate}
+                                <strong>${activity.dependenciesToUpdate}</strong>
                             </td>
-                            <td />
                         </tr>
                     </j:forEach>
                     <!-- UNIT_TEST activities -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'UNIT_TEST')}">
-                        <tr class="version-activities">
+                        <tr class="version-activities" hidden="true" version="${application}-${version}">
                             <td />
                             <td>
-                                ${%column_activity_ut}
-                                ${activity.score}
-                                <l:icon class="symbol-bar-chart-outline plugin-ionicons-api icon-sm"/>
+                                <span class="activity-category">
+                                    <l:icon class="symbol-bar-chart-outline plugin-ionicons-api icon-sm"/>
+                                    ${%column_activity_ut} :
+                                </span>
                                 <strong>${activity.applicationComponent}</strong>
                             </td>
                             <td>
-                                ${activity.testCoverage}%
+                                <span class="activity-score score-${activity.score}">
+                                    ${activity.score}
+                                </span>
+                                ${%quality_item_coverage}
+                                <strong>${activity.testCoverage*100}%</strong>
                             </td>
-                            <td>
-                                ${activity.testsPassed}/${activity.testsFailed}/${activity.testsIgnored}
+                            <td colspan="2">
+                                ${%quality_item_passed} <strong>${activity.testsPassed}</strong>
+                                ${%quality_item_failed} <strong>${activity.testsFailed}</strong>
+                                ${%quality_item_ignored} <strong>${activity.testsIgnored}</strong>
                             </td>
-                            <td />
                         </tr>
                     </j:forEach>
                     <!-- QUALITY_AUDIT activities -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'QUALITY_AUDIT')}">
-                        <tr class="version-activities">
+                        <tr class="version-activities" hidden="true" version="${application}-${version}">
                             <td />
                             <td>
                                 <span class="activity-category">
@@ -242,9 +252,11 @@
                                     <span class="activity-quality-gate failed">${%quality_gate_failed}</span>
                                 </j:if>
                                 ${%quality_item_duplications}
-                                ${activity.duplicationRate*100}%
-                                ${%quality_item_lines}
-                                ${activity.linesCount/1000}k
+                                <strong>${activity.duplicationRate*100}%</strong>
+                                <j:if test="${activity.linesCount > 0}">
+                                    ${%quality_item_lines}
+                                    <strong>${activity.linesCount/1000}k</strong>
+                                </j:if>
                             </td>
                             <td colspan="2">
                                 ${%quality_item_bug}
@@ -264,7 +276,7 @@
                     </j:forEach>
                     <!-- PERFORMANCE_TEST activities -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'PERFORMANCE_TEST')}">
-                        <tr class="version-activities">
+                        <tr class="version-activities" hidden="true" version="${application}-${version}">
                             <td />
                             <td>
                                 <span class="activity-category">
@@ -277,8 +289,14 @@
                                 <span class="activity-score score-${activity.score}">
                                     ${activity.score}
                                 </span>
-                                ${activity.requestCount}
-                                ${activity.averageResponseTime}
+                                <j:if test="${activity.requestCount > 0}">
+                                    ${%quality_item_requests}
+                                    <strong>${activity.requestCount}</strong>
+                                </j:if>
+                                <j:if test="${activity.averageResponseTime > 0}">
+                                    ${%quality_item_averageResponseTime}
+                                    <strong>${activity.averageResponseTime}ms</strong>
+                                </j:if>
                             </td>
                             <td colspan="2">
                                 <j:if test="${activity.qualityGatePassed}">
@@ -292,7 +310,7 @@
                     </j:forEach>
                     <!-- IMAGE_RELEASE activities -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'IMAGE_RELEASE')}">
-                        <tr class="version-activities">
+                        <tr class="version-activities" hidden="true" version="${application}-${version}">
                             <td />
                             <td>
                                 <span class="activity-category">
@@ -302,7 +320,7 @@
                                 <strong>${activity.applicationComponent}</strong>
                             </td>
                             <td>
-                                ${activity.registryName}/${activity.imageName}
+                                ${activity.registryName}:<strong>${activity.imageName}</strong>
                             </td>
                             <td colspan="2">
                                 <j:forEach var="tag" indexVar="i" items="${activity.tags}">
@@ -318,5 +336,15 @@
             </j:forEach>
         </tbody>
     </table>
+
+    <script type="text/javascript">
+        function toggleVisibility(version) {
+            const items = document.querySelectorAll("tr.version-activities[version='" + version + "']");
+            console.log(items);
+            for (const item of items) {
+                item.toggleAttribute('hidden');
+            }
+        }
+    </script>
 
 </j:jelly>

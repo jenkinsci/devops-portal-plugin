@@ -83,11 +83,11 @@
                 </tr>
                 <j:if test="${i == 0}">
                     <tr class="group-headers">
-                        <th width="0%"></th>
-                        <th>${%header_service}</th>
-                        <th>${%header_health}</th>
-                        <th>${%header_host}</th>
-                        <th>${%header_application}</th>
+                        <th width="0%" />
+                        <th width="15%">${%header_service}</th>
+                        <th width="20%">${%header_health}</th>
+                        <th width="15%">${%header_host}</th>
+                        <th width="20%">${%header_application}</th>
                         <th>${%header_deployment}</th>
                     </tr>
                 </j:if>
@@ -128,6 +128,11 @@
                                 <span class="certificate-expiration" title="${%label_cert_expiration}">
                                     <l:icon class="symbol-ribbon-outline plugin-ionicons-api icon-sm"/>
                                     ${it.formatDateMs(monitoring.getCertificateExpiration())}
+                                    <j:if test="${monitoring.certificateExpired}">
+                                        <span style="color:red" title="${%label_cert_expired}">
+                                            <l:icon class="symbol-flame-outline plugin-ionicons-api icon-sm"/>
+                                        </span>
+                                    </j:if>
                                 </span>
                             </j:if>
                         </td>
@@ -137,7 +142,7 @@
                                     <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/> ${deployment.applicationName}
                                 </span>
                                 <span class="version-label badge">
-                                    <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/> ${deployment.applicationVersion}
+                                    <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/> v ${deployment.applicationVersion}
                                 </span>
                                 <j:if test="${deployment.branchProvided}">
                                     <span class="application-branch badge">
@@ -155,6 +160,11 @@
                                     <l:icon class="${deployment.getBuildStatusClass()} icon-sm"/>
                                     <a href="${deployment.buildURL}">${deployment.buildJob} #${deployment.buildNumber}</a>
                                 </span>
+                                <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
+                                    <span class="deployment-tag badge">
+                                        ${tag}
+                                    </span>
+                                </j:forEach>
                                 <br/>
                                 <span class="build-date">
                                     <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
