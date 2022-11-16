@@ -45,8 +45,7 @@ pipeline {
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin",
-                        artifactFileName: "${env.WORKSPACE}/target/plugin-devops-portal.hpi",
-                        dependenciesToUpdate: 0
+                        artifactFileName: "${env.WORKSPACE}/target/plugin-devops-portal.hpi"
                     )
                 }
             }
