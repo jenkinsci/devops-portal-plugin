@@ -44,7 +44,7 @@ pipeline {
                     def failed = 0
                     def ignored = 0
                     def filter = ~/.*\.xml$/
-                    new File('"target/surefire-reports').traverse(type: groovy.io.FileType.FILES, nameFilter: filter) { file ->
+                    new File('target/surefire-reports').traverse(type: groovy.io.FileType.FILES, nameFilter: filter) { file ->
                         file.eachLine { line ->
                             if (line.startsWith('<testsuite ')){
                                 println line
