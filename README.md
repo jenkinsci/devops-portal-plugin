@@ -65,11 +65,12 @@ Dashboard :
 Pipeline script :
 
 ```
-reportBuildActivity(
-    applicationName: string,    // Name of application built
-    applicationVersion: string, // Version of application built
-    activity: string,           // Activity code
-    status?: string             // Optional: Status code
+reportBuild(
+    applicationName: string,       // Name of application built
+    applicationVersion: string,    // Version of application built
+    applicationComponent: string   // Name of application component built
+    artifactFileName?: string,     // Optional: full path to generated artifact
+    dependenciesToUpdate?: int     // Optional: nomber of outdated dependencies
 )
 ```
 

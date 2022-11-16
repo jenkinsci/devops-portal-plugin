@@ -20,6 +20,13 @@ pipeline {
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B -V -U -e -DskipTests package"
                     }
+                    reportBuild(
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION,
+                        applicationComponent: "plugin",
+                        artifactFileName: "${env.WORKSPACE}/target/plugin-devops-portal.hpi",
+                        dependenciesToUpdate: 0
+                    )
                 }
             }
         }
