@@ -66,7 +66,6 @@ pipeline {
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin",
-                        testCoverage: "${env.WORKSPACE}/target/plugin-devops-portal.hpi",
                         testsPassed: results.passed,
                         testsFailed: results.failed,
                         testsIgnored: results.ignored
