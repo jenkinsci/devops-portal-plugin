@@ -28,6 +28,9 @@
         .run-dashboard .host-information, .run-dashboard .deployment-information, .run-dashboard .health-information {
             line-height: 1.3rem;
         }
+        .run-dashboard .host-information .host-label {
+            font-weight: normal;
+        }
         .run-dashboard .badge {
             background-color: #ddd;
             border-radius: 5px;
@@ -127,7 +130,9 @@
                             </j:if>
                         </td>
                         <td class="host-information">
-                            <span class="host-label">${service.hostname}</span>
+                            <j:if test="${service.url != null &amp;&amp; !url.isEmpty()}">
+                                <a class="host-label" href="${service.url}" target="_blank">${service.hostname}</a>
+                            </j:if>
                             <j:if test="${service.monitoringAvailable &amp;&amp; monitoring.getCertificateExpiration() != null}">
                                 <br/>
                                 <span class="certificate-expiration" title="${%label_cert_expiration}">
