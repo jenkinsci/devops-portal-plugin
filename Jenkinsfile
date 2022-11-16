@@ -32,15 +32,15 @@ pipeline {
 
     stages {
 
-        /*stage('Build') {
+        stage('Build') {
             steps {
                 script {
-                    if (isUnix()) {
+                    /*if (isUnix()) {
                         sh 'mvn -B -V -U -e -DskipTests package'
                     }
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B -V -U -e -DskipTests package"
-                    }
+                    }*/
                     reportBuild(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
@@ -50,7 +50,7 @@ pipeline {
                     )
                 }
             }
-        }*/
+        }
 
         stage('Test') {
             steps {
@@ -63,7 +63,15 @@ pipeline {
                     }*/
 
                     def results = getTestResults('target/surefire-reports')
-                    println results
+                    reportUnitTest(
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION,
+                        applicationComponent: "plugin",
+                        testCoverage: "${env.WORKSPACE}/target/plugin-devops-portal.hpi",
+                        testsPassed: results.passed,
+                        testsFailed: results.failed,
+                        testsIgnored: results.ignored
+                    )
                 }
             }
         }

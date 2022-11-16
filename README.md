@@ -75,6 +75,18 @@ reportBuild(
 )
 ```
 
+```
+reportUnitTest(
+    applicationName: string,       // Name of application built
+    applicationVersion: string,    // Version of application built
+    applicationComponent: string   // Name of application component built
+    testCoverage?: float,          // Optional: coverage ratio (between 0-1)
+    testsPassed?: int,             // Optional: number of passed tests
+    testsFailed?: int,             // Optional: number of failed tests
+    testsIgnored?: int             // Optional: number of skipped tests
+)
+```
+
 Activity codes :
 
 - `BUILD` Application build
