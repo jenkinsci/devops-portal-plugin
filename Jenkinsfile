@@ -10,9 +10,9 @@ def getTestResults(path) {
       if (data) {
         def pattern = ~/errors="(.*?)" skipped="(.*?)" failures="(.*?)"/
         def matcher = data =~ pattern
-        println matcher.find()
+        println matcher.findAll()
         println matcher.size()
-        println matcher[0]
+        println matcher.ma[0]
         println matcher[1]
         println matcher[2]
         println matcher[3]
