@@ -33,30 +33,6 @@
             color: #333;
             font-size: 90%;
         }
-        .build-dashboard .activity-steps > span, .build-dashboard .activity-legend > span {
-            display: inline-block;
-            background: #ccc;
-            border: 1px solid #bbb;
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-            margin-right: .2rem;
-            cursor: help;
-        }
-        .build-dashboard .activity-steps .todo, .build-dashboard .activity-legend .todo {
-        }
-        .build-dashboard .activity-steps .done, .build-dashboard .activity-legend .done {
-            background: #59ba73;
-            border-color: #348549;
-        }
-        .build-dashboard .activity-steps .unstable, .build-dashboard .activity-legend .unstable {
-            background: #dbc85a;
-            border-color: #7d7236;
-        }
-        .build-dashboard .activity-steps .fail, .build-dashboard .activity-legend .fail {
-            background: #c75656;
-            border-color: #9e4646;
-        }
         .build-dashboard .application-build .build-status-icon__wrapper {
             margin-right: 5px;
         }
@@ -69,10 +45,6 @@
         .muted {
             font-size: 80%;
             color: #555;
-        }
-        .build-dashboard .activity-legend {
-            padding-top: 1rem;
-            font-weight: bolder;
         }
         .build-dashboard .actions {
             padding-top: 10px;
@@ -87,19 +59,23 @@
             <j:set var="applications" value="${it.descriptor.getApplicationNames(it.filter)}"/>
             <j:if test="${applications.isEmpty()}">
                 <tr>
-                    <td colspan="5">${%label_empty_list}</td>
+                    <td colspan="10">${%label_empty_list}</td>
                 </tr>
             </j:if>
             <j:forEach var="application" indexVar="i" items="${applications}">
                 <tr class="group-title">
-                    <th colspan="5"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${application}</th>
+                    <th colspan="10"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${application}</th>
                 </tr>
                 <j:if test="${i == 0}">
                     <tr class="group-headers">
                         <th>${%column_version}</th>
                         <th>${%column_build}</th>
                         <th></th>
-                        <th>${%column_activity}</th>
+                        <th>${%column_activity_build}</th>
+                        <th>${%column_activity_ut}</th>
+                        <th>${%column_activity_quality}</th>
+                        <th>${%column_activity_performance}</th>
+                        <th>${%column_activity_image_release}</th>
                         <th>${%column_deployment}</th>
                         <th width="0%"></th>
                     </tr>
@@ -124,12 +100,12 @@
                             </span>
                         </td>
                         <td>
-                            <j:if test="build.buildBranchPresent">
+                            <j:if test="${build.buildBranchPresent}">
                                 <span class="application-branch badge">
                                     <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>${build.buildBranch}
                                 </span>
                             </j:if>
-                            <j:if test="build.buildCommitPresent">
+                            <j:if test="${build.buildCommitPresent}">
                                 <span class="application-commit badge">
                                     <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>${build.buildCommit}
                                 </span>
@@ -139,9 +115,77 @@
                             <div class="activity-steps">
                                 <j:set var="activities" value="${it.descriptor.getBuildActivities(build, 'BUILD')}"/>
                                 <j:forEach var="activity" indexVar="k" items="${activities}">
-                                    ${activity.category}
-                                    ${activity.timestamp}
+                                    <j:if test="${k > 0}">
+                                        <br/>
+                                    </j:if>
+                                    <l:icon class="symbol-cube-outline plugin-ionicons-api icon-sm"/>
+                                    <strong>${activity.applicationComponent}</strong>
                                     ${activity.artifactFileName}
+                                </j:forEach>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-steps">
+                                <j:set var="activities" value="${it.descriptor.getBuildActivities(build, 'UNIT_TEST')}"/>
+                                <j:forEach var="activity" indexVar="k" items="${activities}">
+                                    <j:if test="${k > 0}">
+                                        <br/>
+                                    </j:if>
+                                    ${activity.score}
+                                    <l:icon class="symbol-bar-chart-outline plugin-ionicons-api icon-sm"/>
+                                    <strong>${activity.applicationComponent}</strong>
+                                    ${activity.testCoverage}%
+                                    ${activity.testsPassed}/${activity.testsFailed}/${activity.testsIgnored}
+                                </j:forEach>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-steps">
+                                <j:set var="activities" value="${it.descriptor.getBuildActivities(build, 'QUALITY_AUDIT')}"/>
+                                <j:forEach var="activity" indexVar="k" items="${activities}">
+                                    <j:if test="${k > 0}">
+                                        <br/>
+                                    </j:if>
+                                    ${activity.score}
+                                    <l:icon class="symbol-ribbon-outline plugin-ionicons-api icon-sm"/>
+                                    <strong>${activity.applicationComponent}</strong>
+                                    ${activity.bugScore}
+                                    ${activity.vulnerabilityScore}
+                                    ${activity.hotspotScore}
+                                    ${activity.duplicationRate}%
+                                    ${activity.linesCount}k
+                                    ${activity.qualityGatePassed}
+                                </j:forEach>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-steps">
+                                <j:set var="activities" value="${it.descriptor.getBuildActivities(build, 'PERFORMANCE_TEST')}"/>
+                                <j:forEach var="activity" indexVar="k" items="${activities}">
+                                    <j:if test="${k > 0}">
+                                        <br/>
+                                    </j:if>
+                                    ${activity.score}
+                                    <l:icon class="symbol-rocket-outline plugin-ionicons-api icon-sm"/>
+                                    <strong>${activity.applicationComponent}</strong>
+                                    ${activity.requestCount}
+                                    ${activity.averageResponseTime}
+                                    ${activity.qualityGatePassed}
+                                </j:forEach>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-steps">
+                                <j:set var="activities" value="${it.descriptor.getBuildActivities(build, 'IMAGE_RELEASE')}"/>
+                                <j:forEach var="activity" indexVar="k" items="${activities}">
+                                    <j:if test="${k > 0}">
+                                        <br/>
+                                    </j:if>
+                                    <l:icon class="symbol-image-outline plugin-ionicons-api icon-sm"/>
+                                    <strong>${activity.applicationComponent}</strong>
+                                    ${activity.registryName}
+                                    ${activity.imageName}
+                                    ${activity.tags}
                                 </j:forEach>
                             </div>
                         </td>

@@ -1,0 +1,27 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+    <f:entry title="${%ApplicationName_Label}" field="applicationName">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="${%ApplicationVersion_Label}" field="applicationVersion">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="${%ApplicationComponent_Label}" field="applicationComponent">
+        <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%TestCoverage_Label}" field="testCoverage">
+        <f:number />
+    </f:entry>
+    <f:entry title="${%TestsPassed_Label}" field="testsPassed">
+        <f:number />
+    </f:entry>
+    <f:entry title="${%TestsFailed_Label}" field="testsFailed">
+        <f:number />
+    </f:entry>
+    <f:entry title="${%TestsIgnored_Label}" field="testsIgnored">
+        <f:number />
+    </f:entry>
+
+</j:jelly>

@@ -72,7 +72,7 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
 
             listener.getLogger().printf(
                     "Report build activity '%s' for application '%s' version %s%n",
-                    ActivityCategory.BUILD,
+                    getActivityCategory(),
                     record.getApplicationName(),
                     record.getApplicationVersion()
             );

@@ -1,0 +1,42 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+    <f:entry title="${%ApplicationName_Label}" field="applicationName">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="${%ApplicationVersion_Label}" field="applicationVersion">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="${%ApplicationComponent_Label}" field="applicationComponent">
+        <f:textbox />
+    </f:entry>
+
+    <f:entry title="${%BugCount_Label}" field="bugCount">
+        <f:number />
+    </f:entry>
+    <f:entry title="${%BugScore_Label}" field="bugScore">
+        <f:select />
+    </f:entry>
+    <f:entry title="${%VulnerabilityCount_Label}" field="vulnerabilityCount">
+        <f:number />
+    </f:entry>
+    <f:entry title="${%VulnerabilityScore_Label}" field="vulnerabilityScore">
+        <f:select />
+    </f:entry>
+    <f:entry title="${%HotspotCount_Label}" field="hotspotCount">
+        <f:number />
+    </f:entry>
+    <f:entry title="${%HotspotScore_Label}" field="hotspotScore">
+        <f:select />
+    </f:entry>
+    <f:entry title="${%DuplicationRate_Label}" field="duplicationRate">
+        <f:number />
+    </f:entry>
+    <f:entry title="${%LinesCount_Label}" field="linesCount">
+        <f:number />
+    </f:entry>
+    <f:entry title="${%QualityGatePassed_Label}" field="qualityGatePassed">
+        <f:checkbox />
+    </f:entry>
+
+</j:jelly>
