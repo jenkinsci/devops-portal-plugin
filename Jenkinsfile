@@ -8,7 +8,7 @@ def getTestResults(path) {
           line.startsWith('<testsuite ')
       }
       if (data) {
-        def pattern = ~/errors="(.*?)" skipped="(.*?)" failures="(.*?)"/gm
+        def pattern = ~/errors="(.*?)" skipped="(.*?)" failures="(.*?)"/
         def matcher = data =~ pattern
         println matcher.find()
         println matcher.size()
