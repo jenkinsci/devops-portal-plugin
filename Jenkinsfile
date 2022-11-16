@@ -40,9 +40,16 @@ pipeline {
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B test"
                     }*/
-                    def filterBakFiles = ~/.*\.xml$/
-                    new File("target/surefire-reports").traverse(type: groovy.io.FileType.FILES, nameFilter: filterBakFiles) { file ->
-                        println file
+                    def passed = 0
+                    def failed = 0
+                    def ignored = 0
+                    def filter = ~/.*\.xml$/
+                    new File('"target/surefire-reports').traverse(type: groovy.io.FileType.FILES, nameFilter: filter) { file ->
+                        file.eachLine { line ->
+                            if (line.startsWith('<testsuite ')){
+                                return line
+                            }
+                        }
                     }
 
                 }
