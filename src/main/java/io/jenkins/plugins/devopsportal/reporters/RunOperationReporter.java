@@ -15,6 +15,7 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.RunOperations;
 import io.jenkins.plugins.devopsportal.models.BuildStatus;
+import io.jenkins.plugins.devopsportal.models.GenericBuildModel;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import io.jenkins.plugins.devopsportal.models.ServiceOperation;
 import jenkins.model.Jenkins;
@@ -124,18 +125,15 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
                 return;
             }
 
+            GenericBuildModel.updateRecordFromRun(record, run, env);
             record.setServiceId(service.getId());
             record.setOperation(operation);
             record.setSuccess(success);
             record.setTimestamp(Instant.now().getEpochSecond());
             record.setApplicationName(applicationName);
             record.setApplicationVersion(applicationVersion);
-            record.setBuildJob(env.get("JOB_NAME"));
-            record.setBuildNumber(env.get("BUILD_NUMBER"));
-            record.setBuildURL(env.get("RUN_DISPLAY_URL")); // TODO Verify this URL
-            record.setBuildBranch("");// TODO
-            record.setBuildCommit("");//TODO
             record.setTags(tags);
+
             listener.getLogger().printf(
                     "Report run operation '%s' on application '%s' to environment '%s' (%s) : %s\n",
                     operation,

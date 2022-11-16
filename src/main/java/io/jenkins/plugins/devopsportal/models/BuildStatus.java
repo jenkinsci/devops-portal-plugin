@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class BuildStatus implements Describable<BuildStatus>, Serializable {
+public class BuildStatus implements Describable<BuildStatus>, Serializable, GenericBuildModel {
 
     private String applicationName;
     private String applicationVersion;
@@ -38,21 +38,10 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable {
     private String buildCommit;
     private long buildTimestamp; // seconds
 
-    /*private final List<BuildActivity> buildActivities;
-    private final List<UnitTestActivity> unitTestActivities;
-    private final List<QualityAuditActivity> qualityAuditActivities;
-    private final List<PerformanceTestActivity> performanceTestActivities;
-    private final List<ImageReleaseActivity> imageReleaseActivities;*/
-
     private final Map<ActivityCategory, List<AbstractActivity>> activities;
 
     @DataBoundConstructor
     public BuildStatus() {
-        /*this.buildActivities = new ArrayList<>();
-        this.unitTestActivities = new ArrayList<>();
-        this.qualityAuditActivities = new ArrayList<>();
-        this.performanceTestActivities = new ArrayList<>();
-        this.imageReleaseActivities = new ArrayList<>();*/
         activities = new HashMap<>();
         for (ActivityCategory category : ActivityCategory.values()) {
             activities.put(category, new ArrayList<>());
@@ -135,58 +124,6 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable {
         return activities;
     }
 
-    /*
-        public List<BuildActivity> getBuildActivities() {
-            return buildActivities;
-        }
-
-        public void addBuildActivity(BuildActivity buildActivity) {
-            if (buildActivity != null) {
-                this.buildActivities.add(buildActivity);
-            }
-        }
-
-        public List<UnitTestActivity> getUnitTestActivities() {
-            return unitTestActivities;
-        }
-
-        public void addUnitTestActivity(UnitTestActivity unitTestActivity) {
-            if (unitTestActivity != null) {
-                this.unitTestActivities.add(unitTestActivity);
-            }
-        }
-
-        public List<QualityAuditActivity> getQualityAuditActivities() {
-            return qualityAuditActivities;
-        }
-
-        public void addQualityAuditActivity(QualityAuditActivity qualityAuditActivity) {
-            if (qualityAuditActivity != null) {
-                this.qualityAuditActivities.add(qualityAuditActivity);
-            }
-        }
-
-        public List<PerformanceTestActivity> getPerformanceTestActivities() {
-            return performanceTestActivities;
-        }
-
-        public void addPerformanceTestActivity(PerformanceTestActivity performanceTestActivity) {
-            if (performanceTestActivity != null) {
-                this.performanceTestActivities.add(performanceTestActivity);
-            }
-        }
-
-        public List<ImageReleaseActivity> getImageReleaseActivities() {
-            return imageReleaseActivities;
-        }
-
-        @DataBoundSetter
-        public void addImageReleaseActivity(ImageReleaseActivity imageReleaseActivity) {
-            if (imageReleaseActivity != null) {
-                this.imageReleaseActivities.add(imageReleaseActivity);
-            }
-        }
-    */
     public boolean isBuildBranchPresent() {
         return buildBranch != null && !buildBranch.isEmpty();
     }

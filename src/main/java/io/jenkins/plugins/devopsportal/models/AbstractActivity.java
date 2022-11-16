@@ -1,7 +1,5 @@
 package io.jenkins.plugins.devopsportal.models;
 
-import hudson.EnvVars;
-import hudson.model.Run;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.Serializable;
@@ -45,14 +43,6 @@ public abstract class AbstractActivity implements Serializable {
 
     public long getTimestamp() {
         return timestamp;
-    }
-
-    public static void updateRecordFromRun(BuildStatus record, Run<?,?> run, EnvVars env) {
-        record.setBuildJob(env.get("JOB_NAME"));
-        record.setBuildNumber(env.get("BUILD_NUMBER"));
-        record.setBuildURL(env.get("RUN_DISPLAY_URL")); // TODO Verify this URL
-        record.setBuildBranch("");// TODO
-        record.setBuildCommit("");//TODO
     }
 
 }

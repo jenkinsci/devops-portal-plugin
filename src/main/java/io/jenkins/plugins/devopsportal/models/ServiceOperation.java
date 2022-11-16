@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class ServiceOperation implements Describable<ServiceOperation>, Serializable {
+public class ServiceOperation implements Describable<ServiceOperation>, Serializable, GenericBuildModel {
 
     private String serviceId;
 

@@ -10,6 +10,7 @@ import hudson.tasks.Builder;
 import io.jenkins.plugins.devopsportal.models.AbstractActivity;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.BuildStatus;
+import io.jenkins.plugins.devopsportal.models.GenericBuildModel;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -65,7 +66,7 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
         getBuildStatusDescriptor().update(applicationName, applicationVersion, record -> {
 
             // Generic record data
-            AbstractActivity.updateRecordFromRun(record, run, env);
+            GenericBuildModel.updateRecordFromRun(record, run, env);
 
             // Create or update AbstractActivity
             record.updateActivity(applicationComponent, getActivityCategory(), this::updateActivity);

@@ -151,7 +151,7 @@
                             </j:if>
                             <j:if test="${build.buildCommitPresent}">
                                 <span class="application-commit badge">
-                                    <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>${build.buildCommit}
+                                    <l:icon class="symbol-git-commit-outline plugin-ionicons-api icon-sm"/>${build.getBuildCommit().substring(0, 8)}
                                 </span>
                             </j:if>
                         </td>
