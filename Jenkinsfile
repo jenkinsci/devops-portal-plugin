@@ -82,7 +82,7 @@ pipeline {
                         applicationComponent: "plugin",
                         registryName: "registry.mydomain.com",
                         imageName: env.APPLICATION_NAME,
-                        tags: [ "latest", env.APPLICATION_VERSION ]
+                        tags: "latest,${env.APPLICATION_VERSION}"
                     )
                 }
             }
