@@ -1,4 +1,21 @@
 
+@NonCPS
+def getTestResults(path) {
+  def results = [ passed: 0, failed: 0, ignored: 0 ]
+  def filter = ~/.*\.xml$/
+  new File().traverse(type: groovy.io.FileType.FILES, nameFilter: filter) { file ->
+      println file
+      file.eachLine { line ->
+          println line
+      }
+      def data = file.filterLine { line ->
+          line.startsWith('<testsuite ')
+      }
+      println data
+  }
+  return results
+}
+
 pipeline {
 
     agent any
@@ -40,21 +57,9 @@ pipeline {
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B test"
                     }*/
-                    def passed = 0
-                    def failed = 0
-                    def ignored = 0
-                    def filter = ~/.*\.xml$/
-                    new File('target/surefire-reports').traverse(type: groovy.io.FileType.FILES, nameFilter: filter) { file ->
-                        println file
-                        file.eachLine { line ->
-                            println line
-                        }
-                        def data = file.filterLine { line ->
-                            line.startsWith('<testsuite ')
-                        }
-                        println data
-                    }
 
+                    def results = getTestResults('target/surefire-reports')
+                    println results
                 }
             }
         }
