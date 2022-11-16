@@ -13,9 +13,7 @@ def getTestResults(path) {
         println matcher.findAll()
         println matcher.size()
         println matcher[0]
-        println matcher[1]
-        println matcher[2]
-        println matcher[3]
+        println matcher[0][0]
       }
   }
   return results
