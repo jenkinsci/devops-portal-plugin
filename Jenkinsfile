@@ -40,11 +40,9 @@ pipeline {
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B test"
                     }*/
-                    dir("target/surefire-reports") {
-                        def filterBakFiles = ~/.*\.xml$/
-                        new File(path).traverse(type: groovy.io.FileType.FILES, nameFilter: filterBakFiles) { file ->
-                            println file
-                        }
+                    def filterBakFiles = ~/.*\.xml$/
+                    new File("target/surefire-reports").traverse(type: groovy.io.FileType.FILES, nameFilter: filterBakFiles) { file ->
+                        println file
                     }
 
                 }
