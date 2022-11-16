@@ -14,7 +14,12 @@ pipeline {
             steps {
                 script {
                     echo "ok"
-                    sh 'mvn -B -V -U -e -DskipTests package'
+                    if (isUnix()) {
+                        sh 'mvn -B -V -U -e -DskipTests package'
+                    }
+                    else {
+                        bat 'mvn -B -V -U -e -DskipTests package'
+                    }
                 }
             }
         }
