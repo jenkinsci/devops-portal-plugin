@@ -128,7 +128,7 @@
                         </td>
                         <td class="host-information">
                             <span class="host-label">${service.hostname}</span>
-                            <j:if test="${monitoring.getCertificateExpiration() != null}">
+                            <j:if test="${service.monitoringAvailable &amp;&amp; monitoring.getCertificateExpiration() != null}">
                                 <br/>
                                 <span class="certificate-expiration" title="${%label_cert_expiration}">
                                     <l:icon class="symbol-ribbon-outline plugin-ionicons-api icon-sm"/>
@@ -139,6 +139,9 @@
                                         </span>
                                     </j:if>
                                 </span>
+                            </j:if>
+                            <j:if test="${!service.monitoringAvailable || monitoring.getCertificateExpiration() == null}">
+                                <span class="muted">${%label_no_monitoring}</span>
                             </j:if>
                         </td>
                         <td class="application-information">
