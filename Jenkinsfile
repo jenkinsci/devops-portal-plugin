@@ -1,3 +1,5 @@
+buildPlugin(useContainerAgent: true)
+/*
 pipeline {
 
     agent any
@@ -20,4 +22,4 @@ pipeline {
 
     }
 
-}
+}*/
