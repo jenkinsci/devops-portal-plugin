@@ -103,22 +103,27 @@
                             <span class="service-label">${service.label}</span>
                         </td>
                         <td class="health-information">
-                            <span class="health-time">
-                                <j:if test="${monitoring.failure}">
-                                    <l:icon class="symbol-caret-down-outline plugin-ionicons-api icon-sm status-down"/>
-                                    Down
-                                </j:if>
-                                <j:if test="${!monitoring.failure}">
-                                    <l:icon class="symbol-caret-up-outline plugin-ionicons-api icon-sm status-up"/>
-                                    Up
-                                </j:if>
-                                <span title="${it.formatDatetimeSeconds(monitoring.sinceTimestamp)}">
-                                    ${it.formatUptime(monitoring.sinceTimestamp)}
+                            <j:if test="${service.enableMonitoring}">
+                                <span class="health-time">
+                                    <j:if test="${monitoring.failure}">
+                                        <l:icon class="symbol-caret-down-outline plugin-ionicons-api icon-sm status-down"/>
+                                        Down
+                                    </j:if>
+                                    <j:if test="${!monitoring.failure}">
+                                        <l:icon class="symbol-caret-up-outline plugin-ionicons-api icon-sm status-up"/>
+                                        Up
+                                    </j:if>
+                                    <span title="${it.formatDatetimeSeconds(monitoring.sinceTimestamp)}">
+                                        ${it.formatUptime(monitoring.sinceTimestamp)}
+                                    </span>
                                 </span>
-                            </span>
-                            <j:if test="${monitoring.failure}">
-                                <br/>
-                                <span class="health-failure">${monitoring.lastFailureReason}</span>
+                                <j:if test="${monitoring.failure}">
+                                    <br/>
+                                    <span class="health-failure">${monitoring.lastFailureReason}</span>
+                                </j:if>
+                            </j:if>
+                            <j:if test="${!service.enableMonitoring}">
+                                <span class="muted">${%label_no_monitoring}</span>
                             </j:if>
                         </td>
                         <td class="host-information">
