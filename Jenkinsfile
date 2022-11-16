@@ -4,14 +4,16 @@ def getTestResults(path) {
   def results = [ passed: 0, failed: 0, ignored: 0 ]
   def filter = ~/.*\.xml$/
   new File(path).traverse(type: groovy.io.FileType.FILES, nameFilter: filter) { file ->
-      println file
-      file.eachLine { line ->
-          println line
-      }
       def data = file.filterLine { line ->
           line.startsWith('<testsuite ')
       }
-      println data
+      if (data) {
+        def pattern = ~/errors="(.*?)" skipped="(.*?)" failures="(.*?)"/gm
+        def matcher = data =~ pattern
+        println matcher.find()
+        println matcher.size()
+        println matcher[0..-1]
+      }
   }
   return results
 }
