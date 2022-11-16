@@ -47,7 +47,7 @@ pipeline {
                     new File('target/surefire-reports').traverse(type: groovy.io.FileType.FILES, nameFilter: filter) { file ->
                         println file
                         file.eachLine { line ->
-                            println file
+                            println line
                             if (line.startsWith('<testsuite ')){
                                 println '!!!!!!'
                             }
