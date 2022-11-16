@@ -45,9 +45,11 @@ pipeline {
                     def ignored = 0
                     def filter = ~/.*\.xml$/
                     new File('target/surefire-reports').traverse(type: groovy.io.FileType.FILES, nameFilter: filter) { file ->
+                        println file
                         file.eachLine { line ->
+                            println file
                             if (line.startsWith('<testsuite ')){
-                                println line
+                                println '!!!!!!'
                             }
                         }
                     }
