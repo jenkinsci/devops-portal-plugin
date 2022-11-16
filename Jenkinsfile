@@ -11,7 +11,7 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        /*stage('Build') {
             steps {
                 script {
                     if (isUnix()) {
@@ -29,17 +29,24 @@ pipeline {
                     )
                 }
             }
-        }
+        }*/
 
         stage('Test') {
             steps {
                 script {
-                    if (isUnix()) {
+                    /*if (isUnix()) {
                         sh 'mvn -B test'
                     }
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B test"
+                    }*/
+                    dir("target/surefire-reports") {
+                        def filterBakFiles = ~/.*\.xml$/
+                        new File(path).traverse(type: groovy.io.FileType.FILES, nameFilter: filterBakFiles) { file ->
+                            println file
+                        }
                     }
+
                 }
             }
         }
