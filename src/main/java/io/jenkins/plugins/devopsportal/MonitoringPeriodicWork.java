@@ -103,7 +103,7 @@ public class MonitoringPeriodicWork extends AsyncPeriodicWork {
             record.setFailure(MonitoringStatus.INVALID_CONFIGURATION, message);
         }
         catch (SSLHandshakeException ex) {
-            final String message = Messages.ServiceMonitoring_Error_InvalidConfigurationURL()
+            final String message = Messages.ServiceMonitoring_Error_InvalidHttpsConfiguration()
                     .replace("%exception%", ex.getClass().getSimpleName())
                     .replace("%message%", ex.getMessage());
             record.setFailure(MonitoringStatus.INVALID_HTTPS, message);
