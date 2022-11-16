@@ -48,10 +48,11 @@ pipeline {
                         println file
                         file.eachLine { line ->
                             println line
-                            if (line.startsWith('<testsuite ')){
-                                println '!!!!!!'
-                            }
                         }
+                        def data = file.filterLine { line ->
+                            line.startsWith('<testsuite ')
+                        }
+                        println data
                     }
 
                 }
