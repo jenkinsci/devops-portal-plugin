@@ -10,11 +10,11 @@ def getTestResults(path) {
       if (data) {
         def pattern = ~/tests="(.*?)" errors="(.*?)" skipped="(.*?)" failures="(.*?)"/
         def matcher = data =~ pattern
-        println matcher.size()
-        println matcher[0].size()
-        results.passed += matcher[0][1].toInteger();
-        results.failed += matcher[0][2].toInteger() + matcher[0][4].toInteger();
-        results.ignored += matcher[0][3].toInteger();
+        if (matcher.size() == 1 && matcher[0].size() == 5) {
+            results.passed += matcher[0][1].toInteger();
+            results.failed += matcher[0][2].toInteger() + matcher[0][4].toInteger();
+            results.ignored += matcher[0][3].toInteger();
+        }
       }
   }
   return results
