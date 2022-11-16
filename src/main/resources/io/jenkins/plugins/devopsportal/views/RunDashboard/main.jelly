@@ -103,7 +103,7 @@
                             <span class="service-label">${service.label}</span>
                         </td>
                         <td class="health-information">
-                            <j:if test="${service.enableMonitoring}">
+                            <j:if test="${service.monitoringAvailable}">
                                 <span class="health-time">
                                     <j:if test="${monitoring.failure}">
                                         <l:icon class="symbol-caret-down-outline plugin-ionicons-api icon-sm status-down"/>
@@ -122,7 +122,7 @@
                                     <span class="health-failure">${monitoring.lastFailureReason}</span>
                                 </j:if>
                             </j:if>
-                            <j:if test="${!service.enableMonitoring}">
+                            <j:if test="${!service.monitoringAvailable}">
                                 <span class="muted">${%label_no_monitoring}</span>
                             </j:if>
                         </td>
