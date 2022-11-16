@@ -35,12 +35,12 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    /*if (isUnix()) {
+                    if (isUnix()) {
                         sh 'mvn -B -V -U -e -DskipTests package'
                     }
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B -V -U -e -DskipTests package"
-                    }*/
+                    }
                     reportBuild(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
@@ -54,13 +54,12 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    /*if (isUnix()) {
+                    if (isUnix()) {
                         sh 'mvn -B test'
                     }
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B test"
-                    }*/
-
+                    }
                     def results = getTestResults('target/surefire-reports')
                     reportUnitTest(
                         applicationName: env.APPLICATION_NAME,
