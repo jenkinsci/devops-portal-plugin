@@ -30,6 +30,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    echo "ok"
                     buildPlugin(useContainerAgent: true)
                 }
             }
