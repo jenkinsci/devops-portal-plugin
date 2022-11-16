@@ -133,9 +133,19 @@
                                 <span class="certificate-expiration" title="${%label_cert_expiration}">
                                     <l:icon class="symbol-ribbon-outline plugin-ionicons-api icon-sm"/>
                                     ${it.formatDateMs(monitoring.getCertificateExpiration())}
+                                    <j:if test="${service.acceptInvalidCertificate}">
+                                        <span style="color:orange" title="${%label_cert_unsecured}">
+                                            <l:icon class="symbol-bag-remove-outline plugin-ionicons-api icon-sm"/>
+                                        </span>
+                                    </j:if>
+                                    <j:if test="${!service.acceptInvalidCertificate &amp;&amp; !monitoring.certificateExpired}">
+                                        <span style="color:green" title="${%label_cert_secured}">
+                                            <l:icon class="symbol-bag-check-outline plugin-ionicons-api icon-sm"/>
+                                        </span>
+                                    </j:if>
                                     <j:if test="${monitoring.certificateExpired}">
                                         <span style="color:red" title="${%label_cert_expired}">
-                                            <l:icon class="symbol-flame-outline plugin-ionicons-api icon-sm"/>
+                                            <l:icon class="symbol-time-outline plugin-ionicons-api icon-sm"/>
                                         </span>
                                     </j:if>
                                 </span>
