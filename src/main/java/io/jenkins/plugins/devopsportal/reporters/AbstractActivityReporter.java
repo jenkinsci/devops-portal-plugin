@@ -67,14 +67,15 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
             // Generic record data
             AbstractActivity.updateRecordFromRun(record, run, env);
 
-            // Create or update
+            // Create or update AbstractActivity
             record.updateActivity(applicationComponent, getActivityCategory(), this::updateActivity);
 
             listener.getLogger().printf(
-                    "Report build activity '%s' for application '%s' version %s%n",
+                    "Report build activity '%s' for application '%s' version %s component '%s'%n",
                     getActivityCategory(),
                     record.getApplicationName(),
-                    record.getApplicationVersion()
+                    record.getApplicationVersion(),
+                    applicationComponent
             );
 
         });
