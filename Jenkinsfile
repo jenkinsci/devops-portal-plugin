@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     echo "ok"
-                    buildPlugin(useContainerAgent: true)
+                    sh 'mvn -B -V -U -e -DskipTests package'
                 }
             }
         }
