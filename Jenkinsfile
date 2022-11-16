@@ -12,7 +12,7 @@ def getTestResults(path) {
         def matcher = data =~ pattern
         println matcher.findAll()
         println matcher.size()
-        println matcher.ma[0]
+        println matcher[0]
         println matcher[1]
         println matcher[2]
         println matcher[3]
