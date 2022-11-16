@@ -31,6 +31,19 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'mvn -B test'
+                    }
+                    else {
+                        bat "\"${env.MAVEN_PATH}\" -B test"
+                    }
+                }
+            }
+        }
+
     }
 
 }

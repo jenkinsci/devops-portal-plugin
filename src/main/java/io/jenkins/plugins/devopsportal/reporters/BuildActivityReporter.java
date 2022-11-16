@@ -9,6 +9,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.io.File;
+
 /**
  * Build step of a project used to record a BUILD activity.
  *
@@ -45,7 +47,12 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
     @Override
     public void updateActivity(BuildActivity activity) {
         activity.setArtifactFileName(artifactFileName);
-        // TODO activity.setArtifactFileSize(artifactFileSize);
+        if (artifactFileName != null) {
+            File file = new File(artifactFileName);
+            if (file.exists()) {
+                activity.setArtifactFileSize(file.length());
+            }
+        }
         activity.setDependenciesToUpdate(dependenciesToUpdate);
     }
 

@@ -70,6 +70,7 @@ reportBuild(
     applicationVersion: string,    // Version of application built
     applicationComponent: string   // Name of application component built
     artifactFileName?: string,     // Optional: full path to generated artifact
+    artifactFileSize?: long,       // Optional: file size of generated artifact
     dependenciesToUpdate?: int     // Optional: nomber of outdated dependencies
 )
 ```
