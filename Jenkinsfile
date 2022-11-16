@@ -6,7 +6,7 @@ pipeline {
     environment {
         APPLICATION_NAME = "jenkins-plugin-devops-portal"
         APPLICATION_VERSION = "1.0.0"
-        MAVEN_PATH = 'C:\\Program Files\\JetBrains\\IntelliJ IDEA Community Edition 2022.2.3\\plugins\\maven\\lib\\maven3\\bin\\mvn'
+        MAVEN_PATH = 'C:\\Program\\ Files\\JetBrains\\IntelliJ\\ IDEA\\ Community\\ Edition\\ 2022.2.3\\plugins\\maven\\lib\\maven3\\bin\\mvn'
     }
 
     stages {
