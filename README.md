@@ -87,6 +87,17 @@ reportUnitTest(
 )
 ```
 
+```
+reportImageRelease(
+    applicationName: string,       // Name of application built
+    applicationVersion: string,    // Version of application built
+    applicationComponent: string   // Name of application component built
+    registryName?: string,         // Optional: registry server name
+    imageName?: string,            // Optional: image name released
+    tags?: string[]                // Optional: image's tags
+)
+```
+
 Activity codes :
 
 - `BUILD` Application build

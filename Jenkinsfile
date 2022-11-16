@@ -73,7 +73,7 @@ pipeline {
             }
         }
 
-        stage('Release') {
+        stage('Publish') {
             steps {
                 script {
                     reportImageRelease(
