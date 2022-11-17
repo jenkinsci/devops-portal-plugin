@@ -9,4 +9,5 @@ work
 *.ipr
 .idea
 
-
+# Release artifacts
+pom.xml.releaseBackup

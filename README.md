@@ -183,10 +183,13 @@ reportImageRelease(
 1. Recommended IDE : Intellij IDEA
 2. Run locally with: `mvn hpi:run -Djetty.port=5000`
 3. Create HPI package with: `mvn hpi:hpi`
-4. Release with: `mvn release:prepare release:perform -Dusername=juretta -Dpassword=******`
+4. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
 
-## Licence
+## Author & Licence
 
-GNU GENERAL PUBLIC LICENSE
+This plugin is provided by Rémi BELLO \
+https://github.com/rbello/jenkins-plugin-devops-portal
 
+**Licence** \
+GNU GENERAL PUBLIC LICENSE \
 Version 3, 29 June 2007
