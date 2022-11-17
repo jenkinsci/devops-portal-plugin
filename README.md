@@ -13,6 +13,8 @@ A Jenkins Dashboard Plugin with many features :
     - Gather useful information in the same place: **artifacts** built and size of them, **unit tests** performed,
       **code quality** metrics, application **performance** metrics and published containers **images**
 
+Current supported translations: 🇫🇷 🇬🇧
+
 ## ⚡ Manage Environments
 
 In Jenkins Administration, a link allows to configure managed environments:
@@ -32,51 +34,115 @@ You have to provide:
 
 ## 🚀 Manage Run Operations
 
+### Dashboard
+
 Since you configured your environments, you can create a dashboard.
 
 Create new dashboard using: `View` > `+ button` > View type: `Run Dashboard`
 
-Dashboard :
+Example dashboard :
 
-![xxxx](.doc/RunDashboard.png)
+![Run Dashboard](.doc/RunDashboard.png)
 
-### Report run operation using Jenkins GUI
+The dashboard provides some information:
 
-![xxxx](.doc/RunOperationReporter.png)
+- Display all environments grouped by categories
+- Display a status icon according to monitoring result
 
-### Report run operation with pipeline script
+|                        Icon                         | Meaning                                                        |
+|:---------------------------------------------------:|----------------------------------------------------------------|
+| ![Icon Success](.doc/MonitoringStatusAvailable.png) | Successful connection                                          |
+|  ![Icon Failure](.doc/MonitoringStatusFailure.png)  | Connection failure                                             |
+|    ![Icon Alert](.doc/MonitoringStatusAlert.png)    | HTTPS configuration issue (expired or self signed certificate) |
+| ![Icon Disabled](.doc/MonitoringStatusDisabled.png) | Monitoring is disabled                                         |
+
+- Show the certificate expiration (if the given monitoring URL is HTTPS)
+- Display the last deployment information: application, version and jenkins run
+- Also display the deployment tags, which allows to describe the deployment process
+  (Eg. `ansible`, `ssh`, `ftp`)
+
+**Note**: you can filter environment categories to display on the dashboard using `Edit View`. Regular expressions are supported.
+
+Once the dashboard is created, you can feed it using a **reporter**.
+
+### Report a run operation using the Jenkins interfaces (GUI)
+
+You can report run operations, such as Deployment, using a special build task.
+In the `Configure` screen of a job, click on `Add Build Step` button and choose
+`Record a run operation`.
+
+![Run Operation Reporter](.doc/RunOperationReporter.png)
+
+You have to fill in:
+
+- The target environment name (declared previously in `Manage Environments`)
+- The name of concerned application
+- The version of concerned application
+- The performed operation:
+  - `DEPLOYMENT`
+  - `ROLLBACK`
+- A success/failure status
+- Optionally, you can add tags to describe the operation (comma-separated)
+
+### Report run operation with pipeline script (DSL)
+
+The report can also be made using a Groovy Pipeline script using this command:
 
 ```
 reportRunOperation(
     targetService: string,      // Name for target environnement to deploy to
     applicationName: string,    // Name of application deployed
     applicationVersion: string, // Version of application deployed
-    operation: string,          // Operation code
+    operation: string,          // Operation name
     status: boolean,            // Status
     tags?: string               // Optional: comma-separated list
 )
 ```
 
-Operation codes:
-
-- DEPLOYMENT
-- ROLLBACK
-
 ## 📦 Manage Build Activities
+
+This plugin also allow to track many metrics of the software development.
 
 Create new dashboard using: `View` > `+ button` > View type: `Build Dashboard`
 
-Dashboard :
+Example Dashboard :
 
-![xxxx](.doc/BuildDashboard.png)
+![Build Dashboard](.doc/BuildDashboard.png)
 
-### Report build activity using Jenkins GUI
+The dashboard bring together much information:
 
-![xxxx](.doc/BuildActivityReporter.png)
+- List all applications and versions
+- Display last run with status
+- If possible, display related VCS branch and commit (only GIT actually)
+- Display the last deployment target environment
+- Also, it can display a lot of activities:
+  - **Build artifacts**: artifact file size
+  - **Unit test report**: number of passed/failed/skipped tests, coverage and score
+  - **Code Quality & Security Audit**: designed to gather SonarQube metrics into Jenkins, it displays the Quality Gate
+    status, number of bugs/vulnerabilities/hotspot, code duplication and code volume. Hence, it also
+    displays scores according to the quality gate.
+  - **Performance/load testing report**: score and Quality Gate status, number of load request and
+  the average response time (in milliseconds)
+  - **Released container image**: keep track of container images built and published to a registry
 
-### Report build activity with pipeline script
+**Note**: you can filter applications to display on the dashboard using `Edit View`. Regular expressions are supported.
 
-Pipeline script :
+Once the dashboard is created, you can feed it using a **reporter**.
+
+### Report a build activity using Jenkins Interface (GUI)
+
+You can report build activities using a special build task.
+In the `Configure` screen of a job, click on `Add Build Step` button and choose one off:
+
+- Record a build report
+- Record a UT report
+- Record a quality audit
+- Record a performance test
+- Record an image release
+
+### Report build activity with pipeline script (DSL)
+
+The report can also be made using a Groovy Pipeline script using these commands:
 
 ```
 reportBuild(
@@ -112,11 +178,15 @@ reportImageRelease(
 )
 ```
 
-## Contribute
+## Setup as Developer
 
-1. Checkout project
-2. Recommended IDE : Intellij IDEA
-3. Run with: `mvn hpi:run -Djetty.port=5000`
-4. Release with: `mvn package`
+1. Recommended IDE : Intellij IDEA
+2. Run locally with: `mvn hpi:run -Djetty.port=5000`
+3. Create HPI package with: `mvn hpi:hpi`
+4. Release with: `mvn release:prepare release:perform -Dusername=juretta -Dpassword=******`
 
-Current supported translations: 🇫🇷 🇬🇧
+## Licence
+
+GNU GENERAL PUBLIC LICENSE
+
+Version 3, 29 June 2007
