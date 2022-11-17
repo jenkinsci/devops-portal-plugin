@@ -3,6 +3,11 @@ package io.jenkins.plugins.devopsportal.models;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+/**
+ * A persistent record of a QUALITY_AUDIT activity.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class QualityAuditActivity extends AbstractActivity {
 
     private int bugCount;

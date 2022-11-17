@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 /**
- * A persistent record of an application service.
+ * A persistent record of an Application Environment.
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */

@@ -6,6 +6,11 @@ import jenkins.model.Jenkins;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * Utility class to read data from Jenkins.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public final class JenkinsUtils {
 
     public static Optional<Run<?, ?>> getBuild(String jobName, String branchName, String buildNumber) {

@@ -3,6 +3,11 @@ package io.jenkins.plugins.devopsportal.models;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+/**
+ * A persistent record of a PERFORMANCE_TEST activity.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class PerformanceTestActivity extends AbstractActivity {
 
     private long requestCount;

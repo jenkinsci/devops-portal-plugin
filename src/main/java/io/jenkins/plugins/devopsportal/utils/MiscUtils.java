@@ -2,6 +2,11 @@ package io.jenkins.plugins.devopsportal.utils;
 
 import java.text.DecimalFormat;
 
+/**
+ * Utility class with miscellaneous functions
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public final class MiscUtils {
 
     public static String readableFileSize(long size) {

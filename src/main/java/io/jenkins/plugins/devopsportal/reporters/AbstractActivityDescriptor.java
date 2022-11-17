@@ -8,6 +8,11 @@ import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import org.kohsuke.stapler.QueryParameter;
 
+/**
+ * Abstract class for BUILD activity reporters descriptors.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public abstract class AbstractActivityDescriptor extends BuildStepDescriptor<Builder> {
 
     private final String displayName;

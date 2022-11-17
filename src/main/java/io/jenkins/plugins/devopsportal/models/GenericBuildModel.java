@@ -3,6 +3,11 @@ package io.jenkins.plugins.devopsportal.models;
 import hudson.EnvVars;
 import hudson.model.Run;
 
+/**
+ * Provide a standard interface to all persistent objects which are associated with a run.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public interface GenericBuildModel {
 
     void setBuildJob(String buildJob);

@@ -15,6 +15,11 @@ import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 
+/**
+ * Abstract class for BUILD activity reporters.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public abstract class AbstractActivityReporter<T extends AbstractActivity> extends Builder implements SimpleBuildStep {
 
     private String applicationName;

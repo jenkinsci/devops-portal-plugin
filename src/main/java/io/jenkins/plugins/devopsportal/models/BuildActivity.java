@@ -6,6 +6,11 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.nio.file.Paths;
 
+/**
+ * A persistent record of a BUILD activity.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class BuildActivity extends AbstractActivity {
 
     private String artifactFileName;

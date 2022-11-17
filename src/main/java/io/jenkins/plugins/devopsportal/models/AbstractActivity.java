@@ -5,6 +5,11 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.io.Serializable;
 import java.time.Instant;
 
+/**
+ * Abstract class for BUILD activity persistent data.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public abstract class AbstractActivity implements Serializable {
 
     private final ActivityCategory category;

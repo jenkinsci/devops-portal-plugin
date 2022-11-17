@@ -6,6 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Utility class for date & time manipulation
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public final class TimeAgoUtils {
 
     public static final List<Long> TIMES = Arrays.asList(

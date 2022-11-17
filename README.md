@@ -132,7 +132,7 @@ Once the dashboard is created, you can feed it using a **reporter**.
 ### Report a build activity using Jenkins Interface (GUI)
 
 You can report build activities using a special build task.
-In the `Configure` screen of a job, click on `Add Build Step` button and choose one off:
+In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
 - Record a build report
 - Record a UT report
@@ -180,12 +180,14 @@ reportImageRelease(
 
 ## Setup as Developer
 
-1. Recommended IDE is **Intellij IDEA**
-2. JDK 11 is preferred (newer JDK may introduce serialization issues)
-3. The minimal Jenkins version is: 2.346.1
-4. Run locally with: `mvn hpi:run -Djetty.port=5000`
-5. Create HPI package with: `mvn hpi:hpi`
-6. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
+1. Checkout from: https://github.com/rbello/jenkins-plugin-devops-portal.git
+2. Recommended IDE is **Intellij IDEA**
+3. JDK 11 is preferred (newer JDK may introduce serialization issues)
+4. The minimal Jenkins version is: 2.346.1
+5. Run locally with: `mvn hpi:run -Djetty.port=5000`
+6. Create HPI package with: `mvn hpi:hpi`
+7. Suggest any change by Forking the project and opening a Pull Request
+8. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
 
 ## Author & Licence
 

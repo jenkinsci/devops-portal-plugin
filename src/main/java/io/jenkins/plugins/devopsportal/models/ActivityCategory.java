@@ -1,5 +1,10 @@
 package io.jenkins.plugins.devopsportal.models;
 
+/**
+ * List of all BUILD activities.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public enum ActivityCategory {
 
     BUILD(BuildActivity.class),

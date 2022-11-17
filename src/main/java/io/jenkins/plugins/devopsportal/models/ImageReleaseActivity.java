@@ -8,6 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A persistent record of a IMAGE_RELEASE activity.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class ImageReleaseActivity extends AbstractActivity {
 
     private String registryName;
