@@ -1,26 +1,40 @@
 # DevOps Portal Jenkins Plugin
 
-A Jenkins Dashboard Plugin with many features
+A Jenkins Dashboard Plugin with many features :
+
+1. Offer a specific **dashboard** to track 🚀 **RUN operations**
+    - Environments **monitoring** (service availability)
+    - HTTPS certificate validity and expiration monitoring
+    - **Operations** tracking, like Deployments or Rollback (target environment, application and version, related run)
+2. Offer a specific **dashboard** to bring together all applications 📦 **BUILD activities**
+    - Display all built **applications with versions**
+    - Link to the last build run
+    - Last application **deployment** information are also displayed
+    - Gather useful information in the same place: **artifacts** built and size of them, **unit tests** performed,
+      **code quality** metrics, application **performance** metrics and published containers **images**
 
 ## ⚡ Manage Environments
 
-In Jenkins configuration :
+In Jenkins Administration, a link allows to configure managed environments:
 
 ![xxxx](.doc/PluginManagementLink.png)
 
-Configure environments :
+Then you can configure each environment to manage:
 
 ![xxxx](.doc/ServiceConfiguration.png)
 
+You have to provide:
 - An unique label
 - A category (like production, staging, ...)
 - An optional monitoring URL
 - A time interval (in minutes) between two monitoring checks
-- A feature to accept invalid certificates (for monitoring URL)
+- A flag to accept invalid certificates (for monitoring URL)
 
 ## 🚀 Manage Run Operations
 
-**View** > **+ button** > View type: **Run Dashboard**
+Since you configured your environments, you can create a dashboard.
+
+Create new dashboard using: `View` > `+ button` > View type: `Run Dashboard`
 
 Dashboard :
 
@@ -50,7 +64,7 @@ Operation codes:
 
 ## 📦 Manage Build Activities
 
-**View** > **+ button** > View type: **Build Dashboard**
+Create new dashboard using: `View` > `+ button` > View type: `Build Dashboard`
 
 Dashboard :
 
@@ -98,18 +112,11 @@ reportImageRelease(
 )
 ```
 
-Activity codes :
+## Contribute
 
-- `BUILD` Application build
-- `UT` Unit Tests
-- `QA` Quality Audit
-- `SECU` Security Audit
-- `DEPLOY` Deployment
-- `PERF` Performance Tests
+1. Checkout project
+2. Recommended IDE : Intellij IDEA
+3. Run with: `mvn hpi:run -Djetty.port=5000`
+4. Release with: `mvn package`
 
-Status codes :
-
-- `PENDING` Pending
-- `DONE` Done
-- `UNSTABLE` Unstable
-- `FAIL` Fail
+Current supported translations: 🇫🇷 🇬🇧

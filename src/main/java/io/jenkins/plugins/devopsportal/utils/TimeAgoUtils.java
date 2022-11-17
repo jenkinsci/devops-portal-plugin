@@ -39,9 +39,9 @@ public final class TimeAgoUtils {
             }
         }
         if ("".equals(res.toString()))
-            return Messages.TimeAgo_Prefix() + " " + getUnit(5) + " " + Messages.TimeAgo_Suffix();
+            return Messages.TimeAgo_Prefix() + " 0 " + getUnit(5) + " " + Messages.TimeAgo_Suffix();
         else
-            return Messages.TimeAgo_Prefix() + " " + res + Messages.TimeAgo_Suffix();
+            return Messages.TimeAgo_Prefix() + " " + res + " " + Messages.TimeAgo_Suffix();
     }
 
 }

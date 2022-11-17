@@ -101,7 +101,7 @@
         }
     </style>
     <h1>
-        Build: ${it.displayName}
+        ${it.displayName}
     </h1>
     <table class="build-dashboard">
         <tbody>

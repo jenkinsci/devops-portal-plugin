@@ -70,7 +70,7 @@
     </style>
 
     <h1>
-        Run: ${it.displayName}
+        ${it.displayName}
     </h1>
     <table class="run-dashboard">
         <tbody>
