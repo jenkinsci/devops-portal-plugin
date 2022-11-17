@@ -180,10 +180,12 @@ reportImageRelease(
 
 ## Setup as Developer
 
-1. Recommended IDE : Intellij IDEA
-2. Run locally with: `mvn hpi:run -Djetty.port=5000`
-3. Create HPI package with: `mvn hpi:hpi`
-4. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
+1. Recommended IDE is **Intellij IDEA**
+2. JDK 11 is preferred (newer JDK may introduce serialization issues)
+3. The minimal Jenkins version is: 2.346.1
+4. Run locally with: `mvn hpi:run -Djetty.port=5000`
+5. Create HPI package with: `mvn hpi:hpi`
+6. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
 
 ## Author & Licence
 
