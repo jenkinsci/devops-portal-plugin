@@ -73,7 +73,7 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Audit') {
             steps {
                 script {
                     reportDependenciesAnalysis(

@@ -218,16 +218,19 @@
                                 <strong>${activity.applicationComponent}</strong>
                             </td>
                             <td>
-                                <span class="activity-score score-${activity.score}">
-                                    ${activity.score}
-                                </span>
-                                ${%quality_item_coverage}
-                                <strong>${activity.testCoverage*100}%</strong>
+                                <j:if test="${activity.qualityGatePassed}">
+                                    <span class="activity-quality-gate passed">${%quality_gate_passed}</span>
+                                </j:if>
+                                <j:if test="${!activity.qualityGatePassed}">
+                                    <span class="activity-quality-gate failed">${%quality_gate_failed}</span>
+                                </j:if>
+
                             </td>
                             <td colspan="2">
                                 ${%quality_item_passed} <strong>${activity.testsPassed}</strong>
                                 ${%quality_item_failed} <strong>${activity.testsFailed}</strong>
                                 ${%quality_item_ignored} <strong>${activity.testsIgnored}</strong>
+                                ${%quality_item_coverage} <strong>${activity.testCoverage*100}%</strong>
                             </td>
                         </tr>
                     </j:forEach>

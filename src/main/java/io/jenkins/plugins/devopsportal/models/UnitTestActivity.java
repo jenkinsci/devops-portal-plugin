@@ -56,4 +56,8 @@ public class UnitTestActivity extends AbstractActivity {
         this.testsIgnored = testsIgnored;
     }
 
+    public boolean isQualityGatePassed() {
+        return getScore() == ActivityScore.A;
+    }
+
 }
