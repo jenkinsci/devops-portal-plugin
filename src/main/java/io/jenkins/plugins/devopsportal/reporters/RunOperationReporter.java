@@ -15,7 +15,7 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.RunOperations;
 import io.jenkins.plugins.devopsportal.models.BuildStatus;
-import io.jenkins.plugins.devopsportal.models.GenericBuildModel;
+import io.jenkins.plugins.devopsportal.models.GenericRunModel;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import io.jenkins.plugins.devopsportal.models.ServiceOperation;
 import jenkins.model.Jenkins;
@@ -125,7 +125,7 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
                 return;
             }
 
-            GenericBuildModel.updateRecordFromRun(record, run, env);
+            GenericRunModel.updateRecordFromRun(record, run, env);
             record.setServiceId(service.getId());
             record.setOperation(operation);
             record.setSuccess(success);
@@ -162,7 +162,7 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         public FormValidation doCheckTargetService(@QueryParameter String targetService) {
-            if (targetService.trim().isEmpty()) {
+            if (targetService == null || targetService.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
             }
             if (!getServiceDescriptor().getService(targetService).isPresent()) {
@@ -172,7 +172,7 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
         }
 
         public FormValidation doCheckApplicationName(@QueryParameter String applicationName) {
-            if (applicationName.trim().isEmpty()) {
+            if (applicationName == null || applicationName.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
             }
             if (!getBuildStatusDescriptor().isApplicationExists(applicationName)) {
@@ -182,7 +182,7 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
         }
 
         public FormValidation doCheckApplicationVersion(@QueryParameter String applicationVersion) {
-            if (applicationVersion.trim().isEmpty()) {
+            if (applicationVersion == null || applicationVersion.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
             }
             return FormValidation.ok();
@@ -192,13 +192,19 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
             if (operation.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
             }
+            try {
+                RunOperations.valueOf(operation);
+            }
+            catch (IllegalArgumentException ex) {
+                return FormValidation.error(Messages.FormValidation_Error_InvalidValue());
+            }
             return FormValidation.ok();
         }
 
         public ListBoxModel doFillOperationItems() {
             ListBoxModel list = new ListBoxModel();
-            for (RunOperations activity : RunOperations.values()) {
-                list.add(activity.name(), activity.name());
+            for (RunOperations operation : RunOperations.values()) {
+                list.add(operation.name(), operation.name());
             }
             return list;
         }

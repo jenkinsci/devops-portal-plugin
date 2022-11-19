@@ -1,6 +1,9 @@
 package io.jenkins.plugins.devopsportal.reporters;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.TaskListener;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
@@ -54,7 +57,8 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
     }
 
     @Override
-    public void updateActivity(PerformanceTestActivity activity) {
+    public void updateActivity(@NonNull PerformanceTestActivity activity,
+                               @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setRequestCount(requestCount);
         activity.setAverageResponseTime(averageResponseTime);
         activity.setQualityGatePassed(qualityGatePassed);

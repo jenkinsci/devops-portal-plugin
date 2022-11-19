@@ -7,10 +7,7 @@ import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
-import io.jenkins.plugins.devopsportal.models.AbstractActivity;
-import io.jenkins.plugins.devopsportal.models.ActivityCategory;
-import io.jenkins.plugins.devopsportal.models.BuildStatus;
-import io.jenkins.plugins.devopsportal.models.GenericBuildModel;
+import io.jenkins.plugins.devopsportal.models.*;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -20,7 +17,8 @@ import org.kohsuke.stapler.DataBoundSetter;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public abstract class AbstractActivityReporter<T extends AbstractActivity> extends Builder implements SimpleBuildStep {
+public abstract class AbstractActivityReporter<T extends AbstractActivity> extends Builder
+        implements SimpleBuildStep, GenericActivityHandler<T> {
 
     private String applicationName;
     private String applicationVersion;
@@ -71,10 +69,10 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
         getBuildStatusDescriptor().update(applicationName, applicationVersion, record -> {
 
             // Generic record data
-            GenericBuildModel.updateRecordFromRun(record, run, env);
+            GenericRunModel.updateRecordFromRun(record, run, env);
 
             // Create or update AbstractActivity
-            record.updateActivity(applicationComponent, getActivityCategory(), this::updateActivity);
+            record.updateActivity(applicationComponent, getActivityCategory(), listener, env, this);
 
             listener.getLogger().printf(
                     "Report build activity '%s' for application '%s' version %s component '%s'%n",
@@ -86,8 +84,6 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
 
         });
     }
-
-    public abstract void updateActivity(T activity);
 
     public abstract ActivityCategory getActivityCategory();
 

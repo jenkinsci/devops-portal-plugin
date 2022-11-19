@@ -1,6 +1,9 @@
 package io.jenkins.plugins.devopsportal.reporters;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ActivityScore;
@@ -63,7 +66,8 @@ public class UnitTestActivityReporter extends AbstractActivityReporter<UnitTestA
     }
 
     @Override
-    public void updateActivity(UnitTestActivity activity) {
+    public void updateActivity(@NonNull UnitTestActivity activity, @NonNull TaskListener listener,
+                               @NonNull EnvVars env) {
         activity.setTestCoverage(testCoverage);
         activity.setTestsPassed(testsPassed);
         activity.setTestsFailed(testsFailed);

@@ -149,9 +149,7 @@ reportBuild(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
     applicationComponent: string   // Name of application component built
-    artifactFileName?: string,     // Optional: full path to generated artifact
-    artifactFileSize?: long,       // Optional: file size of generated artifact
-    dependenciesToUpdate?: int     // Optional: nomber of outdated dependencies
+    artifactFileName: string       // Full path to generated artifact
 )
 ```
 
@@ -164,6 +162,16 @@ reportUnitTest(
     testsPassed?: int,             // Optional: number of passed tests
     testsFailed?: int,             // Optional: number of failed tests
     testsIgnored?: int             // Optional: number of skipped tests
+)
+```
+
+```
+reportDependenciesAnalysis(
+    applicationName: string,       // Name of application built
+    applicationVersion: string,    // Version of application built
+    applicationComponent: string   // Name of application component built
+    baseDirectory: string,         // Path to component source code folder (containing dependencies file)
+    manager: string                // Choose amoung: 'MAVEN' or 'NPM'
 )
 ```
 
@@ -197,3 +205,10 @@ https://github.com/rbello/jenkins-plugin-devops-portal
 **Licence** \
 GNU GENERAL PUBLIC LICENSE \
 Version 3, 29 June 2007
+
+## TODO
+
+- [ ] Encode FR translations
+- [ ] Ensure JenkinsUtils.getBuild() works with: Folders, Multibranch Pipelines
+- [ ] TU
+- [ ] Dark theme compatibility

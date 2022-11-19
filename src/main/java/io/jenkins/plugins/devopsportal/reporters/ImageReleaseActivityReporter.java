@@ -1,6 +1,9 @@
 package io.jenkins.plugins.devopsportal.reporters;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ImageReleaseActivity;
@@ -52,7 +55,8 @@ public class ImageReleaseActivityReporter extends AbstractActivityReporter<Image
     }
 
     @Override
-    public void updateActivity(ImageReleaseActivity activity) {
+    public void updateActivity(@NonNull ImageReleaseActivity activity, @NonNull TaskListener listener,
+                               @NonNull EnvVars env) {
         activity.setRegistryName(registryName);
         activity.setImageName(imageName);
         activity.setTags(tags);

@@ -73,6 +73,20 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                script {
+                    reportDependenciesAnalysis(
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION,
+                        applicationComponent: "plugin",
+                        baseDirectory: "",
+                        manager: "MAVEN"
+                    )
+                }
+            }
+        }
+
         stage('Publish') {
             steps {
                 script {

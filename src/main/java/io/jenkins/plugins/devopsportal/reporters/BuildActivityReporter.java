@@ -1,6 +1,10 @@
 package io.jenkins.plugins.devopsportal.reporters;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.TaskListener;
+import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.BuildActivity;
@@ -8,6 +12,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.File;
 
@@ -19,7 +24,6 @@ import java.io.File;
 public class BuildActivityReporter extends AbstractActivityReporter<BuildActivity> {
 
     private String artifactFileName;
-    private int dependenciesToUpdate;
 
     @DataBoundConstructor
     public BuildActivityReporter(String applicationName, String applicationVersion, String applicationComponent) {
@@ -35,25 +39,19 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
         this.artifactFileName = artifactFileName;
     }
 
-    public int getDependenciesToUpdate() {
-        return dependenciesToUpdate;
-    }
-
-    @DataBoundSetter
-    public void setDependenciesToUpdate(int dependenciesToUpdate) {
-        this.dependenciesToUpdate = dependenciesToUpdate;
-    }
-
     @Override
-    public void updateActivity(BuildActivity activity) {
+    public void updateActivity(@NonNull BuildActivity activity, @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setArtifactFileName(artifactFileName);
         if (artifactFileName != null) {
+            // TODO According to workspace
             File file = new File(artifactFileName);
             if (file.exists()) {
-                activity.setArtifactFileSize(file.length());
+                try {
+                    activity.setArtifactFileSize(file.length());
+                }
+                catch (Exception ignored) {}
             }
         }
-        activity.setDependenciesToUpdate(dependenciesToUpdate);
     }
 
     @Override
@@ -67,6 +65,13 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
 
         public DescriptorImpl() {
             super(Messages.BuildActivityReporter_DisplayName());
+        }
+
+        public FormValidation doCheckArtifactFileName(@QueryParameter String artifactFileName) {
+            if (artifactFileName == null || artifactFileName.trim().isEmpty()) {
+                return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
+            }
+            return FormValidation.ok();
         }
 
     }

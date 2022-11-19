@@ -11,7 +11,10 @@
         <f:textbox />
     </f:entry>
 
-    <f:entry title="${%ArtifactFileName_Label}" field="artifactFileName">
+    <f:entry title="${%Manager_Label}" field="manager">
+        <f:select />
+    </f:entry>
+    <f:entry title="${%BaseDirectory_Label}" field="baseDirectory" description="${%BaseDirectory_Desc}">
         <f:textbox />
     </f:entry>
 

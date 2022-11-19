@@ -15,7 +15,6 @@ public class BuildActivity extends AbstractActivity {
 
     private String artifactFileName;
     private long artifactFileSize;
-    private int dependenciesToUpdate;
 
     @DataBoundConstructor
     public BuildActivity(String applicationComponent) {
@@ -38,15 +37,6 @@ public class BuildActivity extends AbstractActivity {
     @DataBoundSetter
     public void setArtifactFileSize(long artifactFileSize) {
         this.artifactFileSize = artifactFileSize;
-    }
-
-    public int getDependenciesToUpdate() {
-        return dependenciesToUpdate;
-    }
-
-    @DataBoundSetter
-    public void setDependenciesToUpdate(int dependenciesToUpdate) {
-        this.dependenciesToUpdate = dependenciesToUpdate;
     }
 
     public String getArtifactFileNameStr() {

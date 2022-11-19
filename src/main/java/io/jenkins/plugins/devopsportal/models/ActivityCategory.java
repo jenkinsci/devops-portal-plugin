@@ -10,6 +10,7 @@ public enum ActivityCategory {
     BUILD(BuildActivity.class),
     UNIT_TEST(UnitTestActivity.class),
     QUALITY_AUDIT(QualityAuditActivity.class),
+    DEPENDENCIES_ANALYSIS(DependenciesAnalysisActivity.class),
     PERFORMANCE_TEST(PerformanceTestActivity.class),
     IMAGE_RELEASE(ImageReleaseActivity.class);
 

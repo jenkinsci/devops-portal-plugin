@@ -8,7 +8,7 @@ import hudson.model.Run;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public interface GenericBuildModel {
+public interface GenericRunModel {
 
     void setBuildJob(String buildJob);
     void setBuildNumber(String buildJob);
@@ -16,7 +16,7 @@ public interface GenericBuildModel {
     void setBuildBranch(String buildJob);
     void setBuildCommit(String buildJob);
 
-    static void updateRecordFromRun(GenericBuildModel record, Run<?,?> run, EnvVars env) {
+    static void updateRecordFromRun(GenericRunModel record, Run<?,?> run, EnvVars env) {
         record.setBuildJob(env.get("JOB_NAME"));
         record.setBuildNumber(env.get("BUILD_NUMBER"));
         record.setBuildURL(env.get("RUN_DISPLAY_URL"));

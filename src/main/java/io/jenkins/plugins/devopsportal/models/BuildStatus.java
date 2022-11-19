@@ -1,10 +1,12 @@
 package io.jenkins.plugins.devopsportal.models;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.util.CopyOnWriteList;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.utils.JenkinsUtils;
@@ -26,7 +28,7 @@ import java.util.function.Consumer;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class BuildStatus implements Describable<BuildStatus>, Serializable, GenericBuildModel {
+public class BuildStatus implements Describable<BuildStatus>, Serializable, GenericRunModel {
 
     private String applicationName;
     private String applicationVersion;
@@ -184,7 +186,11 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends AbstractActivity> void updateActivity(String applicationComponent, ActivityCategory category, Consumer<T> updater) {
+    public <T extends AbstractActivity> void updateActivity(@NonNull String applicationComponent,
+                                                            @NonNull ActivityCategory category,
+                                                            @NonNull TaskListener listener,
+                                                            @NonNull EnvVars env,
+                                                            @NonNull GenericActivityHandler<T> updater) {
         T activity = (T) activities.getOrDefault(category, new ArrayList<>())
                 .stream()
                 .filter(item -> item.getApplicationComponent().equals(applicationComponent))
@@ -194,13 +200,16 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
             try {
                 assert category.getClazz() != null;
                 activity = (T) category.getClazz().getConstructor(String.class).newInstance(applicationComponent);
+                if (!activities.containsKey(category)) {
+                    activities.put(category, new ArrayList<>());
+                }
                 activities.get(category).add(activity);
             }
             catch (ReflectiveOperationException e) {
                 throw new RuntimeException(e);
             }
         }
-        updater.accept(activity);
+        updater.updateActivity(activity, listener, env);
         getDescriptor().save();
     }
 
