@@ -15,8 +15,16 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Build step of a project used to record a DEPENDENCIES_ANALYSIS activity.
@@ -42,6 +50,10 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     @DataBoundSetter
     public void setManager(String manager) {
         this.manager = DependenciesManager.valueOf(manager);
+    }
+
+    public void setManager(DependenciesManager manager) {
+        this.manager = manager;
     }
 
     public String getBaseDirectory() {
@@ -117,11 +129,53 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     }
 
     private static void analyseMaven(@NonNull File manifest, @NonNull TaskListener listener) {
-
+        execute(
+                manifest.getParentFile(),
+                //new String[]{ "C:\\Program Files\\JetBrains\\IntelliJ IDEA Community Edition 2022.2.3\\plugins\\maven\\lib\\maven3\\bin\\mvn", "versions:display-dependency-updates" },
+                new String[]{ "mvn", "versions:display-dependency-updates" },
+                (lines) -> {
+                    Pattern regex1 = Pattern.compile("(.*)display-dependency-updates(.*) @ (.*) ---");
+                    Pattern regex2 = Pattern.compile("\\[INFO\\]   (.*) (\\.+) (.*) -> (.*)");
+                    int n = 0;
+                    String component = null;
+                    for (String str : lines) {
+                        Matcher matcher1 = regex1.matcher(str);
+                        if (matcher1.find()) {
+                            component = matcher1.group(3);
+                        }
+                        else if (component != null) {
+                            Matcher matcher2 = regex2.matcher(str);
+                            if (matcher2.find()) {
+                                n++;
+                                //REPOSITORY.add(new Record(component, matcher2.group(1), matcher2.group(3), matcher2.group(4)));
+                            }
+                        }
+                    }
+                    return n;
+                }
+        );
     }
 
     private static void analyseNpm(@NonNull File manifest, @NonNull TaskListener listener) {
 
+    }
+
+    public static int execute(File workingDir, String[] cmd, Function<List<String>, Integer> reader){
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            Process process = runtime.exec(cmd, null, workingDir);
+            List<String> list = new ArrayList<>();
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String s;
+                while ((s = input.readLine()) != null) {
+                    list.add(s);
+                }
+            }
+            return reader.apply(list);
+        }
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
