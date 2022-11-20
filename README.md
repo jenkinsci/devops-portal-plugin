@@ -212,3 +212,12 @@ Version 3, 29 June 2007
 - [ ] Ensure JenkinsUtils.getBuild() works with: Folders, Multibranch Pipelines
 - [ ] TU
 - [ ] Dark theme compatibility
+- [ ] Synchronize I/O methods
+- [x] reportBuild()
+- [ ] reportUnitTest() : remove testCoverage
+- [ ] reportSurefireTest()
+- [ ] reportQualityAudit()
+- [ ] reportDependenciesAnalysis()
+- [ ] reportPerformanceTest()
+- [ ] reportJmeterPerformanceTest()
+- [x] reportImageRelease()

@@ -129,13 +129,12 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     }
 
     private static void analyseMaven(@NonNull File manifest, @NonNull TaskListener listener) {
+        Pattern regex1 = Pattern.compile("(.*)display-dependency-updates(.*) @ (.*) ---");
+        Pattern regex2 = Pattern.compile("\\[INFO\\]   (.*) (\\.+) (.*) -> (.*)");
         execute(
                 manifest.getParentFile(),
-                //new String[]{ "C:\\Program Files\\JetBrains\\IntelliJ IDEA Community Edition 2022.2.3\\plugins\\maven\\lib\\maven3\\bin\\mvn", "versions:display-dependency-updates" },
                 new String[]{ "mvn", "versions:display-dependency-updates" },
                 (lines) -> {
-                    Pattern regex1 = Pattern.compile("(.*)display-dependency-updates(.*) @ (.*) ---");
-                    Pattern regex2 = Pattern.compile("\\[INFO\\]   (.*) (\\.+) (.*) -> (.*)");
                     int n = 0;
                     String component = null;
                     for (String str : lines) {
