@@ -24,6 +24,10 @@ pipeline {
 
     agent any
 
+    tools {
+        maven '3'
+    }
+
     environment {
         APPLICATION_NAME = "jenkins-plugin-devops-portal"
         APPLICATION_VERSION = "1.0.0"
