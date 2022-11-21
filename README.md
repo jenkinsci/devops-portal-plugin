@@ -63,7 +63,7 @@ The dashboard provides some information:
 
 **Note**: you can filter environment categories to display on the dashboard using `Edit View`. Regular expressions are supported.
 
-Once the dashboard is created, you can feed it using a **reporter**.
+Once the dashboard is created, you can feed it using an **Operation Reporter**.
 
 #### Report a run operation using the Jenkins interfaces (GUI)
 
@@ -128,7 +128,7 @@ The dashboard bring together much information:
 
 **Note**: you can filter applications to display on the dashboard using `Edit View`. Regular expressions are supported.
 
-Once the dashboard is created, you can feed it using a **reporter**.
+Once the dashboard is created, you can feed it using an **Activity Reporter**.
 
 ### <a name="activity-build"></a> Activity: Artifact build
 
