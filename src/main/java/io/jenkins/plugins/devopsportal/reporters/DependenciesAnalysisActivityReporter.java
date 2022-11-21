@@ -10,19 +10,18 @@ import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.DependenciesAnalysisActivity;
 import io.jenkins.plugins.devopsportal.models.DependenciesManager;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,12 +47,16 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     }
 
     @DataBoundSetter
-    public void setManager(String manager) {
-        this.manager = DependenciesManager.valueOf(manager);
-    }
-
-    public void setManager(DependenciesManager manager) {
-        this.manager = manager;
+    public void setManager(Object manager) {
+        if (manager instanceof String) {
+            this.manager = DependenciesManager.valueOf((String) manager);
+        }
+        else if (manager instanceof DependenciesManager) {
+            this.manager = (DependenciesManager) manager;
+        }
+        else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public String getBaseDirectory() {
@@ -86,95 +89,131 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     @Override
     public void updateActivity(@NonNull DependenciesAnalysisActivity activity, @NonNull TaskListener listener,
                                @NonNull EnvVars env) {
-        File dir = new File(env.get("WORKSPACE"), baseDirectory);
+        final File dir = new File(env.get("WORKSPACE"), baseDirectory);
         if (!dir.exists() || !dir.isDirectory()) {
             listener.getLogger().println(Messages.DependenciesAnalysisActivityReporter_Error_BaseDirectoryNotReadable()
                     .replace("%folder%", baseDirectory));
         }
         else {
+            Map<String, List<Record>> result = null;
             switch (manager) {
-                case MAVEN: execute(DependenciesManager.MAVEN, dir, listener,
-                        DependenciesAnalysisActivityReporter::analyseMaven);
-                break;
-                case NPM: execute(DependenciesManager.NPM, dir, listener,
-                        DependenciesAnalysisActivityReporter::analyseNpm);
-                break;
+                case MAVEN:
+                    result = executeManager(
+                            DependenciesManager.MAVEN,
+                            env.getOrDefault(DependenciesManager.MAVEN.getHomeDirectoryEnvVar(), ""),
+                            dir,
+                            listener,
+                            DependenciesAnalysisActivityReporter::analyseMaven
+                    );
+                    break;
+                case NPM:
+                    result = executeManager(
+                            DependenciesManager.NPM,
+                            env.getOrDefault(DependenciesManager.NPM.getHomeDirectoryEnvVar(), ""),
+                            dir,
+                            listener,
+                            DependenciesAnalysisActivityReporter::analyseNpm
+                    );
+                    break;
                 default:
                     listener.getLogger().println(Messages.DependenciesAnalysisActivityReporter_Error_BaseDirectoryNotReadable()
                             .replace("%folder%", baseDirectory));
+            }
+            if (result != null) {
+                int outdated = 0;
+                int vulnerability = 0;
+                for (String component : result.keySet()) {
+                    listener.getLogger().println("Component: " + component);
+                    for (Record record : result.get(component)) {
+                        listener.getLogger().println(" - Dependency: " + record);
+                        if ("$VULNERABILITY".equals(component)) {
+                            vulnerability++;
+                        }
+                        else {
+                            outdated++;
+                        }
+                    }
+                }
+                activity.setOutdatedDependencies(outdated);
+                activity.setVulnerabilities(vulnerability);
             }
         }
         activity.setManager(manager);
     }
 
-    private void execute(@NonNull DependenciesManager manager, @NonNull File baseDirectory,
-                         @NonNull TaskListener listener, BiConsumer<File, TaskListener> function) {
-        File manifest = new File(baseDirectory, manager.getManifestName());
+    private Map<String, List<Record>> executeManager(@NonNull DependenciesManager manager, @NonNull String managerHomeDir,
+                                                     @NonNull File baseDirectory, @NonNull TaskListener listener,
+                                                     BiFunction<File, File, Map<String, List<Record>>> function) {
+        final File manifest = new File(baseDirectory, manager.getManifestName());
         if (!manifest.exists() || !manifest.isFile()) {
             listener.getLogger().println(Messages.DependenciesAnalysisActivityReporter_Error_ManifestFileNotReadable()
                     .replace("%file%", manifest.toString()));
-            return;
+            return null;
         }
         listener.getLogger().println(Messages.DependenciesAnalysisActivityReporter_AnalysisStarted()
                 .replace("%file%", manifest.toString())
                 .replace("%manager%", manager.getLabel()));
         try {
-            function.accept(manifest, listener);
+            return function.apply(manifest, new File(managerHomeDir));
         }
         catch (Exception ex) {
             listener.getLogger().println(Messages.DependenciesAnalysisActivityReporter_Error_AnalysisError()
                     .replace("%exception%", ex.getClass().getSimpleName())
                     .replace("%message%", ex.getMessage()));
         }
+        return null;
     }
 
-    private static void analyseMaven(@NonNull File manifest, @NonNull TaskListener listener) {
-        execute(
-                manifest.getParentFile(),
-                new String[]{ "mvn", "versions:display-dependency-updates" },
+    private static Map<String, List<Record>> analyseMaven(@NonNull File manifestFile, @NonNull File managerDir) {
+        final List<String> params = new ArrayList<>();
+        final boolean windows = System.getProperty("os.name").toLowerCase().contains("windows");
+        if (windows) {
+            params.add("cmd");
+            params.add("/k");
+            params.add("\"" + new File(managerDir, "bin/mvn").getAbsolutePath());
+        }
+        else {
+            params.add("mvn");
+        }
+        params.add("-f");
+        params.add(manifestFile.getAbsolutePath());
+        if (windows) {
+            params.add("versions:display-dependency-updates\"");
+        }
+        else {
+            params.add("versions:display-dependency-updates");
+        }
+        return MiscUtils.filterLines(
+                manifestFile.getParentFile(),
+                params.toArray(new String[0]),
+                windows,
                 (lines) -> {
-                    Pattern regex1 = Pattern.compile("(.*)display-dependency-updates(.*) @ (.*) ---");
-                    Pattern regex2 = Pattern.compile("\\[INFO\\]   (.*) (\\.+) (.*) -> (.*)");
-                    int n = 0;
+                    final Pattern regex1 = Pattern.compile("(.*)display-dependency-updates(.*) @ (.*) ---");
+                    final Pattern regex2 = Pattern.compile("\\[INFO\\]   (.*) (\\.+) (.*) -> (.*)");
+                    final Map<String, List<Record>> result = new HashMap<>();
                     String component = null;
                     for (String str : lines) {
                         Matcher matcher1 = regex1.matcher(str);
                         if (matcher1.find()) {
                             component = matcher1.group(3);
+                            result.put(component, new ArrayList<>());
                         }
                         else if (component != null) {
                             Matcher matcher2 = regex2.matcher(str);
                             if (matcher2.find()) {
-                                n++;
-                                //REPOSITORY.add(new Record(component, matcher2.group(1), matcher2.group(3), matcher2.group(4)));
+                                result.get(component).add(
+                                        new Record(component, matcher2.group(1), matcher2.group(3), matcher2.group(4))
+                                );
                             }
                         }
                     }
-                    return n;
+                    return result;
                 }
         );
     }
 
-    private static void analyseNpm(@NonNull File manifest, @NonNull TaskListener listener) {
-
-    }
-
-    public static int execute(File workingDir, String[] cmd, Function<List<String>, Integer> reader){
-        try {
-            Runtime runtime = Runtime.getRuntime();
-            Process process = runtime.exec(cmd, null, workingDir);
-            List<String> list = new ArrayList<>();
-            try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String s;
-                while ((s = input.readLine()) != null) {
-                    list.add(s);
-                }
-            }
-            return reader.apply(list);
-        }
-        catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+    private static Map<String, List<Record>> analyseNpm(@NonNull File manifestFile, @NonNull File managerDir) {
+        return null;
     }
 
     @Override
@@ -191,7 +230,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         }
 
         public ListBoxModel doFillManagerItems() {
-            ListBoxModel list = new ListBoxModel();
+            final ListBoxModel list = new ListBoxModel();
             for (DependenciesManager manager : DependenciesManager.values()) {
                 list.add(manager.getLabel(), manager.name());
             }
@@ -209,6 +248,26 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
                 return FormValidation.error(Messages.FormValidation_Error_InvalidValue());
             }
             return FormValidation.ok();
+        }
+
+    }
+
+    public static class Record {
+
+        public final String component;
+        public final String dependency;
+        public final String currentVersion;
+        public final String updateVersion;
+
+        public Record(String component, String dependency, String currentVersion, String updateVersion) {
+            this.component = component;
+            this.dependency = dependency;
+            this.currentVersion = currentVersion;
+            this.updateVersion = updateVersion;
+        }
+
+        public String toString() {
+            return String.format("%s/%s [ %s => %s ]", component, dependency, currentVersion, updateVersion);
         }
 
     }
