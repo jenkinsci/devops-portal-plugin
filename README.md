@@ -116,21 +116,21 @@ The dashboard bring together much information:
 - If possible, display related VCS branch and commit (only GIT actually)
 - Display the last deployment target environment
 - Also, it can display a lot of activities:
-  - **[Build artifacts](#activity-build)**: artifact file size
-  - **[Unit test report](#activity-ut)**: number of passed/failed/skipped tests, coverage and score
-  - **[Code Quality & Security Audit](#activity-quality)**: designed to gather SonarQube metrics into Jenkins,
-  - it displays the Quality Gate status, number of bugs/vulnerabilities/hotspot, code duplication and code
-  - volume. Hence, it also displays scores according to the quality gate.
-  - **[Dependencies Analysis report](#activity-dependencies)**: number of outdated and vulnerable dependencies
-  - **[Performance/load testing report](#activity-performance)**: score and Quality Gate status, number of load request and
-  the average response time (in milliseconds)
-  - **[Released container image](#activity-release)**: keep track of container images built and published to a registry
+  - 🔹 **[Build artifacts](#activity-build)**: artifact file size
+  - 🔹 **[Unit test report](#activity-ut)**: number of passed/failed/skipped tests, coverage and score
+  - 🔹 **[Code Quality & Security Audit](#activity-quality)**: designed to gather SonarQube metrics into Jenkins,
+    it displays the Quality Gate status, number of bugs/vulnerabilities/hotspot, code duplication and code
+    volume. Hence, it also displays scores according to the quality gate.
+  - 🔹 **[Dependencies Analysis report](#activity-dependencies)**: number of outdated and vulnerable dependencies
+  - 🔹 **[Performance/load testing report](#activity-performance)**: score and Quality Gate status, number of load request and
+    the average response time (in milliseconds)
+  - 🔹 **[Released container image](#activity-release)**: keep track of container images built and published to a registry
 
 **Note**: you can filter applications to display on the dashboard using `Edit View`. Regular expressions are supported.
 
 Once the dashboard is created, you can feed it using an **Activity Reporter**.
 
-### <a name="activity-build"></a> Activity: Artifact build
+### <a name="activity-build"></a> 🔹 Activity: Artifact build
 
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
@@ -154,7 +154,7 @@ Dashboard preview:
 
 ![ActivityBuild](.doc/ActivityBuild.png)
 
-### <a name="activity-ut"></a> Activity: Unit Test
+### <a name="activity-ut"></a> 🔹 Activity: Unit Test
 
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
@@ -189,7 +189,7 @@ Dashboard preview:
 
 ![ActivityUnitTest](.doc/ActivityUnitTest.png)
 
-###  <a name="activity-quality"></a> Activity: Code Quality audit
+###  <a name="activity-quality"></a> 🔹 Activity: Code Quality audit
 
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
@@ -206,7 +206,7 @@ Dashboard preview:
 
 ⛔ TODO
 
-###  <a name="activity-dependencies"></a> Activity: Dependency analysis
+###  <a name="activity-dependencies"></a> 🔹 Activity: Dependency analysis
 
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
@@ -233,7 +233,7 @@ Dashboard preview:
 
 ![ActivityDependenciesAnalysis](.doc/ActivityDependenciesAnalysis.png)
 
-###  <a name="activity-performance"></a> Activity: Performance test
+###  <a name="activity-performance"></a> 🔹 Activity: Performance test
 
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
@@ -250,7 +250,7 @@ Dashboard preview:
 
 ⛔ TODO
 
-###  <a name="activity-release"></a> Activity: Container image release
+###  <a name="activity-release"></a> 🔹 Activity: Container image release
 
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
