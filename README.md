@@ -220,9 +220,9 @@ Version 3, 29 June 2007
 - [ ] reportSurefireTest()
 - [ ] reportQualityAudit()
 - [ ] reportDependenciesAnalysis()
-  - [ ] Maven
+  - [x] ~~Maven~~
     - [x] ~~Dependencies~~
-    - [ ] Vulnerabilities
+    - [x] ~~Vulnerabilities~~
   - [ ] NPM
       - [ ] Dependencies
       - [ ] Vulnerabilities

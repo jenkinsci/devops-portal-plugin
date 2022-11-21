@@ -26,9 +26,9 @@ public abstract class AbstractBuildManager {
                                                            @NonNull EnvVars env);
 
     public Map<String, List<DependencyUpgrade>> getUpdateRecords(@NonNull File manifestFile,
-                                                     String managerBinaryFile,
-                                                     @NonNull TaskListener listener,
-                                                     @NonNull EnvVars env) {
+                                                                 String managerBinaryFile,
+                                                                 @NonNull TaskListener listener,
+                                                                 @NonNull EnvVars env) {
 
         // Manager binary file
         final String command = getManagerBinaryPath(managerBinaryFile, env);
@@ -37,7 +37,8 @@ public abstract class AbstractBuildManager {
             return MiscUtils.filterLines(
                     manifestFile.getParentFile(), // Work directory
                     getDependencyUpdatesCommand(manifestFile, command, env), // Shell command
-                    this::analyseOutdatedDependencies // Mapper function
+                    this::analyseOutdatedDependencies, // Mapper function
+                    "Finished at:" // Matcher to end of command
             );
         }
         catch (Exception ex) {
@@ -59,7 +60,8 @@ public abstract class AbstractBuildManager {
             return MiscUtils.filterLines(
                     manifestFile.getParentFile(), // Work directory
                     getDependencyCheckCommand(manifestFile, command, env), // Shell command
-                    this::analyseVulnerableDependencies // Mapper function
+                    this::analyseVulnerableDependencies, // Mapper function
+                    "Finished at:" // Matcher to end of command
             );
         }
         catch (Exception ex) {

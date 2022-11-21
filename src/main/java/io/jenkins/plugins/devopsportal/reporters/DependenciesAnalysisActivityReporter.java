@@ -106,8 +106,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         );
 
         // Check outdated dependencies
-        Map<String, List<DependencyUpgrade>>
-                upgrades = buildManager.getUpdateRecords(
+        Map<String, List<DependencyUpgrade>> upgrades = buildManager.getUpdateRecords(
                 manifest,
                 managerCommand,
                 listener,
@@ -116,9 +115,10 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         if (upgrades != null && upgrades.containsKey(getApplicationComponent())) {
             List<DependencyUpgrade> list = upgrades.get(getApplicationComponent());
             activity.setOutdatedDependencies(list.size());
-            for (DependencyUpgrade record : upgrades.get(getApplicationComponent())) {
+            for (DependencyUpgrade record : list) {
                 listener.getLogger().println(" - Outdated dependency: " + record);
             }
+            listener.getLogger().println(" - Total outdated dependencies: " + list.size());
         }
         else {
             activity.setOutdatedDependencies(0);
@@ -134,9 +134,10 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         if (vulnerabilities != null && vulnerabilities.containsKey("ALL")) {
             List<DependencyVulnerability> list = vulnerabilities.get("ALL");
             activity.setVulnerabilities(list.size());
-            for (DependencyVulnerability record : vulnerabilities.get(getApplicationComponent())) {
+            for (DependencyVulnerability record : list) {
                 listener.getLogger().println(" - Vulnerable dependency: " + record);
             }
+            listener.getLogger().println(" - Total vulnerable dependencies: " + list.size());
         }
         else {
             activity.setVulnerabilities(0);

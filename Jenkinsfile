@@ -48,7 +48,7 @@ pipeline {
                     reportBuild(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin",
+                        applicationComponent: "plugin-devops-portal",
                         artifactFileName: "${env.WORKSPACE}/target/plugin-devops-portal.hpi"
                     )
                 }
@@ -68,7 +68,7 @@ pipeline {
                     reportUnitTest(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin",
+                        applicationComponent: "plugin-devops-portal",
                         testsPassed: results.passed,
                         testsFailed: results.failed,
                         testsIgnored: results.ignored
@@ -84,7 +84,7 @@ pipeline {
                     reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin",
+                        applicationComponent: "plugin-devops-portal",
                         manifestFile: "pom.xml",
                         manager: "MAVEN"
                     )
@@ -98,7 +98,7 @@ pipeline {
                     reportImageRelease(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin",
+                        applicationComponent: "plugin-devops-portal",
                         registryName: "registry.mydomain.com",
                         imageName: env.APPLICATION_NAME,
                         tags: "latest,${env.APPLICATION_VERSION}"
