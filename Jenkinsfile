@@ -49,7 +49,7 @@ pipeline {
                         testsPassed: 31,
                         testsFailed: 6,
                         testsIgnored: 2,
-                        testCoverage: 51.8
+                        testCoverage: 0.51
                     )
                     reportSurefireTest(
                         applicationName: env.APPLICATION_NAME,
