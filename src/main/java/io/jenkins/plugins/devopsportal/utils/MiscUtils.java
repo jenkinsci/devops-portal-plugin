@@ -2,12 +2,10 @@ package io.jenkins.plugins.devopsportal.utils;
 
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Utility class with miscellaneous functions
@@ -93,6 +91,17 @@ public final class MiscUtils {
             thread.interrupt();;
         }
         return value.get();
+    }
+
+    public static List<String> split(String value, String separator) {
+        if (value != null && !value.isEmpty()) {
+            return Arrays
+                    .stream(value.split(separator))
+                    .map(String::trim)
+                    .filter(tag -> !tag.isEmpty())
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
 }

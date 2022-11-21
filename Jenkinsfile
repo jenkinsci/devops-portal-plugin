@@ -64,14 +64,21 @@ pipeline {
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B test"
                     }*/
-                    def results = getTestResults('target/surefire-reports')
+                    //def results = getTestResults('target/surefire-reports')
+
                     reportUnitTest(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
+                        applicationComponent: "other-component",
+                        testsPassed: 31,
+                        testsFailed: 6,
+                        testsIgnored: 2
+                    )
+                    reportSurefireTest(
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
-                        testsPassed: results.passed,
-                        testsFailed: results.failed,
-                        testsIgnored: results.ignored
+                        surefireReportPath: "target/surefire-reports/TEST-InjectedTest.xml"
                     )
                 }
             }

@@ -1,12 +1,11 @@
 package io.jenkins.plugins.devopsportal.models;
 
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A persistent record of a IMAGE_RELEASE activity.
@@ -49,13 +48,8 @@ public class ImageReleaseActivity extends AbstractActivity {
 
     @DataBoundSetter
     public void setTags(String tags) {
-        if (tags != null && !tags.isEmpty()) {
-            this.tags.clear();
-            this.tags.addAll(Arrays.stream(tags.split(","))
-                    .map(String::trim)
-                    .filter(tag -> !tag.isEmpty())
-                    .collect(Collectors.toList()));
-        }
+        this.tags.clear();
+        this.tags.addAll(MiscUtils.split(tags, ","));
     }
 
 }

@@ -9,6 +9,7 @@ import hudson.util.CopyOnWriteList;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.RunOperations;
 import io.jenkins.plugins.devopsportal.utils.JenkinsUtils;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -20,7 +21,6 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * A persisted record of an exploitation operation performed on a run platform.
@@ -156,12 +156,8 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
 
     @DataBoundSetter
     public void setTags(String tags) {
-        if (tags != null && !tags.isEmpty()) {
-            this.tags.addAll(Arrays.stream(tags.split(","))
-                    .map(String::trim)
-                    .filter(tag -> !tag.isEmpty())
-                    .collect(Collectors.toList()));
-        }
+        this.tags.clear();
+        this.tags.addAll(MiscUtils.split(tags, ","));
     }
 
     public boolean isBranchProvided() {

@@ -134,15 +134,7 @@ Once the dashboard is created, you can feed it using a **reporter**.
 You can report build activities using a special build task.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
-- Record a build report
-- Record a UT report
-- Record a quality audit
-- Record a performance test
-- Record an image release
-
-### Report build activity with pipeline script (DSL)
-
-The report can also be made using a Groovy Pipeline script using these commands:
+#### Record a build report
 
 ```
 reportBuild(
@@ -152,6 +144,17 @@ reportBuild(
     artifactFileName: string       // Full path to generated artifact
 )
 ```
+
+#### Record a UT report
+- Record a quality audit
+- Record a performance test
+- Record an image release
+
+### Report build activity with pipeline script (DSL)
+
+The report can also be made using a Groovy Pipeline script using these commands:
+
+
 
 ```
 reportUnitTest(
@@ -163,6 +166,13 @@ reportUnitTest(
     testsFailed?: int,             // Optional: number of failed tests
     testsIgnored?: int             // Optional: number of skipped tests
 )
+
+reportSurefireTest(
+    applicationName: string,       // Name of application built
+    applicationVersion: string,    // Version of application built
+    applicationComponent: string   // Name of application component built
+    surefireReportPath: string     // Path to the Surefire report file
+)
 ```
 
 ```
@@ -170,8 +180,10 @@ reportDependenciesAnalysis(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
     applicationComponent: string   // Name of application component built
-    baseDirectory: string,         // Path to component source code folder (containing dependencies file)
-    manager: string                // Choose amoung: 'MAVEN' or 'NPM'
+    manager: string,               // Only 'MAVEN' is supported actually
+    manifestFile: string,          // Path to project manifest file (pom.xml)
+    managerCommand?: string        // Optional: shell command to run the manifest
+                                   // If not provided, the plugin will try to guess it 
 )
 ```
 
@@ -215,18 +227,19 @@ Version 3, 29 June 2007
 - [ ] TU
 - [ ] Dark theme compatibility
 - [ ] Synchronize I/O methods
+- [ ] Build dashboard: delete entry
 - [x] ~~reportBuild()~~
-- [ ] reportUnitTest() : remove testCoverage
+- [x] ~~reportUnitTest()~~
 - [ ] reportSurefireTest()
 - [ ] reportQualityAudit()
-- [ ] reportDependenciesAnalysis()
+- [x] ~~reportDependenciesAnalysis()~~
   - [x] ~~Maven~~
     - [x] ~~Dependencies~~
     - [x] ~~Vulnerabilities~~
   - [ ] NPM
       - [ ] Dependencies
       - [ ] Vulnerabilities
-- [ ] reportPerformanceTest()
+- [x] ~~reportPerformanceTest()~~
 - [ ] reportJmeterPerformanceTest()
 - [x] ~~reportImageRelease()~~
 - [x] ~~reportRunOperation()~~
