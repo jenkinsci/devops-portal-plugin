@@ -10,7 +10,7 @@ import org.kohsuke.stapler.DataBoundSetter;
  */
 public class DependenciesAnalysisActivity extends AbstractActivity {
 
-    private DependenciesManager manager;
+    private String manager;
     private int outdatedDependencies;
     private int vulnerabilities;
 
@@ -19,12 +19,12 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
         super(ActivityCategory.DEPENDENCIES_ANALYSIS, applicationComponent);
     }
 
-    public DependenciesManager getManager() {
+    public String getManager() {
         return manager;
     }
 
     @DataBoundSetter
-    public void setManager(DependenciesManager manager) {
+    public void setManager(String manager) {
         this.manager = manager;
     }
 

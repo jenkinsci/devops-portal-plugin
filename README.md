@@ -222,7 +222,7 @@ Version 3, 29 June 2007
 - [ ] reportDependenciesAnalysis()
   - [ ] Maven
     - [x] ~~Dependencies~~
-    - [ ] Vulnerabilities = ^(.+?)(\\.*?)? \((.*?)\) : (CVE.*)$
+    - [ ] Vulnerabilities
   - [ ] NPM
       - [ ] Dependencies
       - [ ] Vulnerabilities

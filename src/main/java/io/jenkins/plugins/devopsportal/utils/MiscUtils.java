@@ -20,7 +20,8 @@ public final class MiscUtils {
         return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
-    public static <T> T filterLines(File workingDir, String[] cmd, boolean stopWhenEmpty, Function<List<String>, T> reader){
+    public static <T> T filterLines(File workingDir, List<String> cmd, boolean stopWhenEmpty,
+                                    Function<List<String>, T> mapper){
         try {
             List<String> list = new ArrayList<>();
             ProcessBuilder pb = new ProcessBuilder(cmd);
@@ -40,7 +41,7 @@ public final class MiscUtils {
                 }
             }
 
-            return reader.apply(list);
+            return mapper.apply(list);
         }
         catch (IOException ex) {
             throw new RuntimeException(ex);
