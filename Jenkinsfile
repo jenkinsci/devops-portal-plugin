@@ -80,12 +80,6 @@ pipeline {
         stage('Audit') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh 'mvn -B -V -U -e dependency-check:check'
-                    }
-                    else {
-                        bat "\"${env.MAVEN_PATH}\" -B -V -U -e dependency-check:check"
-                    }
                     // Dependencies analysis
                     reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,

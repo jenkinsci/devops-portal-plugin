@@ -48,7 +48,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
 
     @DataBoundSetter
     public void setManager(String manager) {
-
+        this.manager = manager;
     }
 
     public String getManifestFile() {

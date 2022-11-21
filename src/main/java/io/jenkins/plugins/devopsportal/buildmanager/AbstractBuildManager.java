@@ -37,7 +37,7 @@ public abstract class AbstractBuildManager {
             return MiscUtils.filterLines(
                     manifestFile.getParentFile(), // Work directory
                     getDependencyUpdatesCommand(manifestFile, command, env), // Shell command
-                    isWindowsOs(), // Execution environment
+                    isWindowsOs(), // Stop on empty lines TODO
                     this::analyseOutdatedDependencies // Mapper function
             );
         }
@@ -60,7 +60,7 @@ public abstract class AbstractBuildManager {
             return MiscUtils.filterLines(
                     manifestFile.getParentFile(), // Work directory
                     getDependencyCheckCommand(manifestFile, command, env), // Shell command
-                    isWindowsOs(), // Execution environment
+                    false, // Stop on empty lines TODO
                     this::analyseVulnerableDependencies // Mapper function
             );
         }

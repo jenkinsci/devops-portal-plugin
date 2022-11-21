@@ -32,13 +32,29 @@ public final class MiscUtils {
             //process.waitFor();
 
             try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = in.readLine()) != null) {
+                StringBuilder line = new StringBuilder();
+                char c;
+                while ((c = (char) in.read()) != -1){
+                    if (c == '\n') {
+                        list.add(line.toString().trim());
+                        System.out.println(line);
+                        line = new StringBuilder();
+                    }
+                    else {
+                        line.append(c);
+                    }
+                }
+                if (line.length() > 0) {
+                    System.out.println(line);
+                    list.add(line.toString().trim());
+                }
+                /*while ((line = in.readLine()) != null) {
                     if (line.isEmpty() && stopWhenEmpty) {
                         break;
                     }
                     list.add(line);
-                }
+                }*/
+
             }
 
             return mapper.apply(list);
