@@ -67,7 +67,7 @@ The dashboard provides some information:
 
 - Display the last deployment information: application, version and jenkins run
 - Also display the deployment tags, which allows to describe the deployment process
-  (Eg. `ansible`, `ssh`, `ftp`)
+  (Eg. `ansible`, `ssh`, `ftp` ...)
 
 **Note**: you can filter environment categories to display on the dashboard using `Edit View`. Regular expressions are supported.
 
@@ -101,7 +101,7 @@ reportRunOperation(
     targetService: string,      // Name for target environnement to deploy to
     applicationName: string,    // Name of application deployed
     applicationVersion: string, // Version of application deployed
-    operation: string,          // Operation name
+    operation: string,          // Operation name among: 'DEPLOYMENT' and 'ROLLBACK'
     status: boolean,            // Status
     tags?: string               // Optional: comma-separated list
 )
