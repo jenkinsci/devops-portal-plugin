@@ -48,7 +48,7 @@ pipeline {
                         applicationComponent: "other-component",
                         testsPassed: 31,
                         testsFailed: 6,
-                        testsIgnored: 2
+                        testsIgnored: 2,
                         testCoverage: 51.8
                     )
                     reportSurefireTest(
