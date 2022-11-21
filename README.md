@@ -208,16 +208,25 @@ Version 3, 29 June 2007
 
 ## TODO
 
-- [ ] Encode FR translations
-- [ ] Ensure JenkinsUtils.getBuild() works with: Folders, Multibranch Pipelines
+- [ ] Encode FR translations characters
+- [ ] Ensure JenkinsUtils.getBuild() works with:
+  - [ ] Folders
+  - [ ] Multibranch Pipelines
 - [ ] TU
 - [ ] Dark theme compatibility
 - [ ] Synchronize I/O methods
-- [x] reportBuild()
+- [x] ~~reportBuild()~~
 - [ ] reportUnitTest() : remove testCoverage
 - [ ] reportSurefireTest()
 - [ ] reportQualityAudit()
 - [ ] reportDependenciesAnalysis()
+  - [ ] Maven
+    - [x] ~~Dependencies~~
+    - [ ] Vulnerabilities = ^(.+?)(\\.*?)? \((.*?)\) : (CVE.*)$
+  - [ ] NPM
+      - [ ] Dependencies
+      - [ ] Vulnerabilities
 - [ ] reportPerformanceTest()
 - [ ] reportJmeterPerformanceTest()
-- [x] reportImageRelease()
+- [x] ~~reportImageRelease()~~
+- [x] ~~reportRunOperation()~~
