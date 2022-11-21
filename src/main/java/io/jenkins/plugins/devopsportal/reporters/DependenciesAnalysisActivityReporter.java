@@ -7,10 +7,7 @@ import hudson.model.TaskListener;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
-import io.jenkins.plugins.devopsportal.buildmanager.AbstractBuildManager;
-import io.jenkins.plugins.devopsportal.buildmanager.BuildManager;
-import io.jenkins.plugins.devopsportal.buildmanager.DependencyUpgrade;
-import io.jenkins.plugins.devopsportal.buildmanager.DependencyVulnerability;
+import io.jenkins.plugins.devopsportal.buildmanager.*;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.DependenciesAnalysisActivity;
 import org.jenkinsci.Symbol;
@@ -23,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * Build step of a project used to record a DEPENDENCIES_ANALYSIS activity.
@@ -30,6 +28,8 @@ import java.util.Optional;
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
 public class DependenciesAnalysisActivityReporter extends AbstractActivityReporter<DependenciesAnalysisActivity> {
+
+    private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
     private String manager;
     private String manifestFile;
@@ -106,7 +106,8 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         );
 
         // Check outdated dependencies
-        Map<String, List<DependencyUpgrade>> upgrades = buildManager.getUpdateRecords(
+        Map<String, List<DependencyUpgrade>>
+                upgrades = buildManager.getUpdateRecords(
                 manifest,
                 managerCommand,
                 listener,
@@ -173,11 +174,31 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     @Extension
     public static final class DescriptorImpl extends AbstractActivityDescriptor {
 
-        private final Map<BuildManager, AbstractBuildManager> MANAGERS; // TODO
+        private static final Map<BuildManager, AbstractBuildManager> MANAGERS = new HashMap<>();
 
         public DescriptorImpl() {
             super(Messages.DependenciesAnalysisActivityReporter_DisplayName());
-            MANAGERS = new HashMap<>();
+            // TODO Automatic population with Annotation detection
+            addManager(MavenBuildManager.class);
+        }
+
+        private void addManager(Class<?> managerClass) {
+            if (managerClass != null && managerClass.isAnnotationPresent(BuildManager.class)
+                    && AbstractBuildManager.class.isAssignableFrom(managerClass)) {
+                try {
+                    MANAGERS.put(
+                            managerClass.getAnnotation(BuildManager.class),
+                            (AbstractBuildManager) managerClass.getConstructor().newInstance()
+                    );
+                }
+                catch (ReflectiveOperationException ex) {
+                    LOGGER.warning("Unable to add manager class '" + managerClass + "': " + ex.getMessage());
+                }
+            }
+            else {
+                LOGGER.warning("Unable to add manager class '" + managerClass
+                        + "': annotation missing or not assignable from AbstractBuildManager");
+            }
         }
 
         public Optional<AbstractBuildManager> getManagerByCode(@NonNull String manager) {

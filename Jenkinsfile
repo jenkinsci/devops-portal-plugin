@@ -91,7 +91,7 @@ pipeline {
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin",
-                        baseDirectory: "",
+                        manifestFile: "pom.xml",
                         manager: "MAVEN"
                     )
                 }
