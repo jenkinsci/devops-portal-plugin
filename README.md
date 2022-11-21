@@ -47,7 +47,7 @@ Example dashboard :
 The dashboard provides some information:
 
 - Display all environments grouped by categories
-- Display a status icon according to monitoring result
+- Display a status icon according to monitoring result:
 
 |                        Icon                         | Meaning                                                        |
 |:---------------------------------------------------:|----------------------------------------------------------------|
@@ -56,7 +56,15 @@ The dashboard provides some information:
 |    ![Icon Alert](.doc/MonitoringStatusAlert.png)    | HTTPS configuration issue (expired or self signed certificate) |
 | ![Icon Disabled](.doc/MonitoringStatusDisabled.png) | Monitoring is disabled                                         |
 
-- Show the certificate expiration (if the given monitoring URL is HTTPS)
+- Show the certificate expiration date (if the given monitoring URL is HTTPS) and status:
+
+|                        Icon                        | Meaning                          |
+|:--------------------------------------------------:|----------------------------------|
+|   ![Icon Valid](.doc/CertificateStatusValid.png)   | Certificate valid and up to date |
+| ![Icon Expired](.doc/CertificateStatusExpired.png) | Expired certificate              |
+| ![Icon Invalid](.doc/CertificateStatusInvalid.png) | Unchecked certificate            |
+
+
 - Display the last deployment information: application, version and jenkins run
 - Also display the deployment tags, which allows to describe the deployment process
   (Eg. `ansible`, `ssh`, `ftp`)
