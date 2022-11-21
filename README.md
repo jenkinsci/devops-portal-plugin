@@ -65,7 +65,7 @@ The dashboard provides some information:
 
 Once the dashboard is created, you can feed it using a **reporter**.
 
-### Report a run operation using the Jenkins interfaces (GUI)
+#### Report a run operation using the Jenkins interfaces (GUI)
 
 You can report run operations, such as Deployment, using a special build task.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose
@@ -84,7 +84,7 @@ You have to fill in:
 - A success/failure status
 - Optionally, you can add tags to describe the operation (comma-separated)
 
-### Report run operation with pipeline script (DSL)
+#### Report run operation with pipeline script (DSL)
 
 The report can also be made using a Groovy Pipeline script using this command:
 
@@ -116,25 +116,30 @@ The dashboard bring together much information:
 - If possible, display related VCS branch and commit (only GIT actually)
 - Display the last deployment target environment
 - Also, it can display a lot of activities:
-  - **Build artifacts**: artifact file size
-  - **Unit test report**: number of passed/failed/skipped tests, coverage and score
-  - **Code Quality & Security Audit**: designed to gather SonarQube metrics into Jenkins, it displays the Quality Gate
-    status, number of bugs/vulnerabilities/hotspot, code duplication and code volume. Hence, it also
-    displays scores according to the quality gate.
-  - **Performance/load testing report**: score and Quality Gate status, number of load request and
+  - **[Build artifacts](#activity-build)**: artifact file size
+  - **[Unit test report](#activity-ut)**: number of passed/failed/skipped tests, coverage and score
+  - **[Code Quality & Security Audit](#activity-quality)**: designed to gather SonarQube metrics into Jenkins,
+  - it displays the Quality Gate status, number of bugs/vulnerabilities/hotspot, code duplication and code
+  - volume. Hence, it also displays scores according to the quality gate.
+  - **[Dependencies Analysis report](#activity-dependencies)**: score and Quality Gate status, number of load request and
+  - **[Performance/load testing report](#activity-performance)**: score and Quality Gate status, number of load request and
   the average response time (in milliseconds)
-  - **Released container image**: keep track of container images built and published to a registry
+  - **[Released container image](#activity-release)**: keep track of container images built and published to a registry
 
 **Note**: you can filter applications to display on the dashboard using `Edit View`. Regular expressions are supported.
 
 Once the dashboard is created, you can feed it using a **reporter**.
 
-### Report a build activity using Jenkins Interface (GUI)
+### <a name="activity-build"></a> Activity: Artifact build
 
-You can report build activities using a special build task.
+You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
-#### Record a build report
+| Build step              |
+|-------------------------|
+| `Record a build report` |
+
+With pipeline script (DSL):
 
 ```
 reportBuild(
@@ -145,16 +150,21 @@ reportBuild(
 )
 ```
 
-#### Record a UT report
-- Record a quality audit
-- Record a performance test
-- Record an image release
+Dashboard preview:
 
-### Report build activity with pipeline script (DSL)
+![ActivityBuild](.doc/ActivityBuild.png)
 
-The report can also be made using a Groovy Pipeline script using these commands:
+### <a name="activity-ut"></a> Activity: Unit Test
 
+You can report build activities using a special build step.
+In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
+| Build step                    |
+|-------------------------------|
+| `Record a UT report manually` |
+| `Record a Surefire UT report` |
+
+With pipeline script (DSL):
 
 ```
 reportUnitTest(
@@ -175,6 +185,38 @@ reportSurefireTest(
 )
 ```
 
+Dashboard preview:
+
+![ActivityUnitTest](.doc/ActivityUnitTest.png)
+
+###  <a name="activity-quality"></a> Activity: Code Quality audit
+
+You can report build activities using a special build step.
+In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
+
+| Build step               |
+|--------------------------|
+| `Record a quality audit` |
+
+With pipeline script (DSL):
+
+⛔ TODO
+
+Dashboard preview:
+
+⛔ TODO
+
+###  <a name="activity-dependencies"></a> Activity: Dependency analysis
+
+You can report build activities using a special build step.
+In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
+
+| Build step                       |
+|----------------------------------|
+| `Record a dependencies analysis` |
+
+With pipeline script (DSL):
+
 ```
 reportDependenciesAnalysis(
     applicationName: string,       // Name of application built
@@ -187,6 +229,38 @@ reportDependenciesAnalysis(
 )
 ```
 
+Dashboard preview:
+
+![ActivityDependenciesAnalysis](.doc/ActivityDependenciesAnalysis.png)
+
+###  <a name="activity-performance"></a> Activity: Performance test
+
+You can report build activities using a special build step.
+In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
+
+| Build step                  |
+|-----------------------------|
+| `Record a performance test` |
+
+With pipeline script (DSL):
+
+⛔ TODO
+
+Dashboard preview:
+
+⛔ TODO
+
+###  <a name="activity-release"></a> Activity: Container image release
+
+You can report build activities using a special build step.
+In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
+
+| Build step                |
+|---------------------------|
+| `Record an image release` |
+
+With pipeline script (DSL):
+
 ```
 reportImageRelease(
     applicationName: string,       // Name of application built
@@ -197,6 +271,10 @@ reportImageRelease(
     tags?: string                  // Optional: comma-separated list of image's tags
 )
 ```
+
+Dashboard preview:
+
+![ActivityImageRelease](.doc/ActivityImageRelease.png)
 
 ## Setup as Developer
 
@@ -230,7 +308,7 @@ Version 3, 29 June 2007
 - [ ] Build dashboard: delete entry
 - [x] ~~reportBuild()~~
 - [x] ~~reportUnitTest()~~
-- [ ] reportSurefireTest()
+- [x] ~~reportSurefireTest()~~
 - [ ] reportQualityAudit()
 - [x] ~~reportDependenciesAnalysis()~~
   - [x] ~~Maven~~
