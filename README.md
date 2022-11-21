@@ -2,11 +2,11 @@
 
 A Jenkins Dashboard Plugin with many features :
 
-1. Offer a specific **dashboard** to track 🚀 **RUN operations**
+1. Offer a specific **dashboard** to track 🚀 **[RUN operations](#section-run)**
     - Environments **monitoring** (service availability)
     - HTTPS certificate validity and expiration monitoring
     - **Operations** tracking, like Deployments or Rollback (target environment, application and version, related run)
-2. Offer a specific **dashboard** to bring together all applications 📦 **BUILD activities**
+2. Offer a specific **dashboard** to bring together all applications 📦 **[BUILD activities](#section-build)**
     - Display all built **applications with versions**
     - Link to the last build run
     - Last application **deployment** information are also displayed
@@ -15,7 +15,7 @@ A Jenkins Dashboard Plugin with many features :
 
 Current supported translations: 🇫🇷 🇬🇧
 
-## ⚡ Manage Environments
+## <a name="section-manage"></a> ⚡ Manage Environments
 
 In Jenkins Administration, a link allows to configure managed environments:
 
@@ -32,7 +32,7 @@ You have to provide:
 - A time interval (in minutes) between two monitoring checks
 - A flag to accept invalid certificates (for monitoring URL)
 
-## 🚀 Manage Run Operations
+## <a name="section-run"></a> 🚀 Manage Run Operations
 
 ### Dashboard
 
@@ -99,7 +99,7 @@ reportRunOperation(
 )
 ```
 
-## 📦 Manage Build Activities
+## <a name="section-build"></a> 📦 Manage Build Activities
 
 This plugin also allow to track many metrics of the software development.
 
