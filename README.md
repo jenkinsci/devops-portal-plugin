@@ -121,7 +121,7 @@ The dashboard bring together much information:
   - **[Code Quality & Security Audit](#activity-quality)**: designed to gather SonarQube metrics into Jenkins,
   - it displays the Quality Gate status, number of bugs/vulnerabilities/hotspot, code duplication and code
   - volume. Hence, it also displays scores according to the quality gate.
-  - **[Dependencies Analysis report](#activity-dependencies)**: score and Quality Gate status, number of load request and
+  - **[Dependencies Analysis report](#activity-dependencies)**: number of outdated and vulnerable dependencies
   - **[Performance/load testing report](#activity-performance)**: score and Quality Gate status, number of load request and
   the average response time (in milliseconds)
   - **[Released container image](#activity-release)**: keep track of container images built and published to a registry
