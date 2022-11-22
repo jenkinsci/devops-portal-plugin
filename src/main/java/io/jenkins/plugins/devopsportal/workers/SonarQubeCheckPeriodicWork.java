@@ -6,13 +6,17 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import io.jenkins.plugins.devopsportal.models.ServiceMonitoring;
+import io.jenkins.plugins.devopsportal.utils.SSLUtils;
 import jenkins.model.Jenkins;
+import org.sonarqube.ws.Hotspots;
+import org.sonarqube.ws.Issues;
 import org.sonarqube.ws.Measures;
 import org.sonarqube.ws.client.HttpConnector;
 import org.sonarqube.ws.client.WsClient;
 import org.sonarqube.ws.client.WsClientFactories;
-import org.sonarqube.ws.client.measures.SearchRequest;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +65,9 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             if (completed) {
                 LOGGER.info("Completed SonarQube async task: job='" + item.jobName + "' build='" + item.buildNumber
                         + "' project='" + item.projectKey + "'");
-                ACTIONS.remove(item.close());
+                synchronized (ACTIONS) {
+                    ACTIONS.remove(item.close());
+                }
             }
         }
     }
@@ -71,11 +77,26 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         if (jenkins == null) {
             return false;
         }
-        SearchRequest request = new SearchRequest();
-        request.setProjectKeys(List.of(item.projectKey));
-        request.setMetricKeys(List.of("coverage"));
-        Measures.SearchWsResponse response = item.wsClient.measures().search(request);
-        Measures.Measure result = response.getMeasures(0);
+        org.sonarqube.ws.client.measures.SearchRequest request1 = new org.sonarqube.ws.client.measures.SearchRequest();
+        // COVERAGE
+        request1.setProjectKeys(List.of(item.projectKey));
+        request1.setMetricKeys(List.of("coverage"));
+        Measures.SearchWsResponse response1 = item.wsClient.measures().search(request1);
+        Measures.Measure result1 = response1.getMeasures(0);
+        // ISSUES
+        org.sonarqube.ws.client.issues.SearchRequest request2 = new org.sonarqube.ws.client.issues.SearchRequest();
+        request2.setComponentKeys(List.of(item.projectKey));
+        request2.setTypes(List.of("BUG", "VULNERABILITY", "CODE_SMELL"));
+        request2.setSeverities(List.of("MAJOR", "CRITICAL", "BLOCKER"));
+        request2.setResolved("no");
+        request2.setPs("500");
+        Issues.SearchWsResponse response2 = item.wsClient.issues().search(request2);
+        // HOTSPOTS
+        org.sonarqube.ws.client.hotspots.SearchRequest request3 = new org.sonarqube.ws.client.hotspots.SearchRequest();
+        request3.setProjectKey(item.projectKey);
+        request3.setStatus("TO_REVIEW");
+        Hotspots.SearchWsResponse response = item.wsClient.hotspots().search(request3);
+        // TODO duplicationRate, testCoverage, linesCount, qualityGatePassed
         return false;
     }
 
@@ -88,6 +109,8 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
                     + projectKey + "'");
         }
     }
+
+
 
     static class WorkItem {
 
@@ -105,11 +128,15 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             this.projectKey = projectKey;
             this.activity = activity;
             this.sonarUrl = sonarUrl;
+            X509TrustManager manager = SSLUtils.getUntrustedManager();
+            SSLContext context = SSLUtils.getSSLContext(manager);
             HttpConnector httpConnector = HttpConnector
                     .newBuilder()
                     .url(sonarUrl)
                     //.credentials("?", "?")
                     .token(sonarToken)
+                    .setSSLSocketFactory(context.getSocketFactory())
+                    .setTrustManager(manager)
                     .build();
             this.wsClient = WsClientFactories.getDefault().newClient(httpConnector);
         }
@@ -119,5 +146,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         }
 
     }
+
+
 
 }
