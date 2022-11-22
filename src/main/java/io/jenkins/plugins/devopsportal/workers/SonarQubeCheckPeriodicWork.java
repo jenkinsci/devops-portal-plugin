@@ -127,6 +127,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         request.setPs("500");
         Issues.SearchWsResponse response = item.wsClient.issues().search(request);
         item.activity.setBugCount(0);
+        item.activity.setVulnerabilityCount(0);
         for (Issues.Issue issue : response.getIssuesList()) {
             if ("java:S1135".equals(issue.getRule())) {
                 // Ignore TODOs
