@@ -40,6 +40,10 @@
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.version>2.346.1</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
     </properties>
 
     <dependencyManagement>
@@ -117,10 +121,25 @@
             <artifactId>sonar-ws</artifactId>
             <version>9.7.1.62043</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-common</artifactId>
+            <version>1.6.20</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <release>${java.version}</release>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
@@ -140,17 +159,12 @@
                 <executions>
                     <execution>
                         <id>enforce</id>
+                        <phase>validate</phase>
                         <configuration>
                             <rules>
                                 <enforceBytecodeVersion>
-                                    <maxJdkVersion>11</maxJdkVersion>
+                                    <maxJdkVersion>[${java.version})</maxJdkVersion>
                                 </enforceBytecodeVersion>
-                                <requireUpperBoundDeps>
-                                    <excludes>
-                                      <exclude>org.jetbrains.kotlin</exclude>
-                                      <exclude>org.jetbrains.kotlin:kotlin-stdlib-common</exclude>
-                                    </excludes>
-                                </requireUpperBoundDeps>
                             </rules>
                         </configuration>
                         <goals>
