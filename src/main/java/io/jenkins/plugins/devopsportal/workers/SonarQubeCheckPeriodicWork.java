@@ -65,6 +65,10 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
                 synchronized (ACTIONS) {
                     ACTIONS.remove(item.close());
                 }
+                getBuildStatusDescriptor().getBuildStatusByApplication(
+                        item.applicationName,
+                        item.applicationVersion
+                );
             }
         }
     }

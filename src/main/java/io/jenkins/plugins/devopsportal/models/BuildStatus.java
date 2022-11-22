@@ -246,14 +246,17 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
             return retVal;
         }
 
-        public synchronized void update(String applicationName, String applicationVersion, Consumer<BuildStatus> updater) {
-            BuildStatus status = buildStatus
+        public synchronized Optional<BuildStatus> getBuildStatusByApplication(String applicationName, String applicationVersion) {
+            return buildStatus
                     .getView()
                     .stream()
                     .filter(item -> applicationName.trim().equals(item.getApplicationName()))
                     .filter(item -> applicationVersion.trim().equals(item.getApplicationVersion()))
-                    .findFirst()
-                    .orElse(null);
+                    .findFirst();
+        }
+
+        public synchronized void update(String applicationName, String applicationVersion, Consumer<BuildStatus> updater) {
+            BuildStatus status = getBuildStatusByApplication(applicationName, applicationVersion).orElse(null);
             if (status == null) {
                 status = new BuildStatus();
                 status.setApplicationName(applicationName.trim());
