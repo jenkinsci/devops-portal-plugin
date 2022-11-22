@@ -248,6 +248,17 @@ reportQualityAudit(
 )
 ```
 
+```
+withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server') {
+    reportSonarQubeAudit(
+        applicationName: string,                   // Name of application built
+        applicationVersion: string,                // Version of application built
+        applicationComponent: string,              // Name of application component built
+        projectKey: string                         // Project identifier on SonarQube server
+    )
+}
+```
+
 Dashboard preview:
 
 ⛔ TODO
@@ -362,8 +373,8 @@ Version 3, 29 June 2007
 - [x] ~~reportBuild()~~
 - [x] ~~reportUnitTest()~~
 - [x] ~~reportSurefireTest()~~
-- [ ] reportQualityAudit()
-- [ ] reportSonarqubeAudit()
+- [x] ~~reportQualityAudit()~~
+- [ ] reportSonarQubeAudit()
 - [x] ~~reportDependenciesAnalysis()~~
   - [x] ~~Maven~~
     - [x] ~~Dependencies~~

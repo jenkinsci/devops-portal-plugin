@@ -64,7 +64,7 @@ pipeline {
         stage('Audit') {
             steps {
                 script {
-                    // Quality audit
+                    // Quality audit manually reported
                     reportQualityAudit(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,

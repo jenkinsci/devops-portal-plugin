@@ -51,7 +51,7 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
 
     @DataBoundSetter
     public void setBugScore(String bugScore) {
-        if (bugScore != null) {
+        if (bugScore != null && !bugScore.isEmpty()) {
             this.bugScore = ActivityScore.valueOf(bugScore);
         }
     }
@@ -71,7 +71,7 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
 
     @DataBoundSetter
     public void setVulnerabilityScore(String vulnerabilityScore) {
-        if (vulnerabilityScore != null) {
+        if (vulnerabilityScore != null && !vulnerabilityScore.isEmpty()) {
             this.vulnerabilityScore = ActivityScore.valueOf(vulnerabilityScore);
         }
     }
@@ -91,7 +91,7 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
 
     @DataBoundSetter
     public void setHotspotScore(String hotspotScore) {
-        if (hotspotScore != null) {
+        if (hotspotScore != null && !hotspotScore.isEmpty()) {
             this.hotspotScore = ActivityScore.valueOf(hotspotScore);
         }
     }
