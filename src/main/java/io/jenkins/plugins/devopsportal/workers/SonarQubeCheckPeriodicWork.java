@@ -60,7 +60,8 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         // TODO Check arguments
         synchronized (ACTIONS) {
             ACTIONS.add(new WorkItem(jobName, buildNumber, projectKey, activity, sonarUrl, sonarToken));
-            LOGGER.info("New SonarQube async task: job='" + jobName + "' build='" + buildNumber + "' project='" + projectKey + "'");
+            LOGGER.info("New SonarQube async task: job='" + jobName + "' build='" + buildNumber + "' project='"
+                    + projectKey + "'");
         }
     }
 
