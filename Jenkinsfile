@@ -81,14 +81,14 @@ pipeline {
                         qualityGatePassed: true
                     )
                     // Quality audit reported from Sonar Qube
-                    //withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server') {
+                    withSonarQubeEnv(credentialsId: 'c191d43f-0199-4f04-95a1-3afe1cd9803e', installationName: 'SonarQube Scanner') {
                         reportSonarQubeAudit(
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
                             applicationComponent: "plugin-devops-portal",
                             projectKey: "xxxxxxxxxx"
                         )
-                    //}
+                    }
                     // Dependencies analysis
                     /*reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
