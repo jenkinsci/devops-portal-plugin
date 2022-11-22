@@ -82,11 +82,12 @@ pipeline {
                     )
                     // Quality audit reported from Sonar Qube
                     withSonarQubeEnv(credentialsId: 'c191d43f-0199-4f04-95a1-3afe1cd9803e', installationName: 'SonarQube Scanner') {
+                        sh 'mvn -Djavax.net.ssl.trustStore=test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
                         reportSonarQubeAudit(
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
                             applicationComponent: "plugin-devops-portal",
-                            projectKey: "xxxxxxxxxx"
+                            projectKey: "io.jenkins.plugins:plugin-devops-portal"
                         )
                     }
                     // Dependencies analysis

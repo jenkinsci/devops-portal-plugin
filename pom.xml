@@ -111,6 +111,12 @@
             <artifactId>httpclient-cache</artifactId>
             <version>4.5.13</version>
         </dependency>
+        <!-- Sonar Connector -->
+        <dependency>
+            <groupId>org.sonarsource.sonarqube</groupId>
+            <artifactId>sonar-ws</artifactId>
+            <version>9.3.0.51899</version>
+        </dependency>
     </dependencies>
 
     <build>

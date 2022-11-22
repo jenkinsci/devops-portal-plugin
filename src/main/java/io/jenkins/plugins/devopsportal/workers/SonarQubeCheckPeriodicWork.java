@@ -7,6 +7,10 @@ import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import io.jenkins.plugins.devopsportal.models.ServiceMonitoring;
 import jenkins.model.Jenkins;
+import org.sonarqube.ws.client.HttpConnector;
+import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.WsClientFactories;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +50,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             for (WorkItem item : new ArrayList<>(ACTIONS)) {
                 LOGGER.info("Completed SonarQube async task: job='" + item.jobName + "' build='" + item.buildNumber
                         + "' project='" + item.projectKey + "'");
-                ACTIONS.remove(item);
+                ACTIONS.remove(item.close());
             }
         }
     }
@@ -67,7 +71,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         private final String projectKey;
         private final QualityAuditActivity activity;
         private final String sonarUrl;
-        private final String sonarToken;
+        private final WsClient wsClient;
 
         public WorkItem(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
                         String sonarUrl, String sonarToken) {
@@ -76,7 +80,17 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             this.projectKey = projectKey;
             this.activity = activity;
             this.sonarUrl = sonarUrl;
-            this.sonarToken = sonarToken;
+            HttpConnector httpConnector = HttpConnector
+                    .newBuilder()
+                    .url(sonarUrl)
+                    //.credentials("?", "?")
+                    .token(sonarToken)
+                    .build();
+            this.wsClient = WsClientFactories.getDefault().newClient(httpConnector);
+        }
+
+        public WorkItem close() {
+            return this;
         }
 
     }
