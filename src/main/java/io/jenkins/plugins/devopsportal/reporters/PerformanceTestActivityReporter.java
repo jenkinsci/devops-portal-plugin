@@ -8,6 +8,7 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ActivityScore;
+import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import io.jenkins.plugins.devopsportal.models.PerformanceTestActivity;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -57,7 +58,7 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
     }
 
     @Override
-    public void updateActivity(@NonNull PerformanceTestActivity activity,
+    public void updateActivity(@NonNull BuildStatus status, @NonNull PerformanceTestActivity activity,
                                @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setRequestCount(requestCount);
         activity.setAverageResponseTime(averageResponseTime);

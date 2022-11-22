@@ -8,6 +8,7 @@ import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.BuildActivity;
+import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import org.jenkinsci.Symbol;
@@ -40,7 +41,8 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
     }
 
     @Override
-    public void updateActivity(@NonNull BuildActivity activity, @NonNull TaskListener listener, @NonNull EnvVars env) {
+    public void updateActivity(@NonNull BuildStatus status, @NonNull BuildActivity activity,
+                               @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setArtifactFileName(artifactFileName);
         if (artifactFileName != null) {
             // TODO According to workspace

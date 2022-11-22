@@ -186,6 +186,7 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
         return "icon-disabled";
     }
 
+
     @SuppressWarnings("unchecked")
     public <T extends AbstractActivity> void updateActivity(@NonNull String applicationComponent,
                                                             @NonNull ActivityCategory category,
@@ -200,27 +201,65 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
                     .findFirst()
                     .orElse(null);
             if (activity == null) {
-                try {
-                    assert category.getClazz() != null;
-                    activity = (T) category.getClazz().getConstructor(String.class).newInstance(applicationComponent);
-                    if (!activities.containsKey(category)) {
-                        activities.put(category, new ArrayList<>());
-                    }
-                    activities.get(category).add(activity);
-                } catch (ReflectiveOperationException e) {
-                    throw new RuntimeException(e);
+                assert category.getClazz() != null;
+                activity = createActivity(category, applicationComponent);
+                if (!activities.containsKey(category)) {
+                    activities.put(category, new ArrayList<>());
                 }
+                activities.get(category).add(activity);
             }
         }
-        updater.updateActivity(activity, listener, env);
+        updater.updateActivity(this, activity, listener, env);
         synchronized (activities) {
             getDescriptor().save();
         }
     }
 
-    public List<AbstractActivity> getActivitiesByCategory(ActivityCategory category) {
+    @SuppressWarnings("unchecked")
+    private <T extends AbstractActivity> T createActivity(@NonNull ActivityCategory category, String applicationComponent) {
+        try {
+            assert category.getClazz() != null;
+            return (T) category.getClazz().getConstructor(String.class).newInstance(applicationComponent);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<AbstractActivity> getActivitiesByCategory(@NonNull ActivityCategory category) {
         synchronized (activities) {
             return this.activities.get(category);
+        }
+    }
+
+    public Optional<AbstractActivity> getActivity(@NonNull ActivityCategory category, @NonNull String applicationComponent) {
+        synchronized (activities) {
+            if (!activities.containsKey(category)) {
+                return Optional.empty();
+            }
+            return activities
+                    .get(category)
+                    .stream()
+                    .filter(item -> applicationComponent.equals(item.getApplicationComponent()))
+                    .findFirst();
+
+        }
+    }
+
+    public boolean removeActivity(@NonNull ActivityCategory category, @NonNull String applicationComponent) {
+        synchronized (activities) {
+            return this.activities.get(category);
+        }
+    }
+
+    public void setActivityByCategory(@NonNull ActivityCategory category, @NonNull String applicationComponent,
+                                      @NonNull QualityAuditActivity activity) {
+        synchronized (activities) {
+            getActivitiesByCategory(category).add(activity);
+            activity = createActivity(category, applicationComponent);
+            if (!activities.containsKey(category)) {
+                activities.put(category, new ArrayList<>());
+            }
+            activities.get(category).add(activity);
         }
     }
 

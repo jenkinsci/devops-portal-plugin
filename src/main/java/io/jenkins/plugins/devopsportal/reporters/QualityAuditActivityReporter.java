@@ -8,6 +8,7 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ActivityScore;
+import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -133,8 +134,8 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @Override
-    public void updateActivity(@NonNull QualityAuditActivity activity, @NonNull TaskListener listener,
-                               @NonNull EnvVars env) {
+    public void updateActivity(@NonNull BuildStatus status, @NonNull QualityAuditActivity activity,
+                               @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setBugCount(bugCount);
         activity.setBugScore(bugScore);
         activity.setVulnerabilityCount(vulnerabilityCount);

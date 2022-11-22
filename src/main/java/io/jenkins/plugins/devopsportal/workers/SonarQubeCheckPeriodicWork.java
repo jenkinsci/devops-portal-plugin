@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.workers;
 import hudson.Extension;
 import hudson.model.AsyncPeriodicWork;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
 import io.jenkins.plugins.devopsportal.utils.SSLUtils;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static org.sonarqube.ws.Common.RuleType.*;
+
 
 /**
  * Scheduled task that monitor a SonarQube server.
@@ -61,14 +63,16 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             boolean completed = execute(item);
             if (completed) {
                 LOGGER.info("Completed SonarQube async task: job='" + item.jobName + "' build='" + item.buildNumber
-                        + "' project='" + item.projectKey + "'");
+                        + "' project='" + item.applicationName + ":" + item.applicationVersion + "/" + item.projectKey + "'");
                 synchronized (ACTIONS) {
-                    ACTIONS.remove(item.close());
+                    //ACTIONS.remove(item.close());
                 }
                 getBuildStatusDescriptor().getBuildStatusByApplication(
                         item.applicationName,
                         item.applicationVersion
-                );
+                ).ifPresent(status -> {
+                    status.setActivityByCategory(ActivityCategory.QUALITY_AUDIT, item.applicationComponent, item.activity);
+                });
             }
         }
     }
@@ -116,16 +120,20 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             item.activity.addHotSpot(hotspot);
         }
         // TODO duplicationRate, linesCount, qualityGatePassed
-        return false;
+        return true;
     }
 
     public static void push(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
-                            String sonarUrl, String sonarToken) {
+                            String sonarUrl, String sonarToken, String applicationName, String applicationVersion,
+                            String applicationComponent) {
         // TODO Check arguments
         synchronized (ACTIONS) {
-            ACTIONS.add(new WorkItem(jobName, buildNumber, projectKey, activity, sonarUrl, sonarToken));
+            ACTIONS.add(new WorkItem(
+                    jobName, buildNumber, projectKey, activity, sonarUrl,
+                    sonarToken, applicationName, applicationVersion, applicationComponent
+            ));
             LOGGER.info("New SonarQube async task: job='" + jobName + "' build='" + buildNumber + "' project='"
-                    + projectKey + "'");
+                    + applicationName + ":" + applicationVersion + "/" + applicationComponent + "'");
         }
     }
 
@@ -137,14 +145,21 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         private final QualityAuditActivity activity;
         private final String sonarUrl;
         private final WsClient wsClient;
+        private final String applicationName;
+        private final String applicationVersion;
+        private final String applicationComponent;
 
         public WorkItem(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
-                        String sonarUrl, String sonarToken) {
+                        String sonarUrl, String sonarToken, String applicationName, String applicationVersion,
+                        String applicationComponent) {
             this.jobName = jobName;
             this.buildNumber = buildNumber;
             this.projectKey = projectKey;
             this.activity = activity;
             this.sonarUrl = sonarUrl;
+            this.applicationName = applicationName;
+            this.applicationVersion = applicationVersion;
+            this.applicationComponent = applicationComponent;
             X509TrustManager manager = SSLUtils.getUntrustedManager();
             SSLContext context = SSLUtils.getSSLContext(manager);
             HttpConnector httpConnector = HttpConnector

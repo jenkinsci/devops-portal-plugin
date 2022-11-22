@@ -7,6 +7,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ActivityScore;
+import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -66,8 +67,8 @@ public class UnitTestActivityReporter extends AbstractActivityReporter<UnitTestA
     }
 
     @Override
-    public void updateActivity(@NonNull UnitTestActivity activity, @NonNull TaskListener listener,
-                               @NonNull EnvVars env) {
+    public void updateActivity(@NonNull BuildStatus status,  @NonNull UnitTestActivity activity,
+                               @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setTestCoverage(testCoverage);
         activity.setTestsPassed(testsPassed);
         activity.setTestsFailed(testsFailed);

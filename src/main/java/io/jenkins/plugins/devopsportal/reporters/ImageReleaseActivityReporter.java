@@ -6,6 +6,7 @@ import hudson.Extension;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
+import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import io.jenkins.plugins.devopsportal.models.ImageReleaseActivity;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -55,8 +56,8 @@ public class ImageReleaseActivityReporter extends AbstractActivityReporter<Image
     }
 
     @Override
-    public void updateActivity(@NonNull ImageReleaseActivity activity, @NonNull TaskListener listener,
-                               @NonNull EnvVars env) {
+    public void updateActivity(@NonNull BuildStatus status, @NonNull ImageReleaseActivity activity,
+                               @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setRegistryName(registryName);
         activity.setImageName(imageName);
         activity.setTags(tags);

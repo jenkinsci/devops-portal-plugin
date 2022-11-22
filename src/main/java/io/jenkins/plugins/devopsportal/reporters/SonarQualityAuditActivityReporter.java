@@ -6,6 +6,7 @@ import hudson.Extension;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
+import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
 import io.jenkins.plugins.devopsportal.workers.SonarQubeCheckPeriodicWork;
 import org.jenkinsci.Symbol;
@@ -36,8 +37,8 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
     }
 
     @Override
-    public void updateActivity(@NonNull QualityAuditActivity activity, @NonNull TaskListener listener,
-                               @NonNull EnvVars env) {
+    public void updateActivity(@NonNull BuildStatus status, @NonNull QualityAuditActivity activity,
+                               @NonNull TaskListener listener, @NonNull EnvVars env) {
 
         if (!env.containsKey("SONAR_AUTH_TOKEN") || !env.containsKey("SONAR_HOST_URL")) {
             listener.getLogger().println(Messages.SonarQualityAuditActivityReporter_Error_MissingEnvVar());
@@ -50,7 +51,10 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
                 projectKey,
                 activity,
                 env.get("SONAR_HOST_URL"),
-                env.get("SONAR_AUTH_TOKEN")
+                env.get("SONAR_AUTH_TOKEN"),
+                status.getApplicationName(),
+                status.getApplicationVersion(),
+                getApplicationComponent()
         );
 
         /*activity.setBugCount(bugCount);

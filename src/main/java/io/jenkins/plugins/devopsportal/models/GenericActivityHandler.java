@@ -11,6 +11,6 @@ import hudson.model.TaskListener;
  */
 public interface GenericActivityHandler<T extends AbstractActivity> {
 
-    void updateActivity(@NonNull T activity, @NonNull TaskListener listener, @NonNull EnvVars env);
+    void updateActivity(@NonNull BuildStatus status, @NonNull T activity, @NonNull TaskListener listener, @NonNull EnvVars env);
 
 }
