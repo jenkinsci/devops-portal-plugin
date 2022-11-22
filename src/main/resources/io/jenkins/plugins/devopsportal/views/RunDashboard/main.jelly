@@ -9,9 +9,12 @@
         .run-dashboard td {
             vertical-align: middle;
         }
+        .run-dashboard .group-title {
+            border-top: 2px solid #F2F2F2;
+        }
         .run-dashboard .group-title th {
             text-align: left;
-            padding: 1rem 0;
+            padding: .8rem 1rem;
         }
         .run-dashboard .group-headers {
             font-size: 80%;
@@ -19,7 +22,6 @@
             color: #bbb;
         }
         .run-dashboard .service-entry {
-            border-top: 1px solid #ccc;
             line-height: 2.8rem;
         }
         .run-dashboard .service-label {
@@ -72,33 +74,38 @@
             background-color: #333;
             color: #aaa;
         }
+        html[data-theme="dark"] .run-dashboard .group-title {
+            border-top: 2px solid #18181B;
+        }
     </style>
 
     <h1>
         ${it.displayName}
     </h1>
-    <table class="run-dashboard">
-        <tbody>
-            <j:set var="categories" value="${it.descriptor.getConfigurationCategories(it.filter)}"/>
+    <table class="run-dashboard jenkins-table">
+        <j:set var="categories" value="${it.descriptor.getConfigurationCategories(it.filter)}"/>
+        <thead>
             <j:if test="${categories.isEmpty()}">
                 <tr>
                     <td colspan="6">${%label_empty_list}</td>
                 </tr>
             </j:if>
+            <j:if test="${!categories.isEmpty()}">
+                <tr class="group-headers">
+                    <th width="0%" />
+                    <th width="15%">${%header_service}</th>
+                    <th width="20%">${%header_health}</th>
+                    <th width="15%">${%header_host}</th>
+                    <th width="20%">${%header_application}</th>
+                    <th>${%header_deployment}</th>
+                </tr>
+            </j:if>
+        </thead>
+        <tbody>
             <j:forEach var="category" indexVar="i" items="${categories}">
                 <tr class="group-title">
                     <th colspan="6"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${category}</th>
                 </tr>
-                <j:if test="${i == 0}">
-                    <tr class="group-headers">
-                        <th width="0%" />
-                        <th width="15%">${%header_service}</th>
-                        <th width="20%">${%header_health}</th>
-                        <th width="15%">${%header_host}</th>
-                        <th width="20%">${%header_application}</th>
-                        <th>${%header_deployment}</th>
-                    </tr>
-                </j:if>
                 <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
                 <j:forEach var="service" indexVar="j" items="${services}">
                     <j:set var="monitoring" value="${it.descriptor.getMonitoringByService(service.id)}"/>

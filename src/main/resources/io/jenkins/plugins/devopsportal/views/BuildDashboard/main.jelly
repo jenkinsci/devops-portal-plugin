@@ -9,9 +9,12 @@
         .build-dashboard td {
             vertical-align: middle;
         }
+        .build-dashboard .group-title {
+            border-top: 2px solid #F2F2F2;
+        }
         .build-dashboard .group-title th {
             text-align: left;
-            padding: 1rem 0;
+            padding: .8rem 1rem;
         }
         .build-dashboard .group-headers {
             font-size: 80%;
@@ -19,7 +22,6 @@
             color: #bbb;
         }
         .build-dashboard .version-entry {
-            border-top: 1px solid #ccc;
             line-height: 2.5rem;
         }
         .build-dashboard .version-label {
@@ -55,8 +57,8 @@
             margin-right: .2rem;
         }
         .version-activities {
-            background: #f0f0f0;
-            line-height: 1.6rem;
+            background: #f0f0f0 !important;
+            line-height: 1.0rem;
         }
         .version-activities[hidden] {
             display: none;
@@ -105,7 +107,7 @@
             color: #aaa;
         }
         html[data-theme="dark"] .version-activities {
-            background-color: #444;
+            background-color: #191921 !important;
             color: #bbb;
         }
         html[data-theme="dark"] .activity-category {
@@ -114,31 +116,36 @@
         html[data-theme="dark"] .version-activities td:nth-child(1) {
             background-color: rgb(31, 31, 35);
         }
+        html[data-theme="dark"] .build-dashboard .group-title {
+            border-top: 2px solid #18181B;
+        }
     </style>
     <h1>
         ${it.displayName}
     </h1>
-    <table class="build-dashboard">
-        <tbody>
+    <table class="build-dashboard jenkins-table">
+        <thead>
             <j:set var="applications" value="${it.descriptor.getApplicationNames(it.filter)}"/>
             <j:if test="${applications.isEmpty()}">
                 <tr>
-                    <td colspan="4">${%label_empty_list}</td>
+                    <td colspan="5">${%label_empty_list}</td>
                 </tr>
             </j:if>
+            <j:if test="${!applications.isEmpty()}">
+                <tr class="group-headers">
+                    <th width="8%">${%column_version}</th>
+                    <th width="25%">${%column_build}</th>
+                    <th width="30%">${%column_commit}</th>
+                    <th>${%column_deployment}</th>
+                    <th width="0%"/>
+                </tr>
+            </j:if>
+        </thead>
+        <tbody>
             <j:forEach var="application" indexVar="i" items="${applications}">
                 <tr class="group-title">
-                    <th colspan="4"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${application}</th>
+                    <th colspan="5"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${application}</th>
                 </tr>
-                <j:if test="${i == 0}">
-                    <tr class="group-headers">
-                        <th width="8%">${%column_version}</th>
-                        <th width="25%">${%column_build}</th>
-                        <th width="30%">${%column_commit}</th>
-                        <th>${%column_deployment}</th>
-                        <th width="0%"/>
-                    </tr>
-                </j:if>
                 <j:set var="versions" value="${it.descriptor.getApplicationVersions(application)}"/>
                 <j:forEach var="version" indexVar="j" items="${versions}">
                     <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
