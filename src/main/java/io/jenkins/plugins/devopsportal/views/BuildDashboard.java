@@ -89,8 +89,8 @@ public class BuildDashboard extends View {
             return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
         }
 
-        public BuildStatus.DescriptorImpl getBuildStatusDescriptor() {
-            return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
+        public ApplicationBuildStatus.DescriptorImpl getBuildStatusDescriptor() {
+            return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
         }
 
         public ServiceOperation.DescriptorImpl getServiceOperationDescriptor() {
@@ -101,7 +101,7 @@ public class BuildDashboard extends View {
             Stream<String> stream = getBuildStatusDescriptor()
                     .getBuildStatus()
                     .stream()
-                    .map(BuildStatus::getApplicationName)
+                    .map(ApplicationBuildStatus::getApplicationName)
                     .map(String::trim)
                     .filter(name -> !name.isEmpty())
                     .distinct()
@@ -121,14 +121,14 @@ public class BuildDashboard extends View {
                     .getBuildStatus()
                     .stream()
                     .filter(item -> applicationName.trim().equals(item.getApplicationName()))
-                    .sorted(Comparator.comparingLong(BuildStatus::getBuildTimestamp))
-                    .map(BuildStatus::getApplicationVersion)
+                    .sorted(Comparator.comparingLong(ApplicationBuildStatus::getBuildTimestamp))
+                    .map(ApplicationBuildStatus::getApplicationVersion)
                     .map(String::trim)
                     .distinct()
                     .collect(Collectors.toList());
         }
 
-        public BuildStatus getApplicationBuild(String applicationName, String applicationVersion) {
+        public ApplicationBuildStatus getApplicationBuild(String applicationName, String applicationVersion) {
             return getBuildStatusDescriptor()
                     .getBuildStatus()
                     .stream()
@@ -138,7 +138,7 @@ public class BuildDashboard extends View {
                     .orElse(null);
         }
 
-        public List<AbstractActivity> getBuildActivities(BuildStatus build, String category) {
+        public List<AbstractActivity> getBuildActivities(ApplicationBuildStatus build, String category) {
             return build.getActivitiesByCategory(ActivityCategory.valueOf(category));
         }
 

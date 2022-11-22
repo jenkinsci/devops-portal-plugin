@@ -5,7 +5,7 @@ import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
-import io.jenkins.plugins.devopsportal.models.BuildStatus;
+import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import jenkins.model.Jenkins;
 
 import java.util.logging.Logger;
@@ -20,8 +20,8 @@ public class SonarQubeCheckRunListener extends RunListener<AbstractBuild<?, ?>> 
 
     private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
-    public BuildStatus.DescriptorImpl getBuildStatusDescriptor() {
-        return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
+    public ApplicationBuildStatus.DescriptorImpl getBuildStatusDescriptor() {
+        return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
     }
 
     @Override

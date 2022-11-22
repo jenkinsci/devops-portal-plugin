@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class BuildStatus implements Describable<BuildStatus>, Serializable, GenericRunModel {
+public class ApplicationBuildStatus implements Describable<ApplicationBuildStatus>, Serializable, GenericRunModel {
 
     private String applicationName;
     private String applicationVersion;
@@ -44,7 +44,7 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
     private final Map<ActivityCategory, List<AbstractActivity>> activities;
 
     @DataBoundConstructor
-    public BuildStatus() {
+    public ApplicationBuildStatus() {
         activities = new HashMap<>();
         for (ActivityCategory category : ActivityCategory.values()) {
             activities.put(category, new ArrayList<>());
@@ -136,15 +136,15 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
     }
 
     @Override
-    public Descriptor<BuildStatus> getDescriptor() {
-        return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
+    public Descriptor<ApplicationBuildStatus> getDescriptor() {
+        return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
     }
 
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final BuildStatus other = (BuildStatus) that;
+        final ApplicationBuildStatus other = (ApplicationBuildStatus) that;
         return new EqualsBuilder()
                 .append(applicationName, other.applicationName)
                 .append(applicationVersion, other.applicationVersion)
@@ -186,7 +186,6 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
         return "icon-disabled";
     }
 
-
     @SuppressWarnings("unchecked")
     public <T extends AbstractActivity> void updateActivity(@NonNull String applicationComponent,
                                                             @NonNull ActivityCategory category,
@@ -201,7 +200,6 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
                     .findFirst()
                     .orElse(null);
             if (activity == null) {
-                assert category.getClazz() != null;
                 activity = createActivity(category, applicationComponent);
                 if (!activities.containsKey(category)) {
                     activities.put(category, new ArrayList<>());
@@ -216,7 +214,8 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends AbstractActivity> T createActivity(@NonNull ActivityCategory category, String applicationComponent) {
+    private <T extends AbstractActivity> T createActivity(@NonNull ActivityCategory category,
+                                                          @NonNull String applicationComponent) {
         try {
             assert category.getClazz() != null;
             return (T) category.getClazz().getConstructor(String.class).newInstance(applicationComponent);
@@ -231,7 +230,8 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
         }
     }
 
-    public Optional<AbstractActivity> getActivity(@NonNull ActivityCategory category, @NonNull String applicationComponent) {
+    public Optional<AbstractActivity> getComponentActivityByCategory(@NonNull ActivityCategory category,
+                                                                     @NonNull String applicationComponent) {
         synchronized (activities) {
             if (!activities.containsKey(category)) {
                 return Optional.empty();
@@ -241,35 +241,42 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
                     .stream()
                     .filter(item -> applicationComponent.equals(item.getApplicationComponent()))
                     .findFirst();
-
         }
     }
 
-    public boolean removeActivity(@NonNull ActivityCategory category, @NonNull String applicationComponent) {
-        synchronized (activities) {
-            return this.activities.get(category);
+    public boolean removeComponentActivity(@NonNull ActivityCategory category, @NonNull String applicationComponent) {
+        Optional<AbstractActivity> activity = getComponentActivityByCategory(category, applicationComponent);
+        if (activity.isPresent()) {
+            synchronized (activities) {
+                return this.activities.get(category).remove(activity.get());
+            }
         }
+        return false;
     }
 
-    public void setActivityByCategory(@NonNull ActivityCategory category, @NonNull String applicationComponent,
-                                      @NonNull QualityAuditActivity activity) {
+    public void setComponentActivityByCategory(@NonNull ActivityCategory category,
+                                               @NonNull String applicationComponent,
+                                               @NonNull AbstractActivity activity) {
         synchronized (activities) {
-            getActivitiesByCategory(category).add(activity);
-            activity = createActivity(category, applicationComponent);
+            // Create category
             if (!activities.containsKey(category)) {
                 activities.put(category, new ArrayList<>());
             }
-            activities.get(category).add(activity);
+            // Remove old activity
+            removeComponentActivity(category, applicationComponent);
+            // Add new one
+            getActivitiesByCategory(category).add(activity);
+            getDescriptor().save();
         }
     }
 
     @Extension
-    public static final class DescriptorImpl extends Descriptor<BuildStatus> implements Serializable {
+    public static final class DescriptorImpl extends Descriptor<ApplicationBuildStatus> implements Serializable {
 
-        private final CopyOnWriteList<BuildStatus> buildStatus = new CopyOnWriteList<>();
+        private final CopyOnWriteList<ApplicationBuildStatus> buildStatus = new CopyOnWriteList<>();
 
         public DescriptorImpl() {
-            super(BuildStatus.class);
+            super(ApplicationBuildStatus.class);
             load();
         }
 
@@ -279,13 +286,14 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
             return Messages.BuildStatus_DisplayName();
         }
 
-        public synchronized List<BuildStatus> getBuildStatus() {
-            List<BuildStatus> retVal = new ArrayList<>(buildStatus.getView());
-            retVal.sort(Comparator.comparing(BuildStatus::getApplicationName));
+        public synchronized List<ApplicationBuildStatus> getBuildStatus() {
+            List<ApplicationBuildStatus> retVal = new ArrayList<>(buildStatus.getView());
+            retVal.sort(Comparator.comparing(ApplicationBuildStatus::getApplicationName));
             return retVal;
         }
 
-        public synchronized Optional<BuildStatus> getBuildStatusByApplication(String applicationName, String applicationVersion) {
+        public synchronized Optional<ApplicationBuildStatus> getBuildStatusByApplication(@NonNull String applicationName,
+                                                                                         @NonNull String applicationVersion) {
             return buildStatus
                     .getView()
                     .stream()
@@ -294,10 +302,11 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
                     .findFirst();
         }
 
-        public synchronized void update(String applicationName, String applicationVersion, Consumer<BuildStatus> updater) {
-            BuildStatus status = getBuildStatusByApplication(applicationName, applicationVersion).orElse(null);
+        public synchronized void update(@NonNull String applicationName, @NonNull String applicationVersion,
+                                        @NonNull Consumer<ApplicationBuildStatus> updater) {
+            ApplicationBuildStatus status = getBuildStatusByApplication(applicationName, applicationVersion).orElse(null);
             if (status == null) {
-                status = new BuildStatus();
+                status = new ApplicationBuildStatus();
                 status.setApplicationName(applicationName.trim());
                 status.setApplicationVersion(applicationVersion.trim());
                 buildStatus.add(status);
@@ -307,14 +316,15 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
             save();
         }
 
-        public synchronized void update(String jobName, int buildNumber, Consumer<BuildStatus> updater) {
-            List<BuildStatus> status = buildStatus
+        public synchronized void update(@NonNull String jobName, int buildNumber,
+                                        @NonNull Consumer<ApplicationBuildStatus> updater) {
+            List<ApplicationBuildStatus> status = buildStatus
                     .getView()
                     .stream()
                     .filter(item -> jobName.equals(item.getBuildJob()))
                     .filter(item -> String.valueOf(buildNumber).equals(item.getBuildNumber()))
                     .collect(Collectors.toList());
-            for (BuildStatus record : status) {
+            for (ApplicationBuildStatus record : status) {
                 updater.accept(record);
             }
             if (!status.isEmpty()) {
@@ -322,7 +332,7 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
             }
         }
 
-        public boolean isApplicationExists(String applicationName) {
+        public boolean isApplicationExists(@NonNull String applicationName) {
             return getBuildStatus().stream().anyMatch(item -> applicationName.equals(item.getApplicationName()));
         }
 

@@ -1,10 +1,12 @@
 package io.jenkins.plugins.devopsportal.workers;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.AsyncPeriodicWork;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
-import io.jenkins.plugins.devopsportal.models.BuildStatus;
+import io.jenkins.plugins.devopsportal.models.ActivityScore;
+import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
 import io.jenkins.plugins.devopsportal.utils.SSLUtils;
 import jenkins.model.Jenkins;
@@ -23,7 +25,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static org.sonarqube.ws.Common.RuleType.*;
-
 
 /**
  * Scheduled task that monitor a SonarQube server.
@@ -45,12 +46,12 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         return MIN;
     }
 
-    public BuildStatus.DescriptorImpl getBuildStatusDescriptor() {
-        return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
+    public ApplicationBuildStatus.DescriptorImpl getBuildStatusDescriptor() {
+        return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
     }
 
     @Override
-    protected void execute(TaskListener listener) throws IOException, InterruptedException {
+    protected void execute(@NonNull TaskListener listener) throws IOException, InterruptedException {
         final Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
             return;
@@ -60,45 +61,73 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             actions = new ArrayList<>(ACTIONS);
         }
         for (WorkItem item : actions) {
-            boolean completed = execute(item);
+            boolean completed = false;
+            try {
+                completed = execute(item);
+            }
+            catch (Exception ex) {
+                LOGGER.severe(
+                        "Unable to complete SonarQube async task: job='" + item.jobName + "' build='" + item.buildNumber
+                        + "' project='" + item.applicationName + ":" + item.applicationVersion + "/" + item.projectKey + "' => "
+                        + ex.getClass().getSimpleName() + " : " + ex.getMessage()
+                );
+            }
             if (completed) {
+                item.activity.setComplete(true);
                 LOGGER.info("Completed SonarQube async task: job='" + item.jobName + "' build='" + item.buildNumber
                         + "' project='" + item.applicationName + ":" + item.applicationVersion + "/" + item.projectKey + "'");
                 synchronized (ACTIONS) {
-                    //ACTIONS.remove(item.close());
+                    ACTIONS.remove(item.close());
                 }
                 getBuildStatusDescriptor().getBuildStatusByApplication(
                         item.applicationName,
                         item.applicationVersion
                 ).ifPresent(status -> {
-                    status.setActivityByCategory(ActivityCategory.QUALITY_AUDIT, item.applicationComponent, item.activity);
+                    status.setComponentActivityByCategory(
+                            ActivityCategory.QUALITY_AUDIT,
+                            item.applicationComponent,
+                            item.activity
+                    );
                 });
             }
         }
     }
 
-    private boolean execute(WorkItem item) {
+    private boolean execute(@NonNull WorkItem item) {
         final Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
             return false;
         }
-        org.sonarqube.ws.client.measures.SearchRequest request1 = new org.sonarqube.ws.client.measures.SearchRequest();
-        // COVERAGE
-        request1.setProjectKeys(List.of(item.projectKey));
-        request1.setMetricKeys(List.of("coverage"));
-        Measures.SearchWsResponse response1 = item.wsClient.measures().search(request1);
-        Measures.Measure result1 = response1.getMeasures(0);
-        item.activity.setTestCoverage(response1.getMeasuresCount() == 0 ? 0 : Float.parseFloat(response1.getMeasures(0).getValue()));
+        // METRICS
+        handleMetrics(item);
         // ISSUES
-        org.sonarqube.ws.client.issues.SearchRequest request2 = new org.sonarqube.ws.client.issues.SearchRequest();
-        request2.setComponentKeys(List.of(item.projectKey));
-        request2.setTypes(List.of("BUG", "VULNERABILITY", "CODE_SMELL"));
-        request2.setSeverities(List.of("MAJOR", "CRITICAL", "BLOCKER"));
-        request2.setResolved("no");
-        request2.setPs("500");
-        Issues.SearchWsResponse response2 = item.wsClient.issues().search(request2);
+        handleIssues(item);
+        // HOTSPOTS
+        handleHotspots(item);
+        return true;
+    }
+
+    private static void handleHotspots(@NonNull WorkItem item) {
+        org.sonarqube.ws.client.hotspots.SearchRequest request = new org.sonarqube.ws.client.hotspots.SearchRequest();
+        request.setProjectKey(item.projectKey);
+        request.setStatus("TO_REVIEW");
+        Hotspots.SearchWsResponse response = item.wsClient.hotspots().search(request);
+        item.activity.setHotspotCount(0);
+        for (Hotspots.SearchWsResponse.Hotspot hotspot : response.getHotspotsList()) {
+            item.activity.addHotSpot(hotspot);
+        }
+    }
+
+    private static void handleIssues(@NonNull WorkItem item) {
+        org.sonarqube.ws.client.issues.SearchRequest request = new org.sonarqube.ws.client.issues.SearchRequest();
+        request.setComponentKeys(List.of(item.projectKey));
+        request.setTypes(List.of("BUG", "VULNERABILITY", "CODE_SMELL"));
+        request.setSeverities(List.of("MAJOR", "CRITICAL", "BLOCKER"));
+        request.setResolved("no");
+        request.setPs("500");
+        Issues.SearchWsResponse response = item.wsClient.issues().search(request);
         item.activity.setBugCount(0);
-        for (Issues.Issue issue : response2.getIssuesList()) {
+        for (Issues.Issue issue : response.getIssuesList()) {
             if ("java:S1135".equals(issue.getRule())) {
                 // Ignore TODOs
                 continue;
@@ -106,27 +135,72 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             if (issue.getType() == BUG) {
                 item.activity.addBug(issue);
             }
-            else if (issue.getType() == VULNERABILITY || issue.getType() == SECURITY_HOTSPOT) {
+            else if (issue.getType() == VULNERABILITY) {
                 item.activity.addVulnerability(issue);
             }
         }
-        // HOTSPOTS
-        org.sonarqube.ws.client.hotspots.SearchRequest request3 = new org.sonarqube.ws.client.hotspots.SearchRequest();
-        request3.setProjectKey(item.projectKey);
-        request3.setStatus("TO_REVIEW");
-        Hotspots.SearchWsResponse response3 = item.wsClient.hotspots().search(request3);
-        item.activity.setVulnerabilityCount(0);
-        for (Hotspots.SearchWsResponse.Hotspot hotspot : response3.getHotspotsList()) {
-            item.activity.addHotSpot(hotspot);
-        }
-        // TODO duplicationRate, linesCount, qualityGatePassed
-        return true;
     }
 
-    public static void push(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
-                            String sonarUrl, String sonarToken, String applicationName, String applicationVersion,
-                            String applicationComponent) {
+    private static void handleMetrics(@NonNull WorkItem item) {
+        org.sonarqube.ws.client.measures.SearchRequest request = new org.sonarqube.ws.client.measures.SearchRequest();
+        request.setProjectKeys(List.of(item.projectKey));
+        request.setMetricKeys(List.of(
+                // Quality Gate
+                "alert_status",
+                "quality_gate_details",
+                // Scores
+                "sqale_rating", // Maintainability (code smells)
+                "reliability_rating", // Reliability (bugs)
+                "security_rating", // Security (vulnerabilities)
+                "security_review_rating", // Security review (hotspots)
+                // Metrics
+                "coverage", // Test coverage
+                "duplicated_lines_density", // Duplication
+                "ncloc" // Lines of code
+        ));
+        Measures.SearchWsResponse response = item.wsClient.measures().search(request);
+        item.activity.setQualityGatePassed(!"ERROR".equals(getMeasure(response, "alert_status", String.class)));
+        item.activity.setBugScore(getMeasure(response, "reliability_rating", ActivityScore.class));
+        item.activity.setVulnerabilityScore(getMeasure(response, "security_rating", ActivityScore.class));
+        item.activity.setHotspotScore(getMeasure(response, "security_review_rating", ActivityScore.class));
+        item.activity.setTestCoverage(getMeasure(response, "coverage", Float.class));
+        item.activity.setDuplicationRate(getMeasure(response, "duplicated_lines_density", Float.class) / 100f);
+        item.activity.setLinesCount(getMeasure(response, "ncloc", Integer.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getMeasure(Measures.SearchWsResponse response, String name, Class<T> type) {
+        for (int i = 0, l = response.getMeasuresCount(); i < l; i++) {
+            Measures.Measure measure = response.getMeasures(i);
+            if (!name.equals(measure.getMetric())) {
+                continue;
+            }
+            if (type == String.class) {
+                return (T) measure.getValue();
+            }
+            if (type == Integer.class) {
+                return (T) Integer.valueOf(Integer.parseInt(measure.getValue()));
+            }
+            if (type == Float.class) {
+                return (T) Float.valueOf(Float.parseFloat(measure.getValue()));
+            }
+            if (type == Boolean.class) {
+                return (T) Boolean.valueOf(measure.getValue());
+            }
+            if (type == ActivityScore.class) {
+                return (T) ActivityScore.parseString(measure.getValue());
+            }
+            throw new IllegalArgumentException("Unable to convert measure '" + name + "' into " + type.getSimpleName());
+        }
+        throw new IllegalArgumentException("Unable to get measure '" + name + "' from response");
+    }
+
+    public static void push(@NonNull String jobName, @NonNull String buildNumber, @NonNull String projectKey,
+                            @NonNull QualityAuditActivity activity,
+                            @NonNull String sonarUrl, @NonNull String sonarToken, @NonNull String applicationName,
+                            @NonNull String applicationVersion, @NonNull String applicationComponent) {
         // TODO Check arguments
+        // TODO Remove older actions for same applicationName/applicationVersion/applicationComponent
         synchronized (ACTIONS) {
             ACTIONS.add(new WorkItem(
                     jobName, buildNumber, projectKey, activity, sonarUrl,
@@ -143,20 +217,19 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         private final String buildNumber;
         private final String projectKey;
         private final QualityAuditActivity activity;
-        private final String sonarUrl;
         private final WsClient wsClient;
         private final String applicationName;
         private final String applicationVersion;
         private final String applicationComponent;
 
-        public WorkItem(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
-                        String sonarUrl, String sonarToken, String applicationName, String applicationVersion,
-                        String applicationComponent) {
+        public WorkItem(@NonNull String jobName, @NonNull String buildNumber, @NonNull String projectKey,
+                        @NonNull QualityAuditActivity activity, @NonNull String sonarUrl, @NonNull String sonarToken,
+                        @NonNull String applicationName, @NonNull String applicationVersion,
+                        @NonNull String applicationComponent) {
             this.jobName = jobName;
             this.buildNumber = buildNumber;
             this.projectKey = projectKey;
             this.activity = activity;
-            this.sonarUrl = sonarUrl;
             this.applicationName = applicationName;
             this.applicationVersion = applicationVersion;
             this.applicationComponent = applicationComponent;

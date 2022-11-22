@@ -70,14 +70,17 @@
             padding-left: 1rem;
         }
         .build-dashboard .activity-score {
-            background: #aaa;
+            background: #888;
             color: #fff;
             padding: 2px 6px;
             border: 1px solid #666;
             border-radius: 50%;
+            margin: 0 .25rem;
+            font-family: monospace;
+            font-weight: bolder;
         }
         .activity-score.score-A, .build-dashboard .activity-quality-gate.passed {
-            background-color: #248509;
+            background-color: #0a0;
             border-color: #165405;
         }
         .activity-score.score-B {
@@ -85,11 +88,15 @@
             border-color: #327021;
         }
         .activity-score.score-C {
-            background-color: #cc9f21;
+            background-color: #eabe06;
             border-color: #7d6113;
         }
-        .activity-score.score-D, .build-dashboard .activity-quality-gate.failed {
-            background-color: #a1261b;
+        .activity-score.score-D {
+            background-color: #ed7d20;
+            border-color: #7d6113;
+        }
+        .activity-score.score-E, .build-dashboard .activity-quality-gate.failed {
+            background-color: #d02f3a;
             border-color: #3b0904;
         }
         .build-dashboard .activity-quality-gate {
@@ -270,32 +277,46 @@
                                 <strong>${activity.applicationComponent}</strong>
                             </td>
                             <td>
-                                <j:if test="${activity.qualityGatePassed}">
-                                    <span class="activity-quality-gate passed">${%quality_gate_passed}</span>
+                                <j:if test="${!activity.complete}">
+                                    <l:icon class="icon-grey-anime icon-sm"/>
+                                    ${%label_in_progress}
                                 </j:if>
-                                <j:if test="${!activity.qualityGatePassed}">
-                                    <span class="activity-quality-gate failed">${%quality_gate_failed}</span>
-                                </j:if>
-                                ${%quality_item_duplications}
-                                <strong>${activity.duplicationRate*100}%</strong>
-                                <j:if test="${activity.linesCount > 0}">
-                                    ${%quality_item_lines}
-                                    <strong>${activity.linesCount/1000}k</strong>
+                                <j:if test="${activity.complete}">
+                                    <j:if test="${activity.qualityGatePassed}">
+                                        <span class="activity-quality-gate passed">${%quality_gate_passed}</span>
+                                    </j:if>
+                                    <j:if test="${!activity.qualityGatePassed}">
+                                        <span class="activity-quality-gate failed">${%quality_gate_failed}</span>
+                                    </j:if>
+                                    ${%quality_item_duplications}
+                                    <strong>${activity.duplicationRate*100}%</strong>
+                                    <j:if test="${activity.linesCount > 0}">
+                                        ${%quality_item_lines}
+                                        <strong>${activity.linesCount/1000}k</strong>
+                                    </j:if>
+                                    <j:if test="${activity.testCoverage > 0}">
+                                        ${%quality_item_coverage} <strong>${activity.testCoverage*100}%</strong>
+                                    </j:if>
                                 </j:if>
                             </td>
                             <td colspan="2">
-                                ${%quality_item_bug}
-                                <span class="activity-score score-${activity.bugScore}">
-                                    ${activity.bugScore}
-                                </span>
-                                ${%quality_item_vulnerability}
-                                <span class="activity-score score-${activity.vulnerabilityScore}">
-                                    ${activity.vulnerabilityScore}
-                                </span>
-                                ${%quality_item_hotspot}
-                                <span class="activity-score score-${activity.hotspotScore}">
-                                    ${activity.hotspotScore}
-                                </span>
+                                <j:if test="${activity.complete}">
+                                    ${%quality_item_bug} <strong>${activity.bugCount}</strong>
+                                    <span class="activity-score score-${activity.bugScore}">
+                                        <j:if test="${activity.bugScore == null}">??</j:if>
+                                        <j:if test="${activity.bugScore != null}">${activity.bugScore}</j:if>
+                                    </span>
+                                    ${%quality_item_vulnerability} <strong>${activity.vulnerabilityCount}</strong>
+                                    <span class="activity-score score-${activity.vulnerabilityScore}">
+                                        <j:if test="${activity.vulnerabilityScore == null}">??</j:if>
+                                        <j:if test="${activity.vulnerabilityScore != null}">${activity.vulnerabilityScore}</j:if>
+                                    </span>
+                                    ${%quality_item_hotspot} <strong>${activity.hotspotCount}</strong>
+                                    <span class="activity-score score-${activity.hotspotScore}">
+                                        <j:if test="${activity.hotspotScore == null}">??</j:if>
+                                        <j:if test="${activity.hotspotScore != null}">${activity.hotspotScore}</j:if>
+                                    </span>
+                                </j:if>
                             </td>
                         </tr>
                     </j:forEach>

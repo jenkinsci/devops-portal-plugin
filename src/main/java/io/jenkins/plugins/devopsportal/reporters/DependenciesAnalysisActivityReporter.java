@@ -9,7 +9,7 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.buildmanager.*;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
-import io.jenkins.plugins.devopsportal.models.BuildStatus;
+import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.DependenciesAnalysisActivity;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -89,7 +89,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     }
 
     @Override
-    public void updateActivity(@NonNull BuildStatus status,  @NonNull DependenciesAnalysisActivity activity,
+    public void updateActivity(@NonNull ApplicationBuildStatus status, @NonNull DependenciesAnalysisActivity activity,
                                @NonNull TaskListener listener, @NonNull EnvVars env) {
 
         File manifest = checkManifestFile(env, manifestFile, listener);

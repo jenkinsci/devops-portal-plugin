@@ -8,7 +8,7 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ActivityScore;
-import io.jenkins.plugins.devopsportal.models.BuildStatus;
+import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -51,9 +51,15 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @DataBoundSetter
-    public void setBugScore(String bugScore) {
-        if (bugScore != null && !bugScore.isEmpty()) {
-            this.bugScore = ActivityScore.valueOf(bugScore);
+    public void setBugScore(Object value) {
+        if (value instanceof String) {
+            this.bugScore = ActivityScore.valueOf((String) value);
+        }
+        else if (value instanceof ActivityScore) {
+            this.bugScore = (ActivityScore) value;
+        }
+        else {
+            this.bugScore = null;
         }
     }
 
@@ -71,9 +77,15 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @DataBoundSetter
-    public void setVulnerabilityScore(String vulnerabilityScore) {
-        if (vulnerabilityScore != null && !vulnerabilityScore.isEmpty()) {
-            this.vulnerabilityScore = ActivityScore.valueOf(vulnerabilityScore);
+    public void setVulnerabilityScore(Object value) {
+        if (value instanceof String) {
+            this.vulnerabilityScore = ActivityScore.valueOf((String) value);
+        }
+        else if (value instanceof ActivityScore) {
+            this.vulnerabilityScore = (ActivityScore) value;
+        }
+        else {
+            this.vulnerabilityScore = null;
         }
     }
 
@@ -91,9 +103,15 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @DataBoundSetter
-    public void setHotspotScore(String hotspotScore) {
-        if (hotspotScore != null && !hotspotScore.isEmpty()) {
-            this.hotspotScore = ActivityScore.valueOf(hotspotScore);
+    public void setHotspotScore(Object value) {
+        if (value instanceof String) {
+            this.hotspotScore = ActivityScore.valueOf((String) value);
+        }
+        else if (value instanceof ActivityScore) {
+            this.hotspotScore = (ActivityScore) value;
+        }
+        else {
+            this.hotspotScore = null;
         }
     }
 
@@ -134,8 +152,9 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @Override
-    public void updateActivity(@NonNull BuildStatus status, @NonNull QualityAuditActivity activity,
+    public void updateActivity(@NonNull ApplicationBuildStatus status, @NonNull QualityAuditActivity activity,
                                @NonNull TaskListener listener, @NonNull EnvVars env) {
+        activity.setComplete(true);
         activity.setBugCount(bugCount);
         activity.setBugScore(bugScore);
         activity.setVulnerabilityCount(vulnerabilityCount);

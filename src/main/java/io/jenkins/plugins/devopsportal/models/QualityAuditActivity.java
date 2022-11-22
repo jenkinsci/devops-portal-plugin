@@ -21,7 +21,8 @@ public class QualityAuditActivity extends AbstractActivity {
     private float duplicationRate;
     private float testCoverage;
     private long linesCount;
-    private boolean qualityGatePassed;
+    private boolean qualityGatePassed = false;
+    private boolean complete = false;
 
     @DataBoundConstructor
     public QualityAuditActivity(String applicationComponent) {
@@ -116,6 +117,14 @@ public class QualityAuditActivity extends AbstractActivity {
     @DataBoundSetter
     public void setQualityGatePassed(boolean qualityGatePassed) {
         this.qualityGatePassed = qualityGatePassed;
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 
     public void addBug(Issues.Issue issue) {

@@ -57,8 +57,8 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
         this.applicationComponent = applicationComponent;
     }
 
-    public BuildStatus.DescriptorImpl getBuildStatusDescriptor() {
-        return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
+    public ApplicationBuildStatus.DescriptorImpl getBuildStatusDescriptor() {
+        return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
     }
 
     @Override

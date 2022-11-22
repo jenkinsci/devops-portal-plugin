@@ -1,5 +1,8 @@
 package io.jenkins.plugins.devopsportal.models;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * List of all Scores used to measure achievement of a build activity.
  *
@@ -7,7 +10,7 @@ package io.jenkins.plugins.devopsportal.models;
  */
 public enum ActivityScore {
 
-    D, B, C, A;
+    E, D, B, C, A;
 
     public static ActivityScore min(ActivityScore... scores) {
         if (scores == null || scores.length == 0) {
@@ -20,6 +23,17 @@ public enum ActivityScore {
             }
         }
         return r;
+    }
+
+    public static ActivityScore parseString(String value) {
+        switch (value) {
+            case "1.0": return A;
+            case "2.0": return B;
+            case "3.0": return C;
+            case "4.0": return D;
+            case "5.0": return E;
+        }
+        return null;
     }
 
 }

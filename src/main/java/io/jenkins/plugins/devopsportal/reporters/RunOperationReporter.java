@@ -14,7 +14,7 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.RunOperations;
-import io.jenkins.plugins.devopsportal.models.BuildStatus;
+import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.GenericRunModel;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import io.jenkins.plugins.devopsportal.models.ServiceOperation;
@@ -153,8 +153,8 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
         return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
     }
 
-    public static BuildStatus.DescriptorImpl getBuildStatusDescriptor() {
-        return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
+    public static ApplicationBuildStatus.DescriptorImpl getBuildStatusDescriptor() {
+        return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
     }
 
     @Symbol("reportRunOperation")
