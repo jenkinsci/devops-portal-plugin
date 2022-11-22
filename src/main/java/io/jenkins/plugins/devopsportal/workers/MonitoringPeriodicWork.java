@@ -1,8 +1,9 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.workers;
 
 import hudson.Extension;
 import hudson.model.AsyncPeriodicWork;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.MonitoringStatus;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import io.jenkins.plugins.devopsportal.models.ServiceMonitoring;

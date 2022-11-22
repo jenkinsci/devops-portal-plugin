@@ -68,7 +68,7 @@ pipeline {
                     reportQualityAudit(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin-devops-portal",
+                        applicationComponent: "other-component",
                         bugCount: 1,
                         bugScore: "B",
                         vulnerabilityCount: 3,
@@ -80,6 +80,15 @@ pipeline {
                         linesCount: 32000,
                         qualityGatePassed: true
                     )
+                    // Quality audit reported from Sonar Qube
+                    withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server') {
+                        reportSonarQubeAudit(
+                            applicationName: env.APPLICATION_NAME,
+                            applicationVersion: env.APPLICATION_VERSION,
+                            applicationComponent: "plugin-devops-portal",
+                            projectKey: "xxxxxxxxxx"
+                        )
+                    }
                     // Dependencies analysis
                     /*reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
