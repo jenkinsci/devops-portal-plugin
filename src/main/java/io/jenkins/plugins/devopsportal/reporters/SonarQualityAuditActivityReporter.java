@@ -39,11 +39,18 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
     public void updateActivity(@NonNull QualityAuditActivity activity, @NonNull TaskListener listener,
                                @NonNull EnvVars env) {
 
+        if (!env.containsKey("SONAR_AUTH_TOKEN") || !env.containsKey("SONAR_HOST_URL")) {
+            listener.getLogger().println(Messages.SonarQualityAuditActivityReporter_Error_MissingEnvVar());
+            return;
+        }
+
         SonarQubeCheckPeriodicWork.push(
                 env.get("JOB_NAME"),
                 env.get("BUILD_NUMBER"),
                 projectKey,
-                activity
+                activity,
+                env.get("SONAR_HOST_URL"),
+                env.get("SONAR_AUTH_TOKEN")
         );
 
         /*activity.setBugCount(bugCount);

@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
 
     private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
-    private static final List<WorkItem> STACK = new ArrayList<>();
+    private static final List<WorkItem> ACTIONS = new ArrayList<>();
 
     public SonarQubeCheckPeriodicWork() {
         super("SonarQube Worker Thread");
@@ -42,19 +42,20 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
 
     @Override
     protected void execute(TaskListener listener) throws IOException, InterruptedException {
-        synchronized (STACK) {
-            for (WorkItem item : new ArrayList<>(STACK)) {
+        synchronized (ACTIONS) {
+            for (WorkItem item : new ArrayList<>(ACTIONS)) {
                 LOGGER.info("Completed SonarQube async task: job='" + item.jobName + "' build='" + item.buildNumber
                         + "' project='" + item.projectKey + "'");
-                STACK.remove(item);
+                ACTIONS.remove(item);
             }
         }
     }
 
-    public static void push(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity) {
+    public static void push(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
+                            String sonarUrl, String sonarToken) {
         // TODO Check arguments
-        synchronized (STACK) {
-            STACK.add(new WorkItem(jobName, buildNumber, projectKey, activity));
+        synchronized (ACTIONS) {
+            ACTIONS.add(new WorkItem(jobName, buildNumber, projectKey, activity, sonarUrl, sonarToken));
             LOGGER.info("New SonarQube async task: job='" + jobName + "' build='" + buildNumber + "' project='" + projectKey + "'");
         }
     }
@@ -65,12 +66,17 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         private final String buildNumber;
         private final String projectKey;
         private final QualityAuditActivity activity;
+        private final String sonarUrl;
+        private final String sonarToken;
 
-        public WorkItem(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity) {
+        public WorkItem(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
+                        String sonarUrl, String sonarToken) {
             this.jobName = jobName;
             this.buildNumber = buildNumber;
             this.projectKey = projectKey;
             this.activity = activity;
+            this.sonarUrl = sonarUrl;
+            this.sonarToken = sonarToken;
         }
 
     }
