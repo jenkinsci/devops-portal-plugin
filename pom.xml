@@ -115,7 +115,7 @@
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
             <artifactId>sonar-ws</artifactId>
-            <version>9.3.0.51899</version>
+            <version>9.7.1.62043</version>
         </dependency>
     </dependencies>
 
@@ -129,6 +129,32 @@
                     <execution>
                         <goals>
                             <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <configuration>
+                            <rules>
+                                <enforceBytecodeVersion>
+                                    <maxJdkVersion>11</maxJdkVersion>
+                                </enforceBytecodeVersion>
+                                <requireUpperBoundDeps>
+                                    <excludes>
+                                      <exclude>org.jetbrains.kotlin</exclude>
+                                      <exclude>org.jetbrains.kotlin:kotlin-stdlib-common</exclude>
+                                    </excludes>
+                                </requireUpperBoundDeps>
+                            </rules>
+                        </configuration>
+                        <goals>
+                            <goal>enforce</goal>
                         </goals>
                     </execution>
                 </executions>
