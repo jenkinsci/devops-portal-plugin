@@ -60,7 +60,7 @@ public class MonitoringPeriodicWork extends AsyncPeriodicWork {
     @Override
     protected void execute(TaskListener listener) throws IOException, InterruptedException {
         final Jenkins jenkins = Jenkins.getInstanceOrNull();
-        if (jenkins == null) {
+        if (jenkins == null || getServicesDescriptor() == null) {
             return;
         }
         for (ServiceConfiguration service : getServicesDescriptor().getServiceConfigurations()) {
