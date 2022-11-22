@@ -85,10 +85,10 @@ pipeline {
                     // Quality audit reported from Sonar Qube
                     withSonarQubeEnv(credentialsId: 'c191d43f-0199-4f04-95a1-3afe1cd9803e', installationName: 'SonarQube Scanner') {
                         if (isUnix()) {
-                            sh 'mvn -Djavax.net.ssl.trustStore=test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
+                            sh 'mvn -Djavax.net.ssl.trustStore=src/test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
                         }
                         else {
-                            bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
+                            bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
                         }
 
                         reportSonarQubeAudit(
