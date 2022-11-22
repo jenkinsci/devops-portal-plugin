@@ -13,17 +13,38 @@ A Jenkins Dashboard Plugin with many features :
     - Gather useful information in the same place: **artifacts** built and size of them, **unit tests** performed,
       **code quality** metrics, application **performance** metrics and published containers **images**
 
-Current supported translations: 🇫🇷 🇬🇧
+## <a name="table-of-contents"></a> Table of Contents
+
+1. [Installing Prerequisites](#section-setup)
+2. [Configure RUN environments](#section-manage)
+3. [Manage RUN operations](#section-run)
+4. [Manage BUILD activities](#section-build)
+   1. [Build artifacts](#activity-build)
+   2. [Unit testing](#activity-ut)
+   3. [Code Quality & Security Audit](#activity-quality)
+   4. [Dependencies Analysis](#activity-dependencies)
+   5. [Performance/load testing](#activity-performance)
+   6. [Release container image](#activity-release)
+5. [Pipeline Example](#section-sample)
+
+## <a name="section-setup"></a> Installing Prerequisites
+
+⛔ TODO
+
+- Jenkins version
+- Current supported translations: 🇫🇷 🇬🇧
+- Required plugins : maven, sonar
+- Enable plugin from Jenkins Administration
 
 ## <a name="section-manage"></a> ⚡ Manage Environments
 
 In Jenkins Administration, a link allows to configure managed environments:
 
-![xxxx](.doc/PluginManagementLink.png)
+![PluginManagementLink](.doc/PluginManagementLink.png)
 
 Then you can configure each environment to manage:
 
-![xxxx](.doc/ServiceConfiguration.png)
+![ServiceConfiguration](.doc/ServiceConfiguration.png)
 
 You have to provide:
 - An unique label
@@ -125,14 +146,14 @@ The dashboard bring together much information:
 - Display the last deployment target environment
 - Also, it can display a lot of activities:
   - 🔹 **[Build artifacts](#activity-build)**: artifact file size
-  - 🔹 **[Unit test report](#activity-ut)**: number of passed/failed/skipped tests, coverage and score
+  - 🔹 **[Unit testing](#activity-ut)**: number of passed/failed/skipped tests, coverage and score
   - 🔹 **[Code Quality & Security Audit](#activity-quality)**: designed to gather SonarQube metrics into Jenkins,
     it displays the Quality Gate status, number of bugs/vulnerabilities/hotspot, code duplication and code
     volume. Hence, it also displays scores according to the quality gate.
-  - 🔹 **[Dependencies Analysis report](#activity-dependencies)**: number of outdated and vulnerable dependencies
-  - 🔹 **[Performance/load testing report](#activity-performance)**: score and Quality Gate status, number of load request and
+  - 🔹 **[Dependencies Analysis](#activity-dependencies)**: number of outdated and vulnerable dependencies
+  - 🔹 **[Performance/load testing](#activity-performance)**: score and Quality Gate status, number of load request and
     the average response time (in milliseconds)
-  - 🔹 **[Released container image](#activity-release)**: keep track of container images built and published to a registry
+  - 🔹 **[Release container image](#activity-release)**: keep track of container images built and published to a registry
 
 **Note**: you can filter applications to display on the dashboard using `Edit View`. Regular expressions are supported.
 
@@ -284,6 +305,12 @@ Dashboard preview:
 
 ![ActivityImageRelease](.doc/ActivityImageRelease.png)
 
+## <a name="section-sample"></a> Samples
+
+| Sample                               | Content                                                         |
+|--------------------------------------|-----------------------------------------------------------------|
+| [Plugin build pipeline](Jenkinsfile) | Provides a complete example of integrating all BUILD activities |
+
 ## Setup as Developer
 
 1. Checkout from: https://github.com/rbello/jenkins-plugin-devops-portal.git
@@ -306,13 +333,14 @@ Version 3, 29 June 2007
 
 ## TODO
 
-- [ ] Encode FR translations characters
+- [x] ~~Encode FR translations characters~~
 - [ ] Ensure JenkinsUtils.getBuild() works with:
   - [ ] Folders
   - [ ] Multibranch Pipelines
-- [ ] TU
+- [ ] UT
 - [ ] Dark theme compatibility
-- [ ] Synchronize I/O methods
+- [x] ~~Synchronize I/O methods~~
+- [ ] Permissions?
 - [ ] Build dashboard: delete entry
 - [x] ~~reportBuild()~~
 - [x] ~~reportUnitTest()~~
