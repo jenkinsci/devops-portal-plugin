@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * A persistent record of the progress of build activities for a software release.
@@ -262,6 +263,21 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
             updater.accept(status);
             status.setBuildTimestamp(Instant.now().getEpochSecond());
             save();
+        }
+
+        public synchronized void update(String jobName, int buildNumber, Consumer<BuildStatus> updater) {
+            List<BuildStatus> status = buildStatus
+                    .getView()
+                    .stream()
+                    .filter(item -> jobName.equals(item.getBuildJob()))
+                    .filter(item -> String.valueOf(buildNumber).equals(item.getBuildNumber()))
+                    .collect(Collectors.toList());
+            for (BuildStatus record : status) {
+                updater.accept(record);
+            }
+            if (!status.isEmpty()) {
+                save();
+            }
         }
 
         public boolean isApplicationExists(String applicationName) {

@@ -7,6 +7,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
+import io.jenkins.plugins.devopsportal.workers.SonarQubeCheckPeriodicWork;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -37,6 +38,14 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
     @Override
     public void updateActivity(@NonNull QualityAuditActivity activity, @NonNull TaskListener listener,
                                @NonNull EnvVars env) {
+
+        SonarQubeCheckPeriodicWork.push(
+                env.get("JOB_NAME"),
+                env.get("BUILD_NUMBER"),
+                projectKey,
+                activity
+        );
+
         /*activity.setBugCount(bugCount);
         activity.setBugScore(bugScore);
         activity.setVulnerabilityCount(vulnerabilityCount);
