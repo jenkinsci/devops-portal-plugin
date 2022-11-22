@@ -13,7 +13,7 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
-import io.jenkins.plugins.devopsportal.RunOperations;
+import io.jenkins.plugins.devopsportal.models.RunOperations;
 import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import io.jenkins.plugins.devopsportal.models.GenericRunModel;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;

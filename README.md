@@ -338,7 +338,7 @@ Version 3, 29 June 2007
   - [ ] Folders
   - [ ] Multibranch Pipelines
 - [ ] UT
-- [ ] Dark theme compatibility
+- [x] ~~Dark theme compatibility~~
 - [x] ~~Synchronize I/O methods~~
 - [ ] Permissions?
 - [ ] Build dashboard: delete entry

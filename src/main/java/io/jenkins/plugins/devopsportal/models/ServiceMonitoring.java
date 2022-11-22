@@ -6,7 +6,6 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.util.CopyOnWriteList;
 import io.jenkins.plugins.devopsportal.Messages;
-import io.jenkins.plugins.devopsportal.MonitoringStatus;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;

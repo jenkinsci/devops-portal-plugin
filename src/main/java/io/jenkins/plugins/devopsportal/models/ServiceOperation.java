@@ -7,7 +7,6 @@ import hudson.model.Descriptor;
 import hudson.model.Run;
 import hudson.util.CopyOnWriteList;
 import io.jenkins.plugins.devopsportal.Messages;
-import io.jenkins.plugins.devopsportal.RunOperations;
 import io.jenkins.plugins.devopsportal.utils.JenkinsUtils;
 import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import jenkins.model.Jenkins;

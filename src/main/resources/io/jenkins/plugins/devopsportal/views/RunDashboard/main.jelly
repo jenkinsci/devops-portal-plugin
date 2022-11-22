@@ -67,6 +67,11 @@
             color: red;
             font-size: 80%;
         }
+        /* Dark theme */
+        html[data-theme="dark"] .badge {
+            background-color: #333;
+            color: #aaa;
+        }
     </style>
 
     <h1>
@@ -143,7 +148,7 @@
                                             <l:icon class="symbol-bag-remove-outline plugin-ionicons-api icon-sm"/>
                                         </span>
                                     </j:if>
-                                    <j:if test="${!service.acceptInvalidCertificate &amp;&amp; !monitoring.certificateExpired}">
+                                    <j:if test="${!service.acceptInvalidCertificate &amp;&amp; !monitoring.certificateExpired &amp;&amp; !monitoring.failure}">
                                         <span style="color:green" title="${%label_cert_secured}">
                                             <l:icon class="symbol-bag-check-outline plugin-ionicons-api icon-sm"/>
                                         </span>

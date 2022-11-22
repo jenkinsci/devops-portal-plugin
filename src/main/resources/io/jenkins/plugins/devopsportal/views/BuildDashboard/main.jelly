@@ -99,6 +99,21 @@
             border-radius: 3px;
             font-size: .7rem;
         }
+        /* Dark theme */
+        html[data-theme="dark"] .badge {
+            background-color: #333;
+            color: #aaa;
+        }
+        html[data-theme="dark"] .version-activities {
+            background-color: #444;
+            color: #bbb;
+        }
+        html[data-theme="dark"] .activity-category {
+            color: #999;
+        }
+        html[data-theme="dark"] .version-activities td:nth-child(1) {
+            background-color: rgb(31, 31, 35);
+        }
     </style>
     <h1>
         ${it.displayName}

@@ -1,4 +1,4 @@
-package io.jenkins.plugins.devopsportal;
+package io.jenkins.plugins.devopsportal.models;
 
 /**
  * List of operations that can be performed on run environments.
