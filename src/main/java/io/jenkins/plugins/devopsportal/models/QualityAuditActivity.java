@@ -17,6 +17,7 @@ public class QualityAuditActivity extends AbstractActivity {
     private int hotspotCount;
     private ActivityScore hotspotScore;
     private float duplicationRate;
+    private float testCoverage;
     private long linesCount;
     private boolean qualityGatePassed;
 
@@ -86,6 +87,15 @@ public class QualityAuditActivity extends AbstractActivity {
     @DataBoundSetter
     public void setDuplicationRate(float duplicationRate) {
         this.duplicationRate = duplicationRate;
+    }
+
+    public float getTestCoverage() {
+        return testCoverage;
+    }
+
+    @DataBoundSetter
+    public void setTestCoverage(float testCoverage) {
+        this.testCoverage = testCoverage;
     }
 
     public long getLinesCount() {

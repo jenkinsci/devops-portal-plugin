@@ -64,14 +64,30 @@ pipeline {
         stage('Audit') {
             steps {
                 script {
+                    // Quality audit
+                    reportQualityAudit(
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION,
+                        applicationComponent: "plugin-devops-portal",
+                        bugCount: 1,
+                        bugScore: "B",
+                        vulnerabilityCount: 3,
+                        vulnerabilityScore: "C",
+                        hotspotCount: 2,
+                        hotspotScore: "D",
+                        duplicationRate: 0.04,
+                        testCoverage: 0.35,
+                        linesCount: 32000,
+                        qualityGatePassed: true
+                    )
                     // Dependencies analysis
-                    reportDependenciesAnalysis(
+                    /*reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
                         manifestFile: "pom.xml",
                         manager: "MAVEN"
-                    )
+                    )*/
                 }
             }
         }

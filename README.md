@@ -174,7 +174,7 @@ With pipeline script (DSL):
 reportBuild(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
-    applicationComponent: string   // Name of application component built
+    applicationComponent: string,  // Name of application component built
     artifactFileName: string       // Full path to generated artifact
 )
 ```
@@ -199,7 +199,7 @@ With pipeline script (DSL):
 reportUnitTest(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
-    applicationComponent: string   // Name of application component built
+    applicationComponent: string,  // Name of application component built
     testCoverage?: float,          // Optional: coverage ratio (between 0-1)
     testsPassed?: int,             // Optional: number of passed tests
     testsFailed?: int,             // Optional: number of failed tests
@@ -223,13 +223,30 @@ Dashboard preview:
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
-| Build step               |
-|--------------------------|
-| `Record a quality audit` |
+| Build step                         |
+|------------------------------------|
+| `Record a quality audit manually`  |
+| `Record a SonarQube quality audit` |
 
 With pipeline script (DSL):
 
-⛔ TODO
+```
+reportQualityAudit(
+    applicationName: string,                   // Name of application built
+    applicationVersion: string,                // Version of application built
+    applicationComponent: string,              // Name of application component built
+    bugCount: int,                             // Number of bugs identified
+    bugScore: string,                          // Choose amount: "A", "B", "C", "D"
+    vulnerabilityCount: int,                   // Number of vulnerabilities identified
+    vulnerabilityScore: string,                // Choose amount: "A", "B", "C", "D"
+    hotspotCount: int,                         // Number of security hotspot identified
+    hotspotScore, string,                      // Choose amount: "A", "B", "C", "D"
+    duplicationRate: float,                    // Number of bugs identified
+    testCoverage: float,                       // Test coverage ratio (between 0-1)
+    linesCount: long,                          // Number of source code lines
+    qualityGatePassed: boolean                 // Indicate if the quality gate is reached
+)
+```
 
 Dashboard preview:
 
@@ -250,7 +267,7 @@ With pipeline script (DSL):
 reportDependenciesAnalysis(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
-    applicationComponent: string   // Name of application component built
+    applicationComponent: string,  // Name of application component built
     manager: string,               // Only 'MAVEN' is supported actually
     manifestFile: string,          // Path to project manifest file (pom.xml)
     managerCommand?: string        // Optional: shell command to run the manifest
@@ -294,7 +311,7 @@ With pipeline script (DSL):
 reportImageRelease(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
-    applicationComponent: string   // Name of application component built
+    applicationComponent: string,  // Name of application component built
     registryName?: string,         // Optional: registry server name
     imageName?: string,            // Optional: image name released
     tags?: string                  // Optional: comma-separated list of image's tags
@@ -346,6 +363,7 @@ Version 3, 29 June 2007
 - [x] ~~reportUnitTest()~~
 - [x] ~~reportSurefireTest()~~
 - [ ] reportQualityAudit()
+- [ ] reportSonarqubeAudit()
 - [x] ~~reportDependenciesAnalysis()~~
   - [x] ~~Maven~~
     - [x] ~~Dependencies~~

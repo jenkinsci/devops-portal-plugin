@@ -27,6 +27,7 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     private int hotspotCount;
     private ActivityScore hotspotScore;
     private float duplicationRate;
+    private float testCoverage;
     private long linesCount;
     private boolean qualityGatePassed;
 
@@ -49,8 +50,10 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @DataBoundSetter
-    public void setBugScore(ActivityScore bugScore) {
-        this.bugScore = bugScore;
+    public void setBugScore(String bugScore) {
+        if (bugScore != null) {
+            this.bugScore = ActivityScore.valueOf(bugScore);
+        }
     }
 
     public int getVulnerabilityCount() {
@@ -67,8 +70,10 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @DataBoundSetter
-    public void setVulnerabilityScore(ActivityScore vulnerabilityScore) {
-        this.vulnerabilityScore = vulnerabilityScore;
+    public void setVulnerabilityScore(String vulnerabilityScore) {
+        if (vulnerabilityScore != null) {
+            this.vulnerabilityScore = ActivityScore.valueOf(vulnerabilityScore);
+        }
     }
 
     public int getHotspotCount() {
@@ -85,8 +90,10 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @DataBoundSetter
-    public void setHotspotScore(ActivityScore hotspotScore) {
-        this.hotspotScore = hotspotScore;
+    public void setHotspotScore(String hotspotScore) {
+        if (hotspotScore != null) {
+            this.hotspotScore = ActivityScore.valueOf(hotspotScore);
+        }
     }
 
     public float getDuplicationRate() {
@@ -96,6 +103,15 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     @DataBoundSetter
     public void setDuplicationRate(float duplicationRate) {
         this.duplicationRate = duplicationRate;
+    }
+
+    public float getTestCoverage() {
+        return testCoverage;
+    }
+
+    @DataBoundSetter
+    public void setTestCoverage(float testCoverage) {
+        this.testCoverage = testCoverage;
     }
 
     public long getLinesCount() {
@@ -126,6 +142,7 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
         activity.setHotspotCount(hotspotCount);
         activity.setHotspotScore(hotspotScore);
         activity.setDuplicationRate(duplicationRate);
+        activity.setTestCoverage(testCoverage);
         activity.setLinesCount(linesCount);
         activity.setQualityGatePassed(qualityGatePassed);
         if (!qualityGatePassed) {
