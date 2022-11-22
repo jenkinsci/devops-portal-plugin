@@ -210,19 +210,19 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration>, 
             return false;
         }
 
-        public List<ServiceConfiguration> getServiceConfigurations() {
+        public synchronized List<ServiceConfiguration> getServiceConfigurations() {
             List<ServiceConfiguration> retVal = new ArrayList<>(serviceConfigurations.getView());
             retVal.sort(Comparator.comparing(ServiceConfiguration::getLabel));
             return retVal;
         }
 
-        public void setServiceConfigurations(List<ServiceConfiguration> services) {
+        public synchronized void setServiceConfigurations(List<ServiceConfiguration> services) {
             serviceConfigurations.clear();
             serviceConfigurations.addAll(services);
             save();
         }
 
-        public Optional<ServiceConfiguration> getService(String labelOrId) {
+        public synchronized Optional<ServiceConfiguration> getService(String labelOrId) {
             if (labelOrId == null || labelOrId.trim().isEmpty()) {
                 return Optional.empty();
             }

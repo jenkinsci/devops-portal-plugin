@@ -232,13 +232,13 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
             return Messages.BuildStatus_DisplayName();
         }
 
-        public List<ServiceOperation> getRunOperations() {
+        public synchronized List<ServiceOperation> getRunOperations() {
             List<ServiceOperation> retVal = new ArrayList<>(runOperations.getView());
             retVal.sort(Comparator.comparing(ServiceOperation::getApplicationName));
             return retVal;
         }
 
-        public void append(Consumer<ServiceOperation> updater) {
+        public synchronized void append(Consumer<ServiceOperation> updater) {
             ServiceOperation record = new ServiceOperation();
             runOperations.add(record);
             updater.accept(record);

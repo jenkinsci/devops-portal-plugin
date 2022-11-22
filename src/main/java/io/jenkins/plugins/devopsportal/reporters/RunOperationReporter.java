@@ -119,7 +119,7 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
             ServiceConfiguration service = getServiceDescriptor().getService(targetService).orElse(null);
             if (service == null) {
                 listener.getLogger().printf(
-                        "Unable to report a run operation: application not declared (%s)",
+                        "Unable to report a run operation: environment not declared (%s)",
                         applicationName
                 );
                 return;

@@ -191,30 +191,36 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
                                                             @NonNull TaskListener listener,
                                                             @NonNull EnvVars env,
                                                             @NonNull GenericActivityHandler<T> updater) {
-        T activity = (T) activities.getOrDefault(category, new ArrayList<>())
-                .stream()
-                .filter(item -> item.getApplicationComponent().equals(applicationComponent))
-                .findFirst()
-                .orElse(null);
-        if (activity == null) {
-            try {
-                assert category.getClazz() != null;
-                activity = (T) category.getClazz().getConstructor(String.class).newInstance(applicationComponent);
-                if (!activities.containsKey(category)) {
-                    activities.put(category, new ArrayList<>());
+        T activity;
+        synchronized (activities) {
+            activity = (T) activities.getOrDefault(category, new ArrayList<>())
+                    .stream()
+                    .filter(item -> item.getApplicationComponent().equals(applicationComponent))
+                    .findFirst()
+                    .orElse(null);
+            if (activity == null) {
+                try {
+                    assert category.getClazz() != null;
+                    activity = (T) category.getClazz().getConstructor(String.class).newInstance(applicationComponent);
+                    if (!activities.containsKey(category)) {
+                        activities.put(category, new ArrayList<>());
+                    }
+                    activities.get(category).add(activity);
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
                 }
-                activities.get(category).add(activity);
-            }
-            catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
             }
         }
         updater.updateActivity(activity, listener, env);
-        getDescriptor().save();
+        synchronized (activities) {
+            getDescriptor().save();
+        }
     }
 
     public List<AbstractActivity> getActivitiesByCategory(ActivityCategory category) {
-        return this.activities.get(category);
+        synchronized (activities) {
+            return this.activities.get(category);
+        }
     }
 
     @Extension
@@ -233,13 +239,13 @@ public class BuildStatus implements Describable<BuildStatus>, Serializable, Gene
             return Messages.BuildStatus_DisplayName();
         }
 
-        public List<BuildStatus> getBuildStatus() {
+        public synchronized List<BuildStatus> getBuildStatus() {
             List<BuildStatus> retVal = new ArrayList<>(buildStatus.getView());
             retVal.sort(Comparator.comparing(BuildStatus::getApplicationName));
             return retVal;
         }
 
-        public void update(String applicationName, String applicationVersion, Consumer<BuildStatus> updater) {
+        public synchronized void update(String applicationName, String applicationVersion, Consumer<BuildStatus> updater) {
             BuildStatus status = buildStatus
                     .getView()
                     .stream()
