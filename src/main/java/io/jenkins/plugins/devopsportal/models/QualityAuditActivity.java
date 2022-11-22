@@ -2,6 +2,8 @@ package io.jenkins.plugins.devopsportal.models;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.sonarqube.ws.Hotspots;
+import org.sonarqube.ws.Issues;
 
 /**
  * A persistent record of a QUALITY_AUDIT activity.
@@ -114,6 +116,18 @@ public class QualityAuditActivity extends AbstractActivity {
     @DataBoundSetter
     public void setQualityGatePassed(boolean qualityGatePassed) {
         this.qualityGatePassed = qualityGatePassed;
+    }
+
+    public void addBug(Issues.Issue issue) {
+        this.bugCount++;
+    }
+
+    public void addVulnerability(Issues.Issue issue) {
+        this.vulnerabilityCount++;
+    }
+
+    public void addHotSpot(Hotspots.SearchWsResponse.Hotspot hotspot) {
+        this.hotspotCount++;
     }
 
 }

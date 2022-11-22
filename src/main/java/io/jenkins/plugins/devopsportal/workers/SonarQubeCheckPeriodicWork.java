@@ -3,9 +3,8 @@ package io.jenkins.plugins.devopsportal.workers;
 import hudson.Extension;
 import hudson.model.AsyncPeriodicWork;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.devopsportal.models.BuildStatus;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
-import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
-import io.jenkins.plugins.devopsportal.models.ServiceMonitoring;
 import io.jenkins.plugins.devopsportal.utils.SSLUtils;
 import jenkins.model.Jenkins;
 import org.sonarqube.ws.Hotspots;
@@ -21,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static org.sonarqube.ws.Common.RuleType.*;
 
 /**
  * Scheduled task that monitor a SonarQube server.
@@ -42,12 +43,8 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         return MIN;
     }
 
-    public ServiceConfiguration.DescriptorImpl getServicesDescriptor() {
-        return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
-    }
-
-    public ServiceMonitoring.DescriptorImpl getMonitoringDescriptor() {
-        return Jenkins.get().getDescriptorByType(ServiceMonitoring.DescriptorImpl.class);
+    public BuildStatus.DescriptorImpl getBuildStatusDescriptor() {
+        return Jenkins.get().getDescriptorByType(BuildStatus.DescriptorImpl.class);
     }
 
     @Override
@@ -83,6 +80,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         request1.setMetricKeys(List.of("coverage"));
         Measures.SearchWsResponse response1 = item.wsClient.measures().search(request1);
         Measures.Measure result1 = response1.getMeasures(0);
+        item.activity.setTestCoverage(response1.getMeasuresCount() == 0 ? 0 : Float.parseFloat(response1.getMeasures(0).getValue()));
         // ISSUES
         org.sonarqube.ws.client.issues.SearchRequest request2 = new org.sonarqube.ws.client.issues.SearchRequest();
         request2.setComponentKeys(List.of(item.projectKey));
@@ -91,12 +89,29 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         request2.setResolved("no");
         request2.setPs("500");
         Issues.SearchWsResponse response2 = item.wsClient.issues().search(request2);
+        item.activity.setBugCount(0);
+        for (Issues.Issue issue : response2.getIssuesList()) {
+            if ("java:S1135".equals(issue.getRule())) {
+                // Ignore TODOs
+                continue;
+            }
+            if (issue.getType() == BUG) {
+                item.activity.addBug(issue);
+            }
+            else if (issue.getType() == VULNERABILITY || issue.getType() == SECURITY_HOTSPOT) {
+                item.activity.addVulnerability(issue);
+            }
+        }
         // HOTSPOTS
         org.sonarqube.ws.client.hotspots.SearchRequest request3 = new org.sonarqube.ws.client.hotspots.SearchRequest();
         request3.setProjectKey(item.projectKey);
         request3.setStatus("TO_REVIEW");
-        Hotspots.SearchWsResponse response = item.wsClient.hotspots().search(request3);
-        // TODO duplicationRate, testCoverage, linesCount, qualityGatePassed
+        Hotspots.SearchWsResponse response3 = item.wsClient.hotspots().search(request3);
+        item.activity.setVulnerabilityCount(0);
+        for (Hotspots.SearchWsResponse.Hotspot hotspot : response3.getHotspotsList()) {
+            item.activity.addHotSpot(hotspot);
+        }
+        // TODO duplicationRate, linesCount, qualityGatePassed
         return false;
     }
 
