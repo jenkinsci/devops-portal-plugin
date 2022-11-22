@@ -110,8 +110,6 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         }
     }
 
-
-
     static class WorkItem {
 
         private final String jobName;
@@ -133,7 +131,6 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             HttpConnector httpConnector = HttpConnector
                     .newBuilder()
                     .url(sonarUrl)
-                    //.credentials("?", "?")
                     .token(sonarToken)
                     .setSSLSocketFactory(context.getSocketFactory())
                     .setTrustManager(manager)
@@ -146,7 +143,5 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         }
 
     }
-
-
 
 }
