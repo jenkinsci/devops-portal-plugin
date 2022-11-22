@@ -393,7 +393,7 @@ Version 3, 29 June 2007
 - [x] ~~reportUnitTest()~~
 - [x] ~~reportSurefireTest()~~
 - [x] ~~reportQualityAudit()~~
-- [ ] reportSonarQubeAudit()
+- [x] ~~reportSonarQubeAudit()~~
 - [x] ~~reportDependenciesAnalysis()~~
   - [x] ~~Maven~~
     - [x] ~~Dependencies~~
