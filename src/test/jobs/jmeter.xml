@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<results>
+<api>
+	<uri>Debug</uri>
+	<samples>5</samples>
+	<average>4</average>
+	<min>3</min>
+	<median>4</median>
+	<ninetieth>4</ninetieth>
+	<max>8</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : backend</uri>
+	<samples>5</samples>
+	<average>71</average>
+	<min>64</min>
+	<median>66</median>
+	<ninetieth>70</ninetieth>
+	<max>89</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : frontend</uri>
+	<samples>5</samples>
+	<average>384</average>
+	<min>365</min>
+	<median>371</median>
+	<ninetieth>392</ninetieth>
+	<max>408</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : lecture d'une entrée de registre</uri>
+	<samples>5</samples>
+	<average>217</average>
+	<min>193</min>
+	<median>197</median>
+	<ninetieth>227</ninetieth>
+	<max>258</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : liste des OT de l'utilisateur</uri>
+	<samples>5</samples>
+	<average>751</average>
+	<min>660</min>
+	<median>714</median>
+	<ninetieth>784</ninetieth>
+	<max>825</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : liste des parcelles</uri>
+	<samples>5</samples>
+	<average>8081</average>
+	<min>7163</min>
+	<median>7811</median>
+	<ninetieth>8408</ninetieth>
+	<max>9110</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : liste des procédures</uri>
+	<samples>5</samples>
+	<average>11176</average>
+	<min>10825</min>
+	<median>10876</median>
+	<ninetieth>11455</ninetieth>
+	<max>11531</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : liste des propriétaires</uri>
+	<samples>5</samples>
+	<average>230</average>
+	<min>205</min>
+	<median>212</median>
+	<ninetieth>248</ninetieth>
+	<max>260</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : login</uri>
+	<samples>5</samples>
+	<average>633</average>
+	<min>577</min>
+	<median>598</median>
+	<ninetieth>668</ninetieth>
+	<max>686</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+<api>
+	<uri>Requête : ressources JS</uri>
+	<samples>35</samples>
+	<average>18</average>
+	<min>3</min>
+	<median>8</median>
+	<ninetieth>48</ninetieth>
+	<max>66</max>
+	<httpCode>200</httpCode>
+	<errors>0.0</errors>
+</api>
+</results>

@@ -7,6 +7,11 @@ import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import io.jenkins.plugins.devopsportal.models.ServiceMonitoring;
 import jenkins.model.Jenkins;
+import org.sonarqube.ws.Measures;
+import org.sonarqube.ws.client.HttpConnector;
+import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.WsClientFactories;
+import org.sonarqube.ws.client.measures.SearchRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,13 +48,35 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
 
     @Override
     protected void execute(TaskListener listener) throws IOException, InterruptedException {
+        final Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return;
+        }
+        List<WorkItem> actions;
         synchronized (ACTIONS) {
-            for (WorkItem item : new ArrayList<>(ACTIONS)) {
+            actions = new ArrayList<>(ACTIONS);
+        }
+        for (WorkItem item : actions) {
+            boolean completed = execute(item);
+            if (completed) {
                 LOGGER.info("Completed SonarQube async task: job='" + item.jobName + "' build='" + item.buildNumber
                         + "' project='" + item.projectKey + "'");
                 ACTIONS.remove(item.close());
             }
         }
+    }
+
+    private boolean execute(WorkItem item) {
+        final Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return false;
+        }
+        SearchRequest request = new SearchRequest();
+        request.setProjectKeys(List.of(item.projectKey));
+        request.setMetricKeys(List.of("coverage"));
+        Measures.SearchWsResponse response = item.wsClient.measures().search(request);
+        Measures.Measure result = response.getMeasures(0);
+        return false;
     }
 
     public static void push(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
@@ -69,7 +96,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         private final String projectKey;
         private final QualityAuditActivity activity;
         private final String sonarUrl;
-        //private final WsClient wsClient;
+        private final WsClient wsClient;
 
         public WorkItem(String jobName, String buildNumber, String projectKey, QualityAuditActivity activity,
                         String sonarUrl, String sonarToken) {
@@ -78,13 +105,13 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             this.projectKey = projectKey;
             this.activity = activity;
             this.sonarUrl = sonarUrl;
-            /*HttpConnector httpConnector = HttpConnector
+            HttpConnector httpConnector = HttpConnector
                     .newBuilder()
                     .url(sonarUrl)
                     //.credentials("?", "?")
                     .token(sonarToken)
                     .build();
-            this.wsClient = WsClientFactories.getDefault().newClient(httpConnector);*/
+            this.wsClient = WsClientFactories.getDefault().newClient(httpConnector);
         }
 
         public WorkItem close() {
