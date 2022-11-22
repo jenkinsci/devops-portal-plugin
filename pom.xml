@@ -40,7 +40,8 @@
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.version>2.346.1</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
+        <java.level>55</java.level>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -161,10 +162,22 @@
                         <id>enforce</id>
                         <phase>validate</phase>
                         <configuration>
+                            <ignoreCache>true</ignoreCache>
                             <rules>
+                                <requireJavaVersion>
+                                    <version>${java.version}</version>
+                                    <message>Project requires JDK ${java.version}</message>
+                                </requireJavaVersion>
                                 <enforceBytecodeVersion>
-                                    <maxJdkVersion>[${java.version})</maxJdkVersion>
+                                    <maxJdkVersion>${java.version}</maxJdkVersion>
+                                    <excludes>
+                                        <exclude>org.sonarsource.api.plugin:sonar-plugin-api</exclude>
+                                    </excludes>
+                                    <ignoreClasses>
+                                        <ignoreClass>package-info</ignoreClass>
+                                    </ignoreClasses>
                                 </enforceBytecodeVersion>
+                                <fail>false</fail>
                             </rules>
                         </configuration>
                         <goals>

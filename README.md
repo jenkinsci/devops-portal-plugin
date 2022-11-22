@@ -113,7 +113,7 @@ You have to fill in:
 - A success/failure status
 - Optionally, you can add tags to describe the operation (comma-separated)
 
-#### Report run operation with pipeline script (DSL)
+#### Report run operation Run with pipeline script (DSL)
 
 The report can also be made using a Groovy Pipeline script using this command:
 
@@ -168,7 +168,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 |-------------------------|
 | `Record a build report` |
 
-With pipeline script (DSL):
+Run with pipeline script (DSL):
 
 ```
 reportBuild(
@@ -193,7 +193,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 | `Record a UT report manually` |
 | `Record a Surefire UT report` |
 
-With pipeline script (DSL):
+Run with pipeline script (DSL):
 
 ```
 reportUnitTest(
@@ -228,7 +228,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 | `Record a quality audit manually`  |
 | `Record a SonarQube quality audit` |
 
-With pipeline script (DSL):
+Run with pipeline script (DSL):
 
 ```
 reportQualityAudit(
@@ -272,7 +272,26 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 |----------------------------------|
 | `Record a dependencies analysis` |
 
-With pipeline script (DSL):
+If you are using MAVEN as dependencies manager, you need to add this plugin in your pom:
+
+```
+<plugins>
+    <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <version>7.3.2</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>check</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+</plugins>
+```
+
+Run with pipeline script (DSL):
 
 ```
 reportDependenciesAnalysis(
@@ -299,7 +318,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 |-----------------------------|
 | `Record a performance test` |
 
-With pipeline script (DSL):
+Run with pipeline script (DSL):
 
 ⛔ TODO
 
@@ -316,7 +335,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 |---------------------------|
 | `Record an image release` |
 
-With pipeline script (DSL):
+Run with pipeline script (DSL):
 
 ```
 reportImageRelease(
