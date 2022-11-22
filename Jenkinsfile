@@ -64,6 +64,7 @@ pipeline {
         stage('Audit') {
             steps {
                 script {
+
                     // Quality audit manually reported
                     reportQualityAudit(
                         applicationName: env.APPLICATION_NAME,
@@ -80,9 +81,16 @@ pipeline {
                         linesCount: 32000,
                         qualityGatePassed: true
                     )
+
                     // Quality audit reported from Sonar Qube
                     withSonarQubeEnv(credentialsId: 'c191d43f-0199-4f04-95a1-3afe1cd9803e', installationName: 'SonarQube Scanner') {
-                        sh 'mvn -Djavax.net.ssl.trustStore=test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
+                        if (isUnix()) {
+                            sh 'mvn -Djavax.net.ssl.trustStore=test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
+                        }
+                        else {
+                            bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
+                        }
+
                         reportSonarQubeAudit(
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
@@ -90,6 +98,7 @@ pipeline {
                             projectKey: "io.jenkins.plugins:plugin-devops-portal"
                         )
                     }
+
                     // Dependencies analysis
                     /*reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
@@ -98,6 +107,7 @@ pipeline {
                         manifestFile: "pom.xml",
                         manager: "MAVEN"
                     )*/
+
                 }
             }
         }
