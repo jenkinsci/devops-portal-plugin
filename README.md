@@ -26,6 +26,7 @@ A Jenkins Dashboard Plugin with many features :
    5. [Performance/load testing](#activity-performance)
    6. [Release container image](#activity-release)
 5. [Pipeline Example](#section-sample)
+6. [Setup as developer](#section-dev)
 
 ## <a name="section-setup"></a> Installing Prerequisites
 
@@ -360,7 +361,7 @@ Dashboard preview:
 |--------------------------------------|-----------------------------------------------------------------|
 | [Plugin build pipeline](Jenkinsfile) | Provides a complete example of integrating all BUILD activities |
 
-## Setup as Developer
+## <a name="section-dev"></a> Setup as Developer
 
 1. Checkout from: https://github.com/rbello/jenkins-plugin-devops-portal.git
 2. Recommended IDE is **Intellij IDEA**
@@ -371,44 +372,7 @@ Dashboard preview:
 7. Suggest any change by Forking the project and opening a Pull Request
 8. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
 
-## Author & Licence
-
-This plugin is provided by Rémi BELLO \
-https://github.com/rbello/jenkins-plugin-devops-portal
-
-**Licence** \
-GNU GENERAL PUBLIC LICENSE \
-Version 3, 29 June 2007
-
-## TODO
-
-- [x] ~~Encode FR translations characters~~
-- [ ] Ensure JenkinsUtils.getBuild() works with:
-  - [ ] Folders
-  - [ ] Multibranch Pipelines
-- [ ] Check comment-block vis present or each class
-- [ ] UT
-- [x] ~~Dark theme compatibility~~
-- [x] ~~Synchronize I/O methods~~
-- [ ] Permissions?
-- [ ] Build dashboard: delete entry
-- [x] ~~reportBuild()~~
-- [x] ~~reportUnitTest()~~
-- [x] ~~reportSurefireTest()~~
-- [x] ~~reportQualityAudit()~~
-- [x] ~~reportSonarQubeAudit()~~
-- [ ] ~~reportDependenciesAnalysis()~~
-  - [x] ~~Maven~~
-    - [x] ~~Dependencies~~
-    - [x] ~~Vulnerabilities~~
-  - [ ] NPM
-      - [ ] Dependencies
-      - [ ] Vulnerabilities
-- [x] ~~reportPerformanceTest()~~
-- [ ] reportJmeterPerformanceTest()
-- [x] ~~reportImageRelease()~~
-- [x] ~~reportRunOperation()~~
-
+Application architecture:
 ```mermaid
 flowchart TB
     subgraph Configuration
@@ -453,3 +417,41 @@ flowchart TB
     classDef entity fill:#247a20
     classDef worker fill:#8f2727
 ```
+
+## Author & Licence
+
+This plugin is provided by Rémi BELLO \
+https://github.com/rbello/jenkins-plugin-devops-portal
+
+**Licence** \
+GNU GENERAL PUBLIC LICENSE \
+Version 3, 29 June 2007
+
+## TODO
+
+- [x] ~~Encode FR translations characters~~
+- [ ] Ensure JenkinsUtils.getBuild() works with:
+  - [ ] Folders
+  - [ ] Multibranch Pipelines
+- [ ] Check comment-block vis present or each class
+- [ ] UT
+- [x] ~~Dark theme compatibility~~
+- [x] ~~Synchronize I/O methods~~
+- [ ] Permissions?
+- [ ] Build dashboard: delete entry
+- [x] ~~reportBuild()~~
+- [x] ~~reportUnitTest()~~
+- [x] ~~reportSurefireTest()~~
+- [x] ~~reportQualityAudit()~~
+- [x] ~~reportSonarQubeAudit()~~
+- [ ] ~~reportDependenciesAnalysis()~~
+  - [x] ~~Maven~~
+    - [x] ~~Dependencies~~
+    - [x] ~~Vulnerabilities~~
+  - [ ] NPM
+      - [ ] Dependencies
+      - [ ] Vulnerabilities
+- [x] ~~reportPerformanceTest()~~
+- [ ] reportJmeterPerformanceTest()
+- [x] ~~reportImageRelease()~~
+- [x] ~~reportRunOperation()~~
