@@ -119,12 +119,12 @@ The report can also be made using a Groovy Pipeline script using this command:
 
 ```groovy
 reportRunOperation(
-    targetService: String,      // Name for target environnement to deploy to
-    applicationName: String,    // Name of application deployed
-    applicationVersion: String, // Version of application deployed
-    operation: String,          // Operation name among: 'DEPLOYMENT' and 'ROLLBACK'
-    status: boolean,            // Status
-    tags: String?               // Optional: comma-separated list
+    targetService: String,        // Name for target environnement to deploy to
+    applicationName: String,      // Name of application deployed
+    applicationVersion: String,   // Version of application deployed
+    operation: String,            // Operation name among: 'DEPLOYMENT' and 'ROLLBACK'
+    status: boolean,              // Status
+    tags: String?                 // Optional: comma-separated list
 )
 ```
 
@@ -386,6 +386,7 @@ Version 3, 29 June 2007
 - [ ] Ensure JenkinsUtils.getBuild() works with:
   - [ ] Folders
   - [ ] Multibranch Pipelines
+- [ ] Check comment-block vis present or each class
 - [ ] UT
 - [x] ~~Dark theme compatibility~~
 - [x] ~~Synchronize I/O methods~~
