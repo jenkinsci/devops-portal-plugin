@@ -444,9 +444,9 @@ flowchart TB
     
     Configuration --> Run
     Configuration --> Monitoring
-    Run --> RunDashboard:::view
-    Monitoring --> RunDashboard:::view
-    Build --> BuildDashboard:::view
+    ServiceOperation:::entity --> RunDashboard:::view
+    ServiceMonitoring:::entity --> RunDashboard:::view
+    ApplicationBuildStatus:::entity --> BuildDashboard:::view
     
     classDef view fill:#9e6d0b
     classDef reporter fill:#2f5894
