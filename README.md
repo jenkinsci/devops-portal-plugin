@@ -117,7 +117,7 @@ You have to fill in:
 
 The report can also be made using a Groovy Pipeline script using this command:
 
-```
+```properties
 reportRunOperation(
     targetService: string,      // Name for target environnement to deploy to
     applicationName: string,    // Name of application deployed
@@ -170,7 +170,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-```
+```properties
 reportBuild(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
@@ -195,7 +195,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-```
+```properties
 reportUnitTest(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
@@ -205,7 +205,9 @@ reportUnitTest(
     testsFailed?: int,             // Optional: number of failed tests
     testsIgnored?: int             // Optional: number of skipped tests
 )
+```
 
+```properties
 reportSurefireTest(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
@@ -230,7 +232,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-```
+```properties
 reportQualityAudit(
     applicationName: string,                   // Name of application built
     applicationVersion: string,                // Version of application built
@@ -248,7 +250,7 @@ reportQualityAudit(
 )
 ```
 
-```
+```properties
 withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server') {
     reportSonarQubeAudit(
         applicationName: string,                   // Name of application built
@@ -274,7 +276,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 If you are using MAVEN as dependencies manager, you need to add this plugin in your pom:
 
-```
+```xml
 <plugins>
     <plugin>
         <groupId>org.owasp</groupId>
@@ -293,7 +295,7 @@ If you are using MAVEN as dependencies manager, you need to add this plugin in y
 
 Run with pipeline script (DSL):
 
-```
+```properties
 reportDependenciesAnalysis(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
@@ -337,7 +339,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-```
+```properties
 reportImageRelease(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
