@@ -426,10 +426,10 @@ flowchart LR
     subgraph four
     BuildActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     UnitTestActivityReporter:::reporter --> AbstractActivityReporter:::reporter
-    SurefireUnitTestActivityReporter:::reporter --> AbstractActivityReporter:::reporter
+    SurefireUnitTestActivityReporter:::reporter --> UnitTestActivityReporter:::reporter
     DependenciesAnalysisActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     QualityAuditActivityReporter:::reporter --> AbstractActivityReporter:::reporter
-    SonarQualityAuditReporter:::reporter --> AbstractActivityReporter:::reporter
+    SonarQualityAuditReporter:::reporter --> QualityAuditActivityReporter:::reporter
     PerformanceTestActivity:::reporter --> AbstractActivityReporter:::reporter
     ImageReleaseActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     AbstractActivityReporter:::reporter --> ApplicationBuildStatus:::entity
