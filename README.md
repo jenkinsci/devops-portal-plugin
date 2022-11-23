@@ -412,7 +412,7 @@ Version 3, 29 June 2007
 ```mermaid
 flowchart LR
     subgraph one
-    ManageEnvironment View --> ServiceConfiguration;
+    ManageEnvironment --> ServiceConfiguration;
     end
     
     subgraph two
