@@ -117,7 +117,7 @@ You have to fill in:
 
 The report can also be made using a Groovy Pipeline script using this command:
 
-```properties
+```groovy
 reportRunOperation(
     targetService: string,      // Name for target environnement to deploy to
     applicationName: string,    // Name of application deployed
