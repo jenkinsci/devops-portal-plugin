@@ -389,7 +389,7 @@ flowchart TB
     end
     
     subgraph BuildActivities
-    BuildActivityReporter:::reporter -.->> AbstractActivityReporter:::reporter
+    BuildActivityReporter:::reporter -.-|> AbstractActivityReporter:::reporter
     UnitTestActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
     SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
     DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
