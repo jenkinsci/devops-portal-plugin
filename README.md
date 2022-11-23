@@ -412,31 +412,35 @@ Version 3, 29 June 2007
 ```mermaid
 flowchart LR
     subgraph one
-    ManageEnvironment --> ServiceConfiguration;
+    ManageEnvironment:::view --> ServiceConfiguration
     end
     
     subgraph two
-    RunOperationReporter --> ServiceOperation
+    RunOperationReporter::reporter --> ServiceOperation:::entity
     end
     
     subgraph three
-    MonitoringPeriodicWork --> ServiceMonitoring
+    MonitoringPeriodicWork --> ServiceMonitoring:::entity
     end
     
     subgraph four
-    A --> AbstractActivityReporter
-    B --> AbstractActivityReporter
-    C --> AbstractActivityReporter
-    D --> AbstractActivityReporter
-    E --> AbstractActivityReporter
-    F --> AbstractActivityReporter
-    G --> AbstractActivityReporter
-    AbstractActivityReporter --> ApplicationBuildStatus
+    A --> AbstractActivityReporter::reporter
+    B --> AbstractActivityReporter::reporter
+    C --> AbstractActivityReporter::reporter
+    D --> AbstractActivityReporter::reporter
+    E --> AbstractActivityReporter::reporter
+    F --> AbstractActivityReporter::reporter
+    G --> AbstractActivityReporter::reporter
+    AbstractActivityReporter::reporter --> ApplicationBuildStatus:::entity
     end
     
     one --> two
     one --> three
-    two --> RunDashboard
-    three --> RunDashboard
-    four --> BuildDashboard
+    two --> RunDashboard:::view
+    three --> RunDashboard:::view
+    four --> BuildDashboard:::view
+    
+    classDef view fill:#f96
+    classDef reporter fill:#056
+    classDef entity fill:#369
 ```
