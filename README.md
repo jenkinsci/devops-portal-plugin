@@ -389,7 +389,7 @@ flowchart TB
     end
     
     subgraph BuildActivities
-    BuildActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
+    BuildActivityReporter:::reporter -.->> AbstractActivityReporter:::reporter
     UnitTestActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
     SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
     DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
@@ -419,7 +419,7 @@ flowchart TB
     classDef reporter fill:#2f5894,color:#fff
     classDef entity fill:#247a20,color:#fff
     classDef worker fill:#8f2727,color:#fff
-    linkStyle 3,4,5,6,7,8,9,10 stroke-width:2px,fill:none,stroke:white
+    linkStyle 3,4,5,6,7,8,9,10 stroke-width:2px,fill:none
 ```
 
 ## Author & Licence
