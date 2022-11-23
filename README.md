@@ -113,7 +113,7 @@ You have to fill in:
 - A success/failure status
 - Optionally, you can add tags to describe the operation (comma-separated)
 
-#### Report run operation Run with pipeline script (DSL)
+#### Report run operation with pipeline script (DSL)
 
 The report can also be made using a Groovy Pipeline script using this command:
 
