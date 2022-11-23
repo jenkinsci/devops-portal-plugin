@@ -411,19 +411,19 @@ Version 3, 29 June 2007
 
 ```mermaid
 flowchart TB
-    subgraph one
-    ManageEnvironment:::view --> ServiceConfiguration
+    subgraph Configuration
+    ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
     
-    subgraph two
-    RunOperationReporter::reporter --> ServiceOperation:::entity
+    subgraph Run
+    RunOperationReporter:::reporter --> ServiceOperation:::entity
     end
     
-    subgraph three
+    subgraph Monitoring
     MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
     end
     
-    subgraph four
+    subgraph Build
     BuildActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     UnitTestActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     SurefireUnitTestActivityReporter:::reporter --> UnitTestActivityReporter:::reporter
@@ -435,18 +435,18 @@ flowchart TB
     AbstractActivityReporter:::reporter --> ApplicationBuildStatus:::entity
     end
     
-    subgraph legend
+    subgraph Legend
     View:::view
     BuildStep:::reporter
     Persistent:::entity
     AsyncPeriodicWork:::worker
     end
     
-    one --> two
-    one --> three
-    two --> RunDashboard:::view
-    three --> RunDashboard:::view
-    four --> BuildDashboard:::view
+    Configuration --> Run
+    Configuration --> Monitoring
+    Run --> RunDashboard:::view
+    Monitoring --> RunDashboard:::view
+    Build --> BuildDashboard:::view
     
     classDef view fill:#9e6d0b
     classDef reporter fill:#2f5894
