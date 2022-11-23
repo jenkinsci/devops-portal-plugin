@@ -420,18 +420,25 @@ flowchart LR
     end
     
     subgraph three
-    MonitoringPeriodicWork --> ServiceMonitoring:::entity
+    MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
     end
     
     subgraph four
-    A --> AbstractActivityReporter::reporter
-    B --> AbstractActivityReporter::reporter
-    C --> AbstractActivityReporter::reporter
-    D --> AbstractActivityReporter::reporter
-    E --> AbstractActivityReporter::reporter
-    F --> AbstractActivityReporter::reporter
-    G --> AbstractActivityReporter::reporter
-    AbstractActivityReporter::reporter --> ApplicationBuildStatus:::entity
+    A --> AbstractActivityReporter:::reporter
+    B --> AbstractActivityReporter:::reporter
+    C --> AbstractActivityReporter:::reporter
+    D --> AbstractActivityReporter:::reporter
+    E --> AbstractActivityReporter:::reporter
+    F --> AbstractActivityReporter:::reporter
+    G --> AbstractActivityReporter:::reporter
+    AbstractActivityReporter:::reporter --> ApplicationBuildStatus:::entity
+    end
+    
+    subgraph legend
+    View:::view
+    BuildStep:::reporter
+    Persistent:::entity
+    AsyncPeriodicWork:::worker
     end
     
     one --> two
@@ -443,4 +450,5 @@ flowchart LR
     classDef view fill:#f96
     classDef reporter fill:#056
     classDef entity fill:#369
+    classDef worker fill:#739
 ```
