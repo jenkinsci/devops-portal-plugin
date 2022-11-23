@@ -390,13 +390,13 @@ flowchart TB
     
     subgraph BuildActivities
     BuildActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
-    UnitTestActivityReporter:::reporter --> AbstractActivityReporter:::reporter
-    SurefireUnitTestActivityReporter:::reporter --> UnitTestActivityReporter:::reporter
-    DependenciesAnalysisActivityReporter:::reporter --> AbstractActivityReporter:::reporter
-    QualityAuditActivityReporter:::reporter --> AbstractActivityReporter:::reporter
-    SonarQualityAuditReporter:::reporter --> QualityAuditActivityReporter:::reporter
-    PerformanceTestActivity:::reporter --> AbstractActivityReporter:::reporter
-    ImageReleaseActivityReporter:::reporter --> AbstractActivityReporter:::reporter
+    UnitTestActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
+    SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
+    DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
+    QualityAuditActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
+    SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
+    PerformanceTestActivity:::reporter -.-> AbstractActivityReporter:::reporter
+    ImageReleaseActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
     AbstractActivityReporter:::reporter --> ApplicationBuildStatus:::entity
     SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
@@ -419,7 +419,7 @@ flowchart TB
     classDef reporter fill:#2f5894,color:#fff
     classDef entity fill:#247a20,color:#fff
     classDef worker fill:#8f2727,color:#fff
-    linkStyle 3,4,5,6,7,8,9,10 stroke-width:2px,fill:none,stroke:red;
+    linkStyle 3,4,5,6,7,8,9,10 stroke-width:2px,fill:#fff;
 ```
 
 ## Author & Licence
