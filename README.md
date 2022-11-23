@@ -113,18 +113,18 @@ You have to fill in:
 - A success/failure status
 - Optionally, you can add tags to describe the operation (comma-separated)
 
-#### Report run operation with pipeline script (DSL)
+#### Repovpeline script (DSL)
 
 The report can also be made using a Groovy Pipeline script using this command:
 
 ```groovy
 reportRunOperation(
-    targetService: string,      // Name for target environnement to deploy to
+    targetService: String,      // Name for target environnement to deploy to
     applicationName: string,    // Name of application deployed
     applicationVersion: string, // Version of application deployed
     operation: string,          // Operation name among: 'DEPLOYMENT' and 'ROLLBACK'
     status: boolean,            // Status
-    tags?: string               // Optional: comma-separated list
+    tags: string?               // Optional: comma-separated list
 )
 ```
 
