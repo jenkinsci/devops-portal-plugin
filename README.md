@@ -302,7 +302,7 @@ reportDependenciesAnalysis(
     applicationComponent: String,  // Name of application component built
     manager: String,               // Only 'MAVEN' is supported actually
     manifestFile: String,          // Path to project manifest file (pom.xml)
-    managerCommand: string?        // Optional: shell command to run the manifest
+    managerCommand: String?        // Optional: shell command to run the manifest
                                    // If not provided, the plugin will try to guess it 
 )
 ```
@@ -397,7 +397,7 @@ Version 3, 29 June 2007
 - [x] ~~reportSurefireTest()~~
 - [x] ~~reportQualityAudit()~~
 - [x] ~~reportSonarQubeAudit()~~
-- [x] ~~reportDependenciesAnalysis()~~
+- [ ] ~~reportDependenciesAnalysis()~~
   - [x] ~~Maven~~
     - [x] ~~Dependencies~~
     - [x] ~~Vulnerabilities~~
