@@ -380,15 +380,15 @@ flowchart TB
     ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
     
-    subgraph Run
+    subgraph RunOperations
     RunOperationReporter:::reporter --> ServiceOperation:::entity
     end
     
-    subgraph Monitoring
+    subgraph RunMonitoring
     MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
     end
     
-    subgraph Build
+    subgraph BuildActivities
     BuildActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     UnitTestActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     SurefireUnitTestActivityReporter:::reporter --> UnitTestActivityReporter:::reporter
@@ -409,16 +409,17 @@ flowchart TB
     AsyncPeriodicWork:::worker
     end
     
-    Configuration --> Run
-    Configuration --> Monitoring
-    Run --> RunDashboard:::view
-    Monitoring --> RunDashboard:::view
-    Build --> BuildDashboard:::view
+    Configuration --> RunOperations
+    Configuration --> RunMonitoring
+    RunOperations --> RunDashboard:::view
+    RunMonitoring --> RunDashboard:::view
+    BuildActivities --> BuildDashboard:::view
     
     classDef view fill:#9e6d0b,color:#fff
     classDef reporter fill:#2f5894,color:#fff
     classDef entity fill:#247a20,color:#fff
     classDef worker fill:#8f2727,color:#fff
+    linkStyle 3 stroke-width:2px,fill:none,stroke:red;
 ```
 
 ## Author & Licence
