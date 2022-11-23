@@ -398,6 +398,8 @@ flowchart TB
     PerformanceTestActivity:::reporter --> AbstractActivityReporter:::reporter
     ImageReleaseActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     AbstractActivityReporter:::reporter --> ApplicationBuildStatus:::entity
+    SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
+    SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
     end
     
     subgraph Legend
