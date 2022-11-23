@@ -197,9 +197,9 @@ Run with pipeline script (DSL):
 
 ```groovy
 reportUnitTest(
-    applicationName: string,       // Name of application built
-    applicationVersion: string,    // Version of application built
-    applicationComponent: string,  // Name of application component built
+    applicationName: String,       // Name of application built
+    applicationVersion: String,    // Version of application built
+    applicationComponent: String,  // Name of application component built
     testCoverage: float?,          // Optional: coverage ratio (between 0-1)
     testsPassed: int,              // Number of passed tests
     testsFailed: int,              // Number of failed tests
