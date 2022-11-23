@@ -408,3 +408,35 @@ Version 3, 29 June 2007
 - [ ] reportJmeterPerformanceTest()
 - [x] ~~reportImageRelease()~~
 - [x] ~~reportRunOperation()~~
+
+```mermaid
+flowchart LR
+    subgraph one
+    ManageEnvironment View --> ServiceConfiguration;
+    end
+    
+    subgraph two
+    RunOperationReporter --> ServiceOperation
+    end
+    
+    subgraph three
+    MonitoringPeriodicWork --> ServiceMonitoring
+    end
+    
+    subgraph four
+    A --> AbstractActivityReporter
+    B --> AbstractActivityReporter
+    C --> AbstractActivityReporter
+    D --> AbstractActivityReporter
+    E --> AbstractActivityReporter
+    F --> AbstractActivityReporter
+    G --> AbstractActivityReporter
+    AbstractActivityReporter --> ApplicationBuildStatus
+    end
+    
+    one --> two
+    one --> three
+    two --> RunDashboard
+    three --> RunDashboard
+    four --> BuildDashboard
+```
