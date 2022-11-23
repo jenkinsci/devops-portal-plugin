@@ -410,7 +410,7 @@ Version 3, 29 June 2007
 - [x] ~~reportRunOperation()~~
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph one
     ManageEnvironment:::view --> ServiceConfiguration
     end
