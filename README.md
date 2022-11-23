@@ -372,7 +372,8 @@ Dashboard preview:
 7. Suggest any change by Forking the project and opening a Pull Request
 8. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
 
-Application architecture:
+**Application architecture**:
+
 ```mermaid
 flowchart TB
     subgraph Configuration
@@ -412,10 +413,10 @@ flowchart TB
     Monitoring --> RunDashboard:::view
     Build --> BuildDashboard:::view
     
-    classDef view fill:#9e6d0b
-    classDef reporter fill:#2f5894
-    classDef entity fill:#247a20
-    classDef worker fill:#8f2727
+    classDef view fill:#9e6d0b,color:#fff
+    classDef reporter fill:#2f5894,color:#fff
+    classDef entity fill:#247a20,color:#fff
+    classDef worker fill:#8f2727,color:#fff
 ```
 
 ## Author & Licence
