@@ -424,13 +424,14 @@ flowchart LR
     end
     
     subgraph four
-    A --> AbstractActivityReporter:::reporter
-    B --> AbstractActivityReporter:::reporter
-    C --> AbstractActivityReporter:::reporter
-    D --> AbstractActivityReporter:::reporter
-    E --> AbstractActivityReporter:::reporter
-    F --> AbstractActivityReporter:::reporter
-    G --> AbstractActivityReporter:::reporter
+    BuildActivityReporter:::reporter --> AbstractActivityReporter:::reporter
+    UnitTestActivityReporter:::reporter --> AbstractActivityReporter:::reporter
+    SurefireUnitTestActivityReporter:::reporter --> AbstractActivityReporter:::reporter
+    DependenciesAnalysisActivityReporter:::reporter --> AbstractActivityReporter:::reporter
+    QualityAuditActivityReporter:::reporter --> AbstractActivityReporter:::reporter
+    SonarQualityAuditReporter:::reporter --> AbstractActivityReporter:::reporter
+    PerformanceTestActivity:::reporter --> AbstractActivityReporter:::reporter
+    ImageReleaseActivityReporter:::reporter --> AbstractActivityReporter:::reporter
     AbstractActivityReporter:::reporter --> ApplicationBuildStatus:::entity
     end
     
@@ -447,8 +448,8 @@ flowchart LR
     three --> RunDashboard:::view
     four --> BuildDashboard:::view
     
-    classDef view fill:#f96
-    classDef reporter fill:#056
-    classDef entity fill:#369
-    classDef worker fill:#739
+    classDef view fill:#9e6d0b
+    classDef reporter fill:#2f5894
+    classDef entity fill:#247a20
+    classDef worker fill:#8f2727
 ```
