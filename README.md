@@ -120,11 +120,11 @@ The report can also be made using a Groovy Pipeline script using this command:
 ```groovy
 reportRunOperation(
     targetService: String,      // Name for target environnement to deploy to
-    applicationName: string,    // Name of application deployed
-    applicationVersion: string, // Version of application deployed
-    operation: string,          // Operation name among: 'DEPLOYMENT' and 'ROLLBACK'
+    applicationName: String,    // Name of application deployed
+    applicationVersion: String, // Version of application deployed
+    operation: String,          // Operation name among: 'DEPLOYMENT' and 'ROLLBACK'
     status: boolean,            // Status
-    tags: string?               // Optional: comma-separated list
+    tags: String?               // Optional: comma-separated list
 )
 ```
 
@@ -170,12 +170,12 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-```properties
+```groovy
 reportBuild(
-    applicationName: string,       // Name of application built
-    applicationVersion: string,    // Version of application built
-    applicationComponent: string,  // Name of application component built
-    artifactFileName: string       // Full path to generated artifact
+    applicationName: String,       // Name of application built
+    applicationVersion: String,    // Version of application built
+    applicationComponent: String,  // Name of application component built
+    artifactFileName: String       // Full path to generated artifact
 )
 ```
 
@@ -195,24 +195,24 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-```properties
+```groovy
 reportUnitTest(
     applicationName: string,       // Name of application built
     applicationVersion: string,    // Version of application built
     applicationComponent: string,  // Name of application component built
-    testCoverage?: float,          // Optional: coverage ratio (between 0-1)
-    testsPassed?: int,             // Optional: number of passed tests
-    testsFailed?: int,             // Optional: number of failed tests
-    testsIgnored?: int             // Optional: number of skipped tests
+    testCoverage: float?,          // Optional: coverage ratio (between 0-1)
+    testsPassed: int,              // Number of passed tests
+    testsFailed: int,              // Number of failed tests
+    testsIgnored: int              // Number of skipped tests
 )
 ```
 
-```properties
-reportSurefireTest(
-    applicationName: string,       // Name of application built
-    applicationVersion: string,    // Version of application built
-    applicationComponent: string   // Name of application component built
-    surefireReportPath: string     // Path to the Surefire report file
+```groovy
+groovy(
+    applicationName: String,       // Name of application built
+    applicationVersion: String,    // Version of application built
+    applicationComponent: String   // Name of application component built
+    surefireReportPath: String     // Path to the Surefire report file
 )
 ```
 
@@ -232,17 +232,17 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-```properties
+```groovy
 reportQualityAudit(
-    applicationName: string,                   // Name of application built
-    applicationVersion: string,                // Version of application built
-    applicationComponent: string,              // Name of application component built
+    applicationName: String,                   // Name of application built
+    applicationVersion: String,                // Version of application built
+    applicationComponent: String,              // Name of application component built
     bugCount: int,                             // Number of bugs identified
-    bugScore: string,                          // Choose amount: "A", "B", "C", "D"
+    bugScore: String,                          // Choose amount: "A", "B", "C", "D", "E"
     vulnerabilityCount: int,                   // Number of vulnerabilities identified
-    vulnerabilityScore: string,                // Choose amount: "A", "B", "C", "D"
+    vulnerabilityScore: String,                // Choose amount: "A", "B", "C", "D", "E"
     hotspotCount: int,                         // Number of security hotspot identified
-    hotspotScore, string,                      // Choose amount: "A", "B", "C", "D"
+    hotspotScore: String,                      // Choose amount: "A", "B", "C", "D", "E"
     duplicationRate: float,                    // Number of bugs identified
     testCoverage: float,                       // Test coverage ratio (between 0-1)
     linesCount: long,                          // Number of source code lines
@@ -250,13 +250,13 @@ reportQualityAudit(
 )
 ```
 
-```properties
+```groovy
 withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server') {
     reportSonarQubeAudit(
-        applicationName: string,                   // Name of application built
-        applicationVersion: string,                // Version of application built
-        applicationComponent: string,              // Name of application component built
-        projectKey: string                         // Project identifier on SonarQube server
+        applicationName: String,                   // Name of application built
+        applicationVersion: String,                // Version of application built
+        applicationComponent: String,              // Name of application component built
+        projectKey: String                         // Project identifier on SonarQube server
     )
 }
 ```
@@ -295,14 +295,14 @@ If you are using MAVEN as dependencies manager, you need to add this plugin in y
 
 Run with pipeline script (DSL):
 
-```properties
+```groovy
 reportDependenciesAnalysis(
-    applicationName: string,       // Name of application built
-    applicationVersion: string,    // Version of application built
-    applicationComponent: string,  // Name of application component built
-    manager: string,               // Only 'MAVEN' is supported actually
-    manifestFile: string,          // Path to project manifest file (pom.xml)
-    managerCommand?: string        // Optional: shell command to run the manifest
+    applicationName: String,       // Name of application built
+    applicationVersion: String,    // Version of application built
+    applicationComponent: String,  // Name of application component built
+    manager: String,               // Only 'MAVEN' is supported actually
+    manifestFile: String,          // Path to project manifest file (pom.xml)
+    managerCommand: string?        // Optional: shell command to run the manifest
                                    // If not provided, the plugin will try to guess it 
 )
 ```
@@ -339,14 +339,14 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-```properties
+```groovy
 reportImageRelease(
-    applicationName: string,       // Name of application built
-    applicationVersion: string,    // Version of application built
-    applicationComponent: string,  // Name of application component built
-    registryName?: string,         // Optional: registry server name
-    imageName?: string,            // Optional: image name released
-    tags?: string                  // Optional: comma-separated list of image's tags
+    applicationName: String,       // Name of application built
+    applicationVersion: String,    // Version of application built
+    applicationComponent: String,  // Name of application component built
+    registryName: String,          // Registry server hostname
+    imageName: String,             // Image name released
+    tags: String?                  // Optional: comma-separated list of image's tags
 )
 ```
 
