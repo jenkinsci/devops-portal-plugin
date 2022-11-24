@@ -406,7 +406,7 @@ flowchart TD
     SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
     PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
     ImageReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
-    ApplicationBuildStatus:::entity --o AbstractActivity:::entity
+    AbstractActivity:::entity --o ApplicationBuildStatus:::entity
     SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
     end
