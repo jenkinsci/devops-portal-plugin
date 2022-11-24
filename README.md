@@ -382,6 +382,13 @@ flowchart TD
     ManageEnvironment:::view --> EnvironmentConfiguration:::entity
     end
     
+    subgraph Legend
+    View:::view
+    BuildStep:::reporter
+    Persistent:::entity
+    AsyncPeriodicWork:::worker
+    end
+    
     subgraph BuildActivities[Build Activities]
     BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
     UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
@@ -396,12 +403,7 @@ flowchart TD
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
     end
 
-    subgraph Legend
-    View:::view
-    BuildStep:::reporter
-    Persistent:::entity
-    AsyncPeriodicWork:::worker
-    end
+
     
     subgraph RunOperations[Run Operations]
     DeploymentOperationReporter:::reporter --> DeploymentOperation:::entity
