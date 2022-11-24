@@ -437,18 +437,19 @@ Version 3, 29 June 2007
 - [ ] Ensure JenkinsUtils.getBuild() works with:
   - [ ] Folders
   - [ ] Multibranch Pipelines
-- [ ] Check comment-block vis present or each class
+- [ ] Check comment-block is present on each class
 - [ ] UT
 - [x] ~~Dark theme compatibility~~
 - [x] ~~Synchronize I/O methods~~
 - [ ] Permissions?
 - [ ] Build dashboard: delete entry
 - [x] ~~reportBuild()~~
+  - [ ] Display file size increase/decrease with previous build
 - [x] ~~reportUnitTest()~~
 - [x] ~~reportSurefireTest()~~
 - [x] ~~reportQualityAudit()~~
 - [x] ~~reportSonarQubeAudit()~~
-- [ ] ~~reportDependenciesAnalysis()~~
+- [ ] reportDependenciesAnalysis()
   - [x] ~~Maven~~
     - [x] ~~Dependencies~~
     - [x] ~~Vulnerabilities~~
@@ -459,3 +460,10 @@ Version 3, 29 June 2007
 - [ ] reportJmeterPerformanceTest()
 - [x] ~~reportImageRelease()~~
 - [x] ~~reportRunOperation()~~
+  - [ ] Rename to DeploymentOperation
+  - [ ] Remove boolean status flag
+- Popups with history
+  - [ ] Run: deployment history
+  - [ ] Build: TU results
+  - [ ] Build: Dependencies Analysis results
+  - [ ] Build: Quality Audit issues
