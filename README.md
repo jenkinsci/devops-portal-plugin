@@ -414,7 +414,7 @@ flowchart LR
     RunOperations --> RunDashboard:::view
     RunMonitoring --> RunDashboard:::view
     BuildActivities --> BuildDashboard:::view
-    ServiceOperation --> BuildDashboard:::view
+    RunOperations --> BuildDashboard:::view
     
     classDef view fill:#9e6d0b,color:#fff
     classDef reporter fill:#2f5894,color:#fff
