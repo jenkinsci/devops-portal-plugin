@@ -379,7 +379,7 @@ Dashboard preview:
 flowchart TD
 
     subgraph Configuration
-    ManageEnvironment:::view --> ServiceConfiguration:::entity
+    ManageEnvironment:::view --> EnvironmentConfiguration:::entity
     end
     
     subgraph Legend
@@ -389,15 +389,15 @@ flowchart TD
     AsyncPeriodicWork:::worker
     end
     
-    subgraph RunOperations
+    subgraph RunOperations[Run Operations]
     DeploymentOperationReporter:::reporter --> DeploymentOperation:::entity
     end
     
-    subgraph RunMonitoring
-    MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
+    subgraph RunMonitoring[Run Monitoring]
+    MonitoringPeriodicWork:::worker --> EnvironmentMonitoring:::entity
     end
     
-    subgraph BuildActivities
+    subgraph BuildActivities[Build Activities]
     BuildActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
     UnitTestActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
     SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
@@ -463,7 +463,7 @@ Version 3, 29 June 2007
 - [x] ~~reportPerformanceTest()~~
 - [ ] reportJmeterPerformanceTest()
 - [x] ~~reportImageRelease()~~
-- [ ] reportRunOperation(=
+- [ ] reportRunOperation()
   - [ ] Rename to DeploymentOperation
   - [ ] Remove boolean status flag
 - [ ] Popups with history
@@ -471,3 +471,4 @@ Version 3, 29 June 2007
   - [ ] Build: TU results
   - [ ] Build: Dependencies Analysis results
   - [ ] Build: Quality Audit issues
+- [ ] Monitoring : rename ServiceMonitoring to EnvironmentMonitoring
