@@ -210,10 +210,10 @@ reportUnitTest(
 ```
 
 ```groovy
-groovy(
+reportSurefireTest(
     applicationName: String,       // Name of application built
     applicationVersion: String,    // Version of application built
-    applicationComponent: String   // Name of application component built
+    applicationComponent: String,  // Name of application component built
     surefireReportPath: String     // Path to the Surefire report file
 )
 ```
@@ -255,10 +255,10 @@ reportQualityAudit(
 ```groovy
 withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server') {
     reportSonarQubeAudit(
-        applicationName: String,                   // Name of application built
-        applicationVersion: String,                // Version of application built
-        applicationComponent: String,              // Name of application component built
-        projectKey: String                         // Project identifier on SonarQube server
+        applicationName: String,               // Name of application built
+        applicationVersion: String,            // Version of application built
+        applicationComponent: String,          // Name of application component built
+        projectKey: String                     // Project identifier on SonarQube server
     )
 }
 ```
