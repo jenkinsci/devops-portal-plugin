@@ -382,19 +382,7 @@ flowchart LR
     ManageEnvironment:::view --> EnvironmentConfiguration:::entity
     end
     
-    subgraph BuildActivities[Build Activities]
-    BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
-    UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
-    SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
-    DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
-    QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
-    SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
-    PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
-    ImageReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
-    AbstractActivity:::entity --o ApplicationBuildStatus:::entity
-    SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
-    SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
-    end
+
 
 
     
@@ -413,6 +401,19 @@ flowchart LR
     MonitoringPeriodicWork:::worker --> EnvironmentMonitoring:::entity
     end
    
+    subgraph BuildActivities[Build Activities]
+    BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
+    UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
+    SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
+    DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
+    QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
+    SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
+    PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
+    ImageReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
+    AbstractActivity:::entity --o ApplicationBuildStatus:::entity
+    SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
+    SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
+    end
     
     Configuration --> RunOperations
     Configuration --> RunMonitoring
