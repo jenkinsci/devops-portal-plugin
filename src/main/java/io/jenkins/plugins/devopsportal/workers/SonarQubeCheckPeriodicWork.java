@@ -21,6 +21,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -125,9 +127,9 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
 
     private static void handleIssues(@NonNull WorkItem item) {
         org.sonarqube.ws.client.issues.SearchRequest request = new org.sonarqube.ws.client.issues.SearchRequest();
-        request.setComponentKeys(List.of(item.projectKey));
-        request.setTypes(List.of("BUG", "VULNERABILITY", "CODE_SMELL"));
-        request.setSeverities(List.of("MAJOR", "CRITICAL", "BLOCKER"));
+        request.setComponentKeys(Arrays.asList(item.projectKey));
+        request.setTypes(Arrays.asList("BUG", "VULNERABILITY", "CODE_SMELL"));
+        request.setSeverities(Arrays.asList("MAJOR", "CRITICAL", "BLOCKER"));
         request.setResolved("no");
         request.setPs("500");
         Issues.SearchWsResponse response = item.wsClient.issues().search(request);
@@ -149,8 +151,8 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
 
     private static void handleMetrics(@NonNull WorkItem item) {
         org.sonarqube.ws.client.measures.SearchRequest request = new org.sonarqube.ws.client.measures.SearchRequest();
-        request.setProjectKeys(List.of(item.projectKey));
-        request.setMetricKeys(List.of(
+        request.setProjectKeys(Collections.singletonList(item.projectKey));
+        request.setMetricKeys(Arrays.asList(
                 // Quality Gate
                 "alert_status",
                 "quality_gate_details",
