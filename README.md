@@ -389,7 +389,7 @@ flowchart TD
     end
     
     subgraph RunOperations
-    RunOperationReporter:::reporter --> ServiceOperation:::entity
+    RunOperationReporter:::reporter --> DeploymentOperation:::entity
     end
     
     subgraph RunMonitoring
