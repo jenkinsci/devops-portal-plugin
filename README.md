@@ -446,7 +446,7 @@ Version 3, 29 June 2007
 - [x] ~~Synchronize I/O methods~~
 - [ ] Permissions?
 - [ ] Build dashboard: delete entry
-- [ ] Build dashboard: display a "Deployment Activity" (using last DeploymentOperation)
+- [ ] Build dashboard: display a "Deployment Activity" (using last DeploymentOperation) before "reportRelease"
 - [ ] reportBuild()
   - [ ] Display file size increase/decrease with previous build
 - [x] ~~reportUnitTest()~~
