@@ -388,12 +388,12 @@ flowchart TD
     AsyncPeriodicWork:::worker
     end
     
-    subgraph RunMonitoring
-    MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
-    end
-    
     subgraph RunOperations
     RunOperationReporter:::reporter --> ServiceOperation:::entity
+    end
+    
+    subgraph RunMonitoring
+    MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
     end
     
     subgraph BuildActivities
