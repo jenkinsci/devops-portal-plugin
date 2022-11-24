@@ -375,7 +375,7 @@ Dashboard preview:
 **Application architecture**:
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph Configuration
     ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
@@ -411,10 +411,10 @@ flowchart TB
     
     Configuration --> RunOperations
     Configuration --> RunMonitoring
-    RunOperations --> RunDashboard
-    RunMonitoring --> RunDashboard
-    BuildActivities --> BuildDashboard
-    ServiceOperation --> BuildDashboard
+    RunOperations --> RunDashboard:::view
+    RunMonitoring --> RunDashboard:::view
+    BuildActivities --> BuildDashboard:::view
+    ServiceOperation --> BuildDashboard:::view
     
     classDef view fill:#9e6d0b,color:#fff
     classDef reporter fill:#2f5894,color:#fff
