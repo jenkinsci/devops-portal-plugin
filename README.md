@@ -27,6 +27,7 @@ A Jenkins Dashboard Plugin with many features :
    6. [Release container image](#activity-release)
 5. [Pipeline Example](#section-sample)
 6. [Setup as developer](#section-dev)
+7. [Application architecture](#section-archi)
 
 ## <a name="section-setup"></a> Installing Prerequisites
 
@@ -372,7 +373,7 @@ Dashboard preview:
 7. Suggest any change by Forking the project and opening a Pull Request
 8. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
 
-**Application architecture**:
+## <a name="section-archi"></a> Application architecture
 
 ```mermaid
 flowchart TD
@@ -389,7 +390,7 @@ flowchart TD
     end
     
     subgraph RunOperations
-    RunOperationReporter:::reporter --> DeploymentOperation:::entity
+    DeploymentOperationReporter:::reporter --> DeploymentOperation:::entity
     end
     
     subgraph RunMonitoring
