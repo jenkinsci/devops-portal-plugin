@@ -398,15 +398,15 @@ flowchart TD
     end
     
     subgraph BuildActivities[Build Activities]
-    BuildActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
-    UnitTestActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
+    BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
+    UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
     SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
-    DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
-    QualityAuditActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
+    DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
+    QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
     SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
-    PerformanceTestActivity:::reporter -.-> AbstractActivityReporter:::reporter
-    ImageReleaseActivityReporter:::reporter -.-> AbstractActivityReporter:::reporter
-    AbstractActivityReporter:::reporter --> ApplicationBuildStatus:::entity
+    PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
+    ImageReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
+    ApplicationBuildStatus:::entity --o AbstractActivity:::entity
     SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
     end
