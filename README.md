@@ -380,12 +380,12 @@ flowchart TB
     ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
     
-    subgraph RunOperations
-    RunOperationReporter:::reporter --> ServiceOperation:::entity
-    end
-    
     subgraph RunMonitoring
     MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
+    end
+    
+    subgraph RunOperations
+    RunOperationReporter:::reporter --> ServiceOperation:::entity
     end
     
     subgraph BuildActivities
@@ -411,9 +411,10 @@ flowchart TB
     
     Configuration --> RunOperations
     Configuration --> RunMonitoring
-    RunOperations --> RunDashboard:::view
-    RunMonitoring --> RunDashboard:::view
-    BuildActivities --> BuildDashboard:::view
+    RunOperations --> RunDashboard
+    RunMonitoring --> RunDashboard
+    BuildActivities --> BuildDashboard
+    ServiceOperation --> BuildDashboard
     
     classDef view fill:#9e6d0b,color:#fff
     classDef reporter fill:#2f5894,color:#fff
@@ -443,6 +444,7 @@ Version 3, 29 June 2007
 - [x] ~~Synchronize I/O methods~~
 - [ ] Permissions?
 - [ ] Build dashboard: delete entry
+- [ ] Build dashboard: display a "Deployment Activity" (using last DeploymentOperation)
 - [x] ~~reportBuild()~~
   - [ ] Display file size increase/decrease with previous build
 - [x] ~~reportUnitTest()~~
