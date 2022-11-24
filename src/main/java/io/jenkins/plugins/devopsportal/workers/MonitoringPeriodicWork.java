@@ -60,7 +60,16 @@ public class MonitoringPeriodicWork extends AsyncPeriodicWork {
     @Override
     protected void execute(TaskListener listener) throws IOException, InterruptedException {
         final Jenkins jenkins = Jenkins.getInstanceOrNull();
-        if (jenkins == null || getServicesDescriptor() == null) {
+        if (jenkins == null) {
+            LOGGER.severe("Unable to run MonitoringPeriodicWork: Jenkins instance is null");
+            return;
+        }
+        if (getServicesDescriptor() == null) {
+            LOGGER.severe("Unable to run MonitoringPeriodicWork: unable to get ServiceConfiguration descriptor");
+            return;
+        }
+        if (getMonitoringDescriptor() == null) {
+            LOGGER.severe("Unable to run MonitoringPeriodicWork: unable to get ServiceMonitoring descriptor");
             return;
         }
         for (ServiceConfiguration service : getServicesDescriptor().getServiceConfigurations()) {

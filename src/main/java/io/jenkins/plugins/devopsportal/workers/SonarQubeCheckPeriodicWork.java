@@ -54,6 +54,11 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
     protected void execute(@NonNull TaskListener listener) throws IOException, InterruptedException {
         final Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
+            LOGGER.severe("Unable to run MonitoringPeriodicWork: Jenkins instance is null");
+            return;
+        }
+        if (getBuildStatusDescriptor() == null) {
+            LOGGER.severe("Unable to run MonitoringPeriodicWork: unable to get ApplicationBuildStatus descriptor");
             return;
         }
         List<WorkItem> actions;
