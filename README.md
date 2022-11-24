@@ -377,15 +377,15 @@ Dashboard preview:
 ```mermaid
 flowchart TD
 
+    subgraph Configuration
+    ManageEnvironment:::view --> ServiceConfiguration:::entity
+    end
+    
     subgraph Legend
     View:::view
     BuildStep:::reporter
     Persistent:::entity
     AsyncPeriodicWork:::worker
-    end
-    
-    subgraph Configuration
-    ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
     
     subgraph RunMonitoring
