@@ -155,7 +155,7 @@ The dashboard bring together much information:
   - 🔹 **[Dependencies Analysis](#activity-dependencies)**: number of outdated and vulnerable dependencies
   - 🔹 **[Performance/load testing](#activity-performance)**: score and Quality Gate status, number of load request and
     the average response time (in milliseconds)
-  - 🔹 **[Release container image](#activity-release)**: keep track of container images built and published to a registry
+  - 🔹 **[Release](#activity-release)**: keep track of container images or artifacts built and published to a repository
 
 **Note**: you can filter applications to display on the dashboard using `Edit View`. Regular expressions are supported.
 
@@ -330,25 +330,27 @@ Dashboard preview:
 
 ⛔ TODO
 
-###  <a name="activity-release"></a> 🔹 Activity: Container image release
+###  <a name="activity-release"></a> 🔹 Activity: Application release
 
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
-| Build step                |
-|---------------------------|
-| `Record an image release` |
+| Build step         |
+|--------------------|
+| `Record a release` |
 
 Run with pipeline script (DSL):
 
 ```groovy
-reportImageRelease(
+reportRelease(
     applicationName: String,       // Name of application built
     applicationVersion: String,    // Version of application built
     applicationComponent: String,  // Name of application component built
-    registryName: String,          // Registry server hostname
-    imageName: String,             // Image name released
-    tags: String?                  // Optional: comma-separated list of image's tags
+    repositoryName: String,        // Registry server hostname
+    releaseName: String,           // Image name released
+    tags: String?,                 // Optional: comma-separated list of image's tags
+                                   // Eg. "docker", "artifactory", "nexus", "ftp"
+    releaseURL: String?            // Optional: a link to the release        
 )
 ```
 
@@ -397,7 +399,7 @@ flowchart TD
     QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
     SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
     PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
-    ImageReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
+    ReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
     AbstractActivity:::entity --o ApplicationBuildStatus:::entity
     SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
@@ -460,12 +462,17 @@ Version 3, 29 June 2007
   - [ ] NPM
       - [ ] Dependencies
       - [ ] Vulnerabilities
-- [x] ~~reportPerformanceTest()~~
+- [ ] reportPerformanceTest()
+  - [ ] Field: Tests -> count(<api>)
+  - [ ] Field: Samples -> sum(<api><samples>)
+  - [ ] Field: Errors -> sum(<api><errors>)
+  - [ ] Field: QualityGate -> (Errors == 0)
 - [ ] reportJmeterPerformanceTest()
+  - [ ] Field: Report file path
 - [ ] reportImageRelease()
-  - [ ] Rename to reportRelease()
+  - [ ] Rename to "report~~Image~~Release()" and "~~Image~~ReleaseActivityReporter" and "~~Image~~ReleaseActivity"
+  - [ ] Rename label of build step : "Record a release"
   - [ ] Rename "registryName" to "repositoryName"
-  - [ ] Add "repositoryType": choose among: "IMAGE REGISTRY", "BINARY REPOSITORY", "FTP", "GITHUB", "GITLAB", "OTHER"
   - [ ] Rename "imageName" to "releaseName"
   - [ ] Add optional property: "releaseURL"
 - [ ] reportRunOperation()
