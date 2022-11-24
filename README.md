@@ -375,7 +375,15 @@ Dashboard preview:
 **Application architecture**:
 
 ```mermaid
-flowchart LR
+flowchart TD
+
+    subgraph Legend
+    View:::view
+    BuildStep:::reporter
+    Persistent:::entity
+    AsyncPeriodicWork:::worker
+    end
+    
     subgraph Configuration
     ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
@@ -400,13 +408,6 @@ flowchart LR
     AbstractActivityReporter:::reporter --> ApplicationBuildStatus:::entity
     SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
-    end
-    
-    subgraph Legend
-    View:::view
-    BuildStep:::reporter
-    Persistent:::entity
-    AsyncPeriodicWork:::worker
     end
     
     Configuration --> RunOperations
