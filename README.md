@@ -376,7 +376,7 @@ Dashboard preview:
 ## <a name="section-archi"></a> Application architecture
 
 ```mermaid
-flowchart TD
+flowchart LR
 
     subgraph Configuration
     ManageEnvironment:::view --> EnvironmentConfiguration:::entity
