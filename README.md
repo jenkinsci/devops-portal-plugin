@@ -378,6 +378,13 @@ Dashboard preview:
 ```mermaid
 flowchart TD
 
+    subgraph Legend
+    View:::view
+    BuildStep:::reporter
+    Persistent:::entity
+    AsyncPeriodicWork:::worker
+    end
+    
     subgraph Configuration
     ManageEnvironment:::view --> EnvironmentConfiguration:::entity
     end
@@ -408,12 +415,7 @@ flowchart TD
     MonitoringPeriodicWork:::worker --> EnvironmentMonitoring:::entity
     end
    
-    subgraph Legend
-    View:::view
-    BuildStep:::reporter
-    Persistent:::entity
-    AsyncPeriodicWork:::worker
-    end
+
     
     Configuration --> RunOperations
     Configuration --> RunMonitoring
