@@ -447,7 +447,7 @@ Version 3, 29 June 2007
 - [ ] Permissions?
 - [ ] Build dashboard: delete entry
 - [ ] Build dashboard: display a "Deployment Activity" (using last DeploymentOperation)
-- [x] ~~reportBuild()~~
+- [ ] reportBuild()
   - [ ] Display file size increase/decrease with previous build
 - [x] ~~reportUnitTest()~~
 - [x] ~~reportSurefireTest()~~
@@ -463,10 +463,10 @@ Version 3, 29 June 2007
 - [x] ~~reportPerformanceTest()~~
 - [ ] reportJmeterPerformanceTest()
 - [x] ~~reportImageRelease()~~
-- [x] ~~reportRunOperation()~~
+- [ ] reportRunOperation(=
   - [ ] Rename to DeploymentOperation
   - [ ] Remove boolean status flag
-- Popups with history
+- [ ] Popups with history
   - [ ] Run: deployment history
   - [ ] Build: TU results
   - [ ] Build: Dependencies Analysis results
