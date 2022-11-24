@@ -177,7 +177,7 @@ reportBuild(
     applicationName: String,       // Name of application built
     applicationVersion: String,    // Version of application built
     applicationComponent: String,  // Name of application component built
-    artifactFileName: String       // Full path to generated artifact
+    artifactFileName: String       // Path to generated artifact
 )
 ```
 
@@ -209,7 +209,18 @@ reportUnitTest(
 )
 ```
 
+#### Using with Surefire
+
+Required actions:
+- Install plugin: [Maven Integration](https://plugins.jenkins.io/pipeline-maven/) and [Pipeline Maven Integration](https://plugins.jenkins.io/pipeline-maven/)
+- Configure a **Maven installation** in Global Tools configuration page
+
+Then you can record Surefire test reports using:
+
 ```groovy
+withMaven() {
+    sh "mvn test"
+}
 reportSurefireTest(
     applicationName: String,       // Name of application built
     applicationVersion: String,    // Version of application built
@@ -252,8 +263,22 @@ reportQualityAudit(
 )
 ```
 
+#### Using with SonarQube
+
+Required actions:
+- Install plugin: [Maven Integration](https://plugins.jenkins.io/pipeline-maven/) and [Pipeline Maven Integration](https://plugins.jenkins.io/pipeline-maven/)
+- Install plugin: [SonarQube Scanner](https://plugins.jenkins.io/sonar)
+- Configure a **Maven installation** in Global Tools configuration page
+- Configure a **SonarQube server** in System Configuration page
+- Configure a **Secret text credential** in Manage Credentials page
+
+Then you can record SonarQube audit reports using:
+
 ```groovy
 withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server') {
+    withMaven() {
+        sh "mvn sonar:sonar"
+    }
     reportSonarQubeAudit(
         applicationName: String,               // Name of application built
         applicationVersion: String,            // Version of application built
@@ -304,7 +329,7 @@ reportDependenciesAnalysis(
     applicationComponent: String,  // Name of application component built
     manager: String,               // Only 'MAVEN' is supported actually
     manifestFile: String,          // Path to project manifest file (pom.xml)
-    managerCommand: String?        // Optional: shell command to run the manifest
+    managerCommand: String?        // Optional: shell command to run the manager
                                    // If not provided, the plugin will try to guess it 
 )
 ```
@@ -318,11 +343,16 @@ Dashboard preview:
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
-| Build step                  |
-|-----------------------------|
-| `Record a performance test` |
+| Build step                         |
+|------------------------------------|
+| `Record a performance test`        |
+| `Record a JMeter performance test` |
 
 Run with pipeline script (DSL):
+
+⛔ TODO
+
+#### Report a JMeter performance result
 
 ⛔ TODO
 
