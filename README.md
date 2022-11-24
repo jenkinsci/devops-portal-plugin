@@ -382,12 +382,7 @@ flowchart TD
     ManageEnvironment:::view --> EnvironmentConfiguration:::entity
     end
     
-    subgraph Legend
-    View:::view
-    BuildStep:::reporter
-    Persistent:::entity
-    AsyncPeriodicWork:::worker
-    end
+
     
     subgraph BuildActivities[Build Activities]
     BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
@@ -413,6 +408,12 @@ flowchart TD
     MonitoringPeriodicWork:::worker --> EnvironmentMonitoring:::entity
     end
    
+    subgraph Legend
+    View:::view
+    BuildStep:::reporter
+    Persistent:::entity
+    AsyncPeriodicWork:::worker
+    end
     
     Configuration --> RunOperations
     Configuration --> RunMonitoring
