@@ -378,6 +378,10 @@ Dashboard preview:
 ```mermaid
 flowchart LR
 
+    subgraph Configuration
+    ManageEnvironment:::view --> EnvironmentConfiguration:::entity
+    end
+    
     subgraph BuildActivities[Build Activities]
     BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
     UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
@@ -392,9 +396,7 @@ flowchart LR
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
     end
 
-    subgraph Configuration
-    ManageEnvironment:::view --> EnvironmentConfiguration:::entity
-    end
+
     
     subgraph Legend
     View:::view
