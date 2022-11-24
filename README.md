@@ -389,8 +389,6 @@ flowchart TD
     ManageEnvironment:::view --> EnvironmentConfiguration:::entity
     end
     
-
-    
     subgraph BuildActivities[Build Activities]
     BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
     UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
@@ -405,8 +403,6 @@ flowchart TD
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
     end
 
-
-    
     subgraph RunOperations[Run Operations]
     DeploymentOperationReporter:::reporter --> DeploymentOperation:::entity
     end
@@ -415,8 +411,6 @@ flowchart TD
     MonitoringPeriodicWork:::worker --> EnvironmentMonitoring:::entity
     end
    
-
-    
     Configuration --> RunOperations
     Configuration --> RunMonitoring
     RunOperations --> RunDashboard:::view
@@ -468,7 +462,12 @@ Version 3, 29 June 2007
       - [ ] Vulnerabilities
 - [x] ~~reportPerformanceTest()~~
 - [ ] reportJmeterPerformanceTest()
-- [x] ~~reportImageRelease()~~
+- [ ] reportImageRelease()
+  - [ ] Rename to reportRelease()
+  - [ ] Rename "registryName" to "repositoryName"
+  - [ ] Add "repositoryType": choose among: "IMAGE REGISTRY", "BINARY REPOSITORY", "FTP", "GITHUB", "GITLAB", "OTHER"
+  - [ ] Rename "imageName" to "releaseName"
+  - [ ] Add optional property: "releaseURL"
 - [ ] reportRunOperation()
   - [ ] Rename to DeploymentOperation
   - [ ] Remove boolean status flag
