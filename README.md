@@ -478,7 +478,7 @@ Version 3, 29 June 2007
 - [x] ~~Dark theme compatibility~~
 - [x] ~~Synchronize I/O methods~~
 - [ ] Permissions?
-- [ ] Build dashboard: delete entry
+- [x] ~~Build dashboard: delete entry~~
 - [x] ~~Build dashboard: display a "Deployment Activity" (using last DeploymentOperation) before "reportRelease"~~
 - [x] ~~reportBuild()~~
   - [x] ~~Display file size increase/decrease with previous build~~

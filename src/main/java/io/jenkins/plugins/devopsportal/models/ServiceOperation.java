@@ -20,6 +20,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * A persisted record of an exploitation operation performed on a run platform.
@@ -261,6 +262,15 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
                     .filter(item -> item.getApplicationVersion().equals(applicationVersion))
                     .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
                     .max(Comparator.comparingLong(ServiceOperation::getTimestamp));
+        }
+
+        public List<ServiceOperation> getDeploymentsByService(String serviceId) {
+            return getRunOperations()
+                    .stream()
+                    .filter(item -> serviceId.equals(item.getServiceId()))
+                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
+                    .sorted(Comparator.comparingLong(ServiceOperation::getTimestamp))
+                    .collect(Collectors.toList());
         }
 
     }

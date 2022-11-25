@@ -87,7 +87,7 @@
         <thead>
             <j:if test="${categories.isEmpty()}">
                 <tr>
-                    <td colspan="6">${%label_empty_list}</td>
+                    <td colspan="7">${%label_empty_list}</td>
                 </tr>
             </j:if>
             <j:if test="${!categories.isEmpty()}">
@@ -98,13 +98,14 @@
                     <th width="15%">${%header_host}</th>
                     <th width="20%">${%header_application}</th>
                     <th>${%header_deployment}</th>
+                    <th width="0%" />
                 </tr>
             </j:if>
         </thead>
         <tbody>
             <j:forEach var="category" indexVar="i" items="${categories}">
                 <tr class="group-title">
-                    <th colspan="6"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${category}</th>
+                    <th colspan="7"><l:icon class="symbol-chevron-down-outline plugin-ionicons-api icon-sm"/> ${category}</th>
                 </tr>
                 <j:set var="services" value="${it.descriptor.getConfigurationsByCategory(category)}"/>
                 <j:forEach var="service" indexVar="j" items="${services}">
@@ -210,10 +211,91 @@
                                 <span class="muted">${%label_no_deployment}</span>
                             </j:if>
                         </td>
+                        <td>
+                            <a class="jenkins-button" href="javascript:toggleModal('${service.id}')">
+                                <l:icon class="symbol-time-outline plugin-ionicons-api icon-sm" />
+                            </a>
+                        </td>
                     </tr>
                 </j:forEach>
             </j:forEach>
         </tbody>
     </table>
+
+    <!-- MODALS : environment deployments history -->
+
+    <j:forEach var="service" indexVar="i" items="${it.descriptor.getServicesConfiguration(it.filter)}">
+        <div id="modal_${service.id}" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close"/>
+                    <h2>${service.label}</h2>
+                </div>
+                <div class="modal-body">
+                    <table class="jenkins-table">
+                        <j:forEach var="deployment" indexVar="j" items="${it.descriptor.getDeploymentsByService(service.id)}">
+                            <j:if test="${j == 0}">
+                                <thead class="group-headers">
+                                    <tr>
+                                        <th>Application</th>
+                                        <th>Build</th>
+                                        <th>Deployment</th>
+                                    </tr>
+                                </thead>
+                            </j:if>
+                            <j:if test="${j &gt; 0}">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            ${$deployment.applicationName}
+                                            ${$deployment.applicationVersion}
+                                            ${deployment.buildBranch}
+                                        </td>
+                                        <td>
+                                            <span class="build-label">
+                                                <l:icon class="${deployment.getBuildStatusClass()} icon-sm"/>
+                                                <a href="${deployment.buildURL}">${deployment.buildJob} #${deployment.buildNumber}</a>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="build-date">
+                                                <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
+                                                ${it.formatDatetimeSeconds(deployment.timestamp)}
+                                            </span>
+                                            <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
+                                                <span class="deployment-tag badge">
+                                                    ${tag}
+                                                </span>
+                                            </j:forEach>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </j:if>
+                        </j:forEach>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </j:forEach>
+
+    <script type="text/javascript">
+    function toggle(id) {
+        var modal = document.getElementById('modal_' + id);
+        var span = modal.querySelector('.close');
+        modal.style.display = 'block';
+        function close() {
+            modal.style.display = 'none';
+            span.removeEventListener('click', close);
+            window.removeEventListener('click', windowClose);
+        }
+        function windowClose(event) {
+            if (event.target === modal) {
+                close()
+            }
+        }
+        window.addEventListener('click', windowClose);
+        span.addEventListener('click', close);
+    }
+    </script>
 
 </j:jelly>

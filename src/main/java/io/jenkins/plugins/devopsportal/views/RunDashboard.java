@@ -143,6 +143,26 @@ public class RunDashboard extends View {
             return getOperationDescriptor().getLastDeploymentByService(serviceId).orElse(null);
         }
 
+        public List<ServiceConfiguration> getServicesConfiguration(String filter) {
+            Stream<ServiceConfiguration> stream = getServiceDescriptor()
+                    .getServiceConfigurations()
+                    .stream()
+                    .distinct()
+                    .sorted(Comparator.comparing(ServiceConfiguration::getLabel));
+            if (filter != null && !filter.isEmpty()) {
+                try {
+                    Pattern pattern = Pattern.compile(filter);
+                    stream = stream.filter(service -> pattern.matcher(service.getCategory()).matches());
+                }
+                catch (PatternSyntaxException ignored) { }
+            }
+            return stream.collect(Collectors.toList());
+        }
+
+        public List<ServiceOperation> getDeploymentsByService(String serviceId) {
+            return getOperationDescriptor().getDeploymentsByService(serviceId);
+        }
+
         public FormValidation doCheckFilter(@QueryParameter String filter) {
             if (filter != null && !filter.isEmpty()) {
                 try {
