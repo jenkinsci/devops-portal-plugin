@@ -4,7 +4,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.*;
-import hudson.security.Permission;
 import hudson.util.CopyOnWriteList;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.utils.JenkinsUtils;
@@ -336,8 +335,17 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
         }
 
         public boolean delete(String applicationName, String applicationVersion) {
-
-            return true;
+            final ApplicationBuildStatus status = getBuildStatusByApplication(applicationName, applicationVersion)
+                    .orElse(null);
+            if (status != null) {
+                synchronized (this) {
+                    if (buildStatus.remove(status)) {
+                        save();
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
     }

@@ -211,7 +211,7 @@
                                 <l:icon class="symbol-apps-outline plugin-ionicons-api icon-sm" />
                             </a>
                             <l:isAdmin>
-                                <a class="jenkins-button" style="margin-left: .2rem" href="javascript:deleteApplicationVersion('${application}::${version}')">
+                                <a class="jenkins-button" style="margin-left: .2rem" href="javascript:deleteApplicationVersion('${application}', '${version}')">
                                     <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
                                 </a>
                             </l:isAdmin>
@@ -467,10 +467,10 @@
                 item.toggleAttribute('hidden');
             }
         }
-        function deleteApplicationVersion(version) {
-            if (confirm('OK ?')) {
-                javascript:document.location.href = '/jenkins/build-api/delete-build-status?version='
-                    + escape(version) + '&amp;origin=' + escape(window.location.href);
+        function deleteApplicationVersion(application, version) {
+            if (confirm('${%confirm_delete_version}')) {
+                javascript:document.location.href = '/jenkins/build-api/delete-build-status?application='
+                    + escape(application) + '&amp;version=' + escape(version) + '&amp;origin=' + escape(window.location.href);
             }
         }
     </script>
