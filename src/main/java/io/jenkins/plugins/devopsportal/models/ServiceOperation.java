@@ -156,7 +156,9 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
     @DataBoundSetter
     public void setTags(String tags) {
         this.tags.clear();
-        this.tags.addAll(MiscUtils.split(tags, ","));
+        if (tags != null && !tags.trim().isEmpty()) {
+            this.tags.addAll(MiscUtils.split(tags, ","));
+        }
     }
 
     public boolean isBranchProvided() {

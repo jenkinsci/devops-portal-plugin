@@ -369,6 +369,34 @@
                             </td>
                         </tr>
                     </j:forEach>
+                    <j:if test="${deployment != null}">
+                        <j:if test="${target != null}">
+                            <tr class="version-activities" hidden="true" version="${application}-${version}">
+                                <td></td>
+                                <td>
+                                    <span class="activity-category">
+                                        <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>
+                                        ${%column_activity_deployment} :
+                                    </span>
+                                    <strong>${application}</strong>
+                                </td>
+                                <td>
+                                    Environment: <strong>${target.label}</strong> (${target.category})
+                                </td>
+                                <td colspan="2">
+                                    <span class="build-date">
+                                        <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
+                                        ${it.formatDatetimeSeconds(deployment.timestamp)}
+                                    </span>
+                                    <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
+                                        <span class="deployment-tag badge">
+                                            ${tag}
+                                        </span>
+                                    </j:forEach>
+                                </td>
+                            </tr>
+                        </j:if>
+                    </j:if>
                     <!-- PERFORMANCE_TEST activities -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'PERFORMANCE_TEST')}">
                         <tr class="version-activities" hidden="true" version="${application}-${version}">

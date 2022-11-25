@@ -10,6 +10,7 @@ import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ActivityScore;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -45,8 +46,8 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull UnitTestActivity activity,
                                  @NonNull TaskListener listener, @NonNull EnvVars env) {
 
-        final File file = surefireReportPath == null ? null :
-                new File(env.get("WORKSPACE", ""), surefireReportPath);
+        final File file = MiscUtils.checkFilePathIllegalAccess(
+                env.get("WORKSPACE", ""), surefireReportPath);
 
         if (file == null || !file.exists() || !file.canRead()) {
             listener.getLogger().println(Messages.FormValidation_Error_FileNotReadable()
