@@ -45,17 +45,16 @@ public class BuildApi implements RootAction {
     @WebMethod(name = "delete-build-status")
     public HttpResponse deleteBuildStatusByVersion(@QueryParameter(required = true) String version,
                                                    @QueryParameter(required = true) String origin) {
-        // TODO Check version argument (.*?::.*?)
-        String applicationName = version.split("::")[0];
-        String applicationVersion = version.split("::")[1];
-        boolean admin = Jenkins.get().hasPermission(Jenkins.ADMINISTER);
-        if (admin && getDescriptor().delete(applicationName, applicationVersion)) {
-            return new HttpRedirect(origin);
+        String[] parts = version.split("::");
+        if (parts.length == 2) {
+            String applicationName = parts[0];
+            String applicationVersion = parts[1];
+            boolean admin = Jenkins.get().hasPermission(Jenkins.ADMINISTER);
+            if (admin && getDescriptor().delete(applicationName, applicationVersion)) {
+                return new HttpRedirect(origin);
+            }
         }
-        else {
-            return new Failure(Messages.FormValidation_Error_ApplicationNotFound());
-        }
+        return new Failure(Messages.FormValidation_Error_ApplicationNotFound());
     }
-
 
 }
