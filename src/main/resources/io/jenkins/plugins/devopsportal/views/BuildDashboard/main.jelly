@@ -211,7 +211,7 @@
                                 <l:icon class="symbol-apps-outline plugin-ionicons-api icon-sm" />
                             </a>
                             <l:isAdmin>
-                                <a class="jenkins-button" style="margin-left: .2rem" href="javascript:document.location.href='?delete='+escape('${application}::${version}')">
+                                <a class="jenkins-button" style="margin-left: .2rem" href="javascript:deleteApplicationVersion('${application}::${version}')">
                                     <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
                                 </a>
                             </l:isAdmin>
@@ -372,7 +372,7 @@
                     <j:if test="${deployment != null}">
                         <j:if test="${target != null}">
                             <tr class="version-activities" hidden="true" version="${application}-${version}">
-                                <td></td>
+                                <td/>
                                 <td>
                                     <span class="activity-category">
                                         <l:icon class="symbol-cloud-upload-outline plugin-ionicons-api icon-sm"/>
@@ -381,7 +381,7 @@
                                     <strong>${application}</strong>
                                 </td>
                                 <td>
-                                    Environment: <strong>${target.label}</strong> (${target.category})
+                                    ${%quality_item_environment} <strong>${target.label}</strong> (${target.category})
                                 </td>
                                 <td colspan="2">
                                     <span class="build-date">
@@ -463,9 +463,14 @@
     <script type="text/javascript">
         function toggleVisibility(version) {
             const items = document.querySelectorAll("tr.version-activities[version='" + version + "']");
-            console.log(items);
             for (const item of items) {
                 item.toggleAttribute('hidden');
+            }
+        }
+        function deleteApplicationVersion(version) {
+            if (confirm('OK ?')) {
+                javascript:document.location.href = '/jenkins/build-api/delete-build-status?version='
+                    + escape(version) + '&amp;origin=' + escape(window.location.href);
             }
         }
     </script>

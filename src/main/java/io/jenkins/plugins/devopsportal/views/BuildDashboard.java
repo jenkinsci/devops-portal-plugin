@@ -7,7 +7,9 @@ import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.*;
 import jenkins.model.Jenkins;
+import org.apache.http.client.HttpResponseException;
 import org.kohsuke.stapler.*;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -70,6 +72,11 @@ public class BuildDashboard extends View {
 
     public String formatDatetimeSeconds(long timestamp) {
         return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
+    }
+
+    @RequirePOST
+    public HttpResponse doDeleteVersion(StaplerRequest request, StaplerResponse rsp) throws HttpResponseException {
+        return null;
     }
 
     @Extension
