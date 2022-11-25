@@ -511,7 +511,7 @@ Version 3, 29 June 2007
   - [ ] Rename to DeploymentOperation
   - [ ] Remove boolean status flag
 - [ ] Popups with history
-  - [ ] Run: deployment history
+  - [x] Run: ~~deployment history~~
   - [ ] Build: TU results
   - [ ] Build: Dependencies Analysis results
   - [ ] Build: Quality Audit issues

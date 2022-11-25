@@ -269,7 +269,7 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
                     .stream()
                     .filter(item -> serviceId.equals(item.getServiceId()))
                     .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
-                    .sorted(Comparator.comparingLong(ServiceOperation::getTimestamp))
+                    .sorted((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp()))
                     .collect(Collectors.toList());
         }
 

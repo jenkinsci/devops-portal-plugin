@@ -1,0 +1,76 @@
+.run-dashboard {
+    width: 100%;
+    border-collapse: collapse;
+}
+.run-dashboard td {
+    vertical-align: middle;
+}
+.run-dashboard .group-title {
+    border-top: 2px solid #F2F2F2;
+}
+.run-dashboard .group-title th {
+    text-align: left;
+    padding: .8rem 1rem;
+}
+.run-dashboard .group-headers {
+    font-size: 80%;
+    text-align: left;
+    color: #bbb;
+}
+.run-dashboard .service-entry {
+    line-height: 2.8rem;
+}
+.run-dashboard .service-label {
+    font-weight: bolder;
+}
+.run-dashboard .host-information, .run-dashboard .deployment-information, .run-dashboard .health-information {
+    line-height: 1.3rem;
+}
+.run-dashboard .host-information .host-label {
+    font-weight: normal;
+}
+.badge {
+    background-color: #ddd;
+    border-radius: 5px;
+    padding: 2px 4px;
+    margin-left: .25rem;
+    color: #333;
+    font-size: 90%;
+}
+.icon-sm {
+    vertical-align: sub !important;
+}
+.run-dashboard .build-label .build-status-icon__wrapper {
+    margin-right: 5px;
+}
+.muted {
+    font-size: 80%;
+    color: #555;
+}
+.run-dashboard .service-category {
+    background: #666;
+    color: #fff;
+    font-weight: bolder;
+}
+.run-dashboard .health-status {
+    text-align: center;
+}
+.run-dashboard .health-time .status-up {
+    color: green;
+}
+.run-dashboard .health-time .status-down {
+    color: red;
+}
+.run-dashboard .health-failure {
+    color: red;
+    font-size: 80%;
+}
+
+/* Dark theme */
+html[data-theme="dark"] .badge {
+    background-color: #333;
+    color: #aaa;
+}
+html[data-theme="dark"] .run-dashboard .group-title {
+    border-top: 2px solid #18181B;
+}

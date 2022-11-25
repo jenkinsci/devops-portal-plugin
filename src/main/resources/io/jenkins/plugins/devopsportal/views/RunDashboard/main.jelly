@@ -1,83 +1,8 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
 
-    <style type="text/css" rel="stylesheet">
-        .run-dashboard {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .run-dashboard td {
-            vertical-align: middle;
-        }
-        .run-dashboard .group-title {
-            border-top: 2px solid #F2F2F2;
-        }
-        .run-dashboard .group-title th {
-            text-align: left;
-            padding: .8rem 1rem;
-        }
-        .run-dashboard .group-headers {
-            font-size: 80%;
-            text-align: left;
-            color: #bbb;
-        }
-        .run-dashboard .service-entry {
-            line-height: 2.8rem;
-        }
-        .run-dashboard .service-label {
-            font-weight: bolder;
-        }
-        .run-dashboard .host-information, .run-dashboard .deployment-information, .run-dashboard .health-information {
-            line-height: 1.3rem;
-        }
-        .run-dashboard .host-information .host-label {
-            font-weight: normal;
-        }
-        .run-dashboard .badge {
-            background-color: #ddd;
-            border-radius: 5px;
-            padding: 2px 4px;
-            margin-left: .25rem;
-            color: #333;
-            font-size: 90%;
-        }
-        .icon-sm {
-            vertical-align: sub !important;
-        }
-        .run-dashboard .build-label .build-status-icon__wrapper {
-            margin-right: 5px;
-        }
-        .muted {
-            font-size: 80%;
-            color: #555;
-        }
-        .run-dashboard .service-category {
-            background: #666;
-            color: #fff;
-            font-weight: bolder;
-        }
-        .run-dashboard .health-status {
-            text-align: center;
-        }
-        .run-dashboard .health-time .status-up {
-            color: green;
-        }
-        .run-dashboard .health-time .status-down {
-            color: red;
-        }
-        .run-dashboard .health-failure {
-            color: red;
-            font-size: 80%;
-        }
-        /* Dark theme */
-        html[data-theme="dark"] .badge {
-            background-color: #333;
-            color: #aaa;
-        }
-        html[data-theme="dark"] .run-dashboard .group-title {
-            border-top: 2px solid #18181B;
-        }
-    </style>
+    <link href="/jenkins/plugin/plugin-devops-portal/css/run-dashboard.css" type="text/css" rel="stylesheet"/>
+    <link href="/jenkins/plugin/plugin-devops-portal/css/modal.css" type="text/css" rel="stylesheet"/>
 
     <h1>
         ${it.displayName}
@@ -212,9 +137,11 @@
                             </j:if>
                         </td>
                         <td>
-                            <a class="jenkins-button" href="javascript:toggleModal('${service.id}')">
-                                <l:icon class="symbol-time-outline plugin-ionicons-api icon-sm" />
-                            </a>
+                            <j:if test="${deployment != null}">
+                                <a class="jenkins-button" href="javascript:toggleModal('${service.id}')">
+                                    <l:icon class="symbol-time-outline plugin-ionicons-api icon-sm" />
+                                </a>
+                            </j:if>
                         </td>
                     </tr>
                 </j:forEach>
@@ -228,8 +155,9 @@
         <div id="modal_${service.id}" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <span class="close"/>
-                    <h2>${service.label}</h2>
+                    <span class="close" />
+                    <div class="modal-title"><strong>${service.label}</strong></div>
+                    <div class="modal-subtitle">${service.hostname}</div>
                 </div>
                 <div class="modal-body">
                     <table class="jenkins-table">
@@ -247,14 +175,24 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            ${$deployment.applicationName}
-                                            ${$deployment.applicationVersion}
-                                            ${deployment.buildBranch}
+                                            <strong>${deployment.applicationName}</strong>
+                                            <span class="version-label badge" style="margin-left: .4rem">
+                                                <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/>
+                                                v ${deployment.applicationVersion}
+                                            </span>
+                                            <j:if test="${deployment.branchProvided}">
+                                                <span class="application-branch badge" style="margin-left: .4rem">
+                                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>
+                                                    ${deployment.buildBranch}
+                                                </span>
+                                            </j:if>
                                         </td>
                                         <td>
                                             <span class="build-label">
                                                 <l:icon class="${deployment.getBuildStatusClass()} icon-sm"/>
-                                                <a href="${deployment.buildURL}">${deployment.buildJob} #${deployment.buildNumber}</a>
+                                                <a style="margin-left:.4rem" href="${deployment.buildURL}">
+                                                    ${deployment.buildJob} #${deployment.buildNumber}
+                                                </a>
                                             </span>
                                         </td>
                                         <td>
@@ -279,7 +217,7 @@
     </j:forEach>
 
     <script type="text/javascript">
-    function toggle(id) {
+    function toggleModal(id) {
         var modal = document.getElementById('modal_' + id);
         var span = modal.querySelector('.close');
         modal.style.display = 'block';
@@ -290,7 +228,7 @@
         }
         function windowClose(event) {
             if (event.target === modal) {
-                close()
+                close();
             }
         }
         window.addEventListener('click', windowClose);

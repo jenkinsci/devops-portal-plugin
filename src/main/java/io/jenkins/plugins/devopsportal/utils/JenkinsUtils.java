@@ -24,6 +24,9 @@ public final class JenkinsUtils {
                                       Collection<? extends TopLevelItem> items) {
         // TODO Implements branch name for Multibranch Pipeline
         // TODO Check consistency with folder items
+
+        // item instanceof WorkflowMultiBranchProject
+        // item instanceof WorkflowJo
         for (TopLevelItem item : items) {
             if (item.getName().equals(jobName)) {
                 if (item instanceof Job) {
