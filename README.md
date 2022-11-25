@@ -177,7 +177,8 @@ reportBuild(
     applicationName: String,       // Name of application built
     applicationVersion: String,    // Version of application built
     applicationComponent: String,  // Name of application component built
-    artifactFileName: String       // Path to generated artifact
+    artifactFileName: String,      // Path to generated artifact
+    artifactFileSizeLimit: int?    // Optional: put a limit on the artifact file size, causing the build to fail if exceeded
 )
 ```
 
@@ -479,8 +480,9 @@ Version 3, 29 June 2007
 - [ ] Permissions?
 - [ ] Build dashboard: delete entry
 - [ ] Build dashboard: display a "Deployment Activity" (using last DeploymentOperation) before "reportRelease"
-- [ ] reportBuild()
-  - [ ] Display file size increase/decrease with previous build
+- [x] ~~reportBuild()~~
+  - [x] ~~Display file size increase/decrease with previous build~~
+  - [x] ~~File size limit~~
 - [x] ~~reportUnitTest()~~
 - [x] ~~reportSurefireTest()~~
 - [x] ~~reportQualityAudit()~~

@@ -3,10 +3,7 @@ package io.jenkins.plugins.devopsportal.models;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
-import hudson.model.Describable;
-import hudson.model.Descriptor;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.model.*;
 import hudson.util.CopyOnWriteList;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.utils.JenkinsUtils;
@@ -187,11 +184,11 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends AbstractActivity> void updateActivity(@NonNull String applicationComponent,
-                                                            @NonNull ActivityCategory category,
-                                                            @NonNull TaskListener listener,
-                                                            @NonNull EnvVars env,
-                                                            @NonNull GenericActivityHandler<T> updater) {
+    public <T extends AbstractActivity> Result updateActivity(@NonNull String applicationComponent,
+                                                              @NonNull ActivityCategory category,
+                                                              @NonNull TaskListener listener,
+                                                              @NonNull EnvVars env,
+                                                              @NonNull GenericActivityHandler<T> updater) {
         T activity;
         synchronized (activities) {
             activity = (T) activities.getOrDefault(category, new ArrayList<>())
@@ -207,10 +204,11 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
                 activities.get(category).add(activity);
             }
         }
-        updater.updateActivity(this, activity, listener, env);
+        final Result result = updater.updateActivity(this, activity, listener, env);
         synchronized (activities) {
             getDescriptor().save();
         }
+        return result;
     }
 
     @SuppressWarnings("unchecked")

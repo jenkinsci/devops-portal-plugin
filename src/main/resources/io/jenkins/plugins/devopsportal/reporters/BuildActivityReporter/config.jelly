@@ -14,5 +14,8 @@
     <f:entry title="${%ArtifactFileName_Label}" field="artifactFileName">
         <f:textbox />
     </f:entry>
+    <f:entry title="${%ArtifactFileSizeLimit_Label}" field="artifactFileSizeLimit">
+        <f:number />
+    </f:entry>
 
 </j:jelly>

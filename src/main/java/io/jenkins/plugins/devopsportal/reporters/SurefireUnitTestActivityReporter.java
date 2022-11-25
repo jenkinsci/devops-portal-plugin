@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
@@ -41,9 +42,8 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
     }
 
     @Override
-    public void updateActivity(@NonNull ApplicationBuildStatus status, @NonNull UnitTestActivity activity,
-                               @NonNull TaskListener listener, @NonNull EnvVars env) {
-
+    public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull UnitTestActivity activity,
+                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
 
         final File file = surefireReportPath == null ? null :
                 new File(env.get("WORKSPACE", ""), surefireReportPath);
@@ -51,7 +51,7 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
         if (file == null || !file.exists() || !file.canRead()) {
             listener.getLogger().println(Messages.FormValidation_Error_FileNotReadable()
                     .replace("%file%", surefireReportPath));
-            return;
+            return Result.FAILURE;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -65,7 +65,7 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
                         activity.setTestsPassed(Integer.parseInt(matcher.group(1)));
                         activity.setTestsFailed(Integer.parseInt(matcher.group(2)) + Integer.parseInt(matcher.group(4)));
                         activity.setTestsIgnored(Integer.parseInt(matcher.group(3)));
-                        activity.setScore(activity.getTestsFailed() > 0 ? ActivityScore.D : ActivityScore.A);
+                        activity.setScore(activity.getTestsFailed() > 0 ? ActivityScore.E : ActivityScore.A);
                         break;
                     }
                 }
@@ -75,6 +75,8 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
             listener.getLogger().println(Messages.FormValidation_Error_FileNotReadable()
                     .replace("%file%", surefireReportPath));
         }
+
+        return null;
     }
 
     @Override

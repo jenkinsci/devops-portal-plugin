@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
@@ -72,7 +73,12 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
             GenericRunModel.updateRecordFromRun(record, run, env);
 
             // Create or update AbstractActivity
-            record.updateActivity(applicationComponent, getActivityCategory(), listener, env, this);
+            final Result result = record.updateActivity(applicationComponent, getActivityCategory(), listener, env, this);
+
+            // In case of failure
+            if (result != null && run.getResult() != Result.FAILURE && run.getResult() != Result.ABORTED) {
+                run.setResult(result);
+            }
 
             listener.getLogger().printf(
                     "Report build activity '%s' for application '%s' version %s component '%s'%n",

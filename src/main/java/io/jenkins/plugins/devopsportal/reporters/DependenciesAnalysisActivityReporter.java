@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -11,6 +12,7 @@ import io.jenkins.plugins.devopsportal.buildmanager.*;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.DependenciesAnalysisActivity;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -89,15 +91,15 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     }
 
     @Override
-    public void updateActivity(@NonNull ApplicationBuildStatus status, @NonNull DependenciesAnalysisActivity activity,
-                               @NonNull TaskListener listener, @NonNull EnvVars env) {
+    public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull DependenciesAnalysisActivity activity,
+                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
 
+        activity.setManager(manager);
         File manifest = checkManifestFile(env, manifestFile, listener);
         AbstractBuildManager buildManager = checkBuildManager(manager, listener);
         if (manifest == null || buildManager == null) {
-            return;
+            return null;
         }
-        activity.setManager(manager);
 
         // Log
         listener.getLogger().println(Messages.DependenciesAnalysisActivityReporter_AnalysisStarted()
@@ -143,13 +145,15 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
             activity.setVulnerabilities(0);
         }
 
+        // TODO According to results
+        return null;
     }
 
     public File checkManifestFile(@NonNull EnvVars env, String manifestFile, @NonNull TaskListener listener) {
-        final File manifest = new File(env.get("WORKSPACE"), manifestFile);
-        if (!manifest.exists() || !manifest.isFile()) {
+        final File manifest = MiscUtils.checkFilePathIllegalAccess(env.get("WORKSPACE"), manifestFile);
+        if (manifest == null || !manifest.exists() || !manifest.isFile()) {
             listener.getLogger().println(Messages.DependenciesAnalysisActivityReporter_Error_ManifestFileNotReadable()
-                    .replace("%file%", manifest.toString()));
+                    .replace("%file%", manifestFile == null ? "null" : manifestFile));
             return null;
         }
         return manifest;

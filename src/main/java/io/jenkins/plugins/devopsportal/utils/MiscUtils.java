@@ -1,10 +1,13 @@
 package io.jenkins.plugins.devopsportal.utils;
 
 import java.io.*;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -13,6 +16,8 @@ import java.util.stream.Collectors;
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
 public final class MiscUtils {
+
+    private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
     public static String readableFileSize(long size) {
         if (size <= 0) return "0 kB";
@@ -102,6 +107,38 @@ public final class MiscUtils {
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    public static File checkFilePathIllegalAccess(String parent, String child) {
+        if (parent == null || parent.trim().isEmpty() || child == null || child.trim().isEmpty()) {
+            return null;
+        }
+        File parentFile = new File(parent);
+        File childFile = new File(parent, child);
+        try {
+            parentFile = parentFile.toPath().toAbsolutePath().normalize().toFile().getCanonicalFile();
+            childFile = childFile.toPath().toAbsolutePath().normalize().toFile().getCanonicalFile();
+        }
+        catch (SecurityException ex) {
+            LOGGER.warning("SecurityManager stopped an attempt to access a file: " + childFile);
+        }
+        catch (IOException ex) {
+            return null;
+        }
+        try {
+            Path parentPath = parentFile.toPath().toRealPath(LinkOption.NOFOLLOW_LINKS);
+            Path childPath = childFile.toPath().toRealPath(LinkOption.NOFOLLOW_LINKS);
+            if (!childPath.startsWith(parentPath)) {
+                throw new SecurityException();
+            }
+        }
+        catch (SecurityException ex) {
+            LOGGER.warning("checkFilePathIllegalAccess() stopped an attempt to read a file: " + childFile);
+        }
+        catch (IOException ex) {
+            return null;
+        }
+        return childFile;
     }
 
 }

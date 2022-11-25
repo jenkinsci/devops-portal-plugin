@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
@@ -37,12 +38,12 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
     }
 
     @Override
-    public void updateActivity(@NonNull ApplicationBuildStatus status, @NonNull QualityAuditActivity activity,
-                               @NonNull TaskListener listener, @NonNull EnvVars env) {
+    public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull QualityAuditActivity activity,
+                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
 
         if (!env.containsKey("SONAR_AUTH_TOKEN") || !env.containsKey("SONAR_HOST_URL")) {
             listener.getLogger().println(Messages.SonarQualityAuditActivityReporter_Error_MissingEnvVar());
-            return;
+            return null;
         }
 
         activity.setComplete(false);
@@ -58,6 +59,8 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
                 status.getApplicationVersion(),
                 getApplicationComponent()
         );
+
+        return null;
 
     }
 

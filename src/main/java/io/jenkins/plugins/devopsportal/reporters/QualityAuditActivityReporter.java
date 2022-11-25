@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
@@ -152,8 +153,8 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
     }
 
     @Override
-    public void updateActivity(@NonNull ApplicationBuildStatus status, @NonNull QualityAuditActivity activity,
-                               @NonNull TaskListener listener, @NonNull EnvVars env) {
+    public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull QualityAuditActivity activity,
+                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setComplete(true);
         activity.setBugCount(bugCount);
         activity.setBugScore(bugScore);
@@ -166,10 +167,12 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
         activity.setLinesCount(linesCount);
         activity.setQualityGatePassed(qualityGatePassed);
         if (!qualityGatePassed) {
-            activity.setScore(ActivityScore.D);
+            activity.setScore(ActivityScore.E);
+            return Result.UNSTABLE;
         }
         else {
             activity.setScore(ActivityScore.min(bugScore, vulnerabilityScore, hotspotScore));
+            return null;
         }
     }
 

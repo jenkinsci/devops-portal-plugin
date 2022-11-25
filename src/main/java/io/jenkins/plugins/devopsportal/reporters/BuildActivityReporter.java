@@ -3,12 +3,14 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.BuildActivity;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import org.jenkinsci.Symbol;
@@ -26,6 +28,8 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
 
     private String artifactFileName;
 
+    private int artifactFileSizeLimit;
+
     @DataBoundConstructor
     public BuildActivityReporter(String applicationName, String applicationVersion, String applicationComponent) {
         super(applicationName, applicationVersion, applicationComponent);
@@ -40,20 +44,44 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
         this.artifactFileName = artifactFileName;
     }
 
+    public int getArtifactFileSizeLimit() {
+        return artifactFileSizeLimit;
+    }
+
+    @DataBoundSetter
+    public void setArtifactFileSizeLimit(int artifactFileSizeLimit) {
+        this.artifactFileSizeLimit = artifactFileSizeLimit;
+    }
+
     @Override
-    public void updateActivity(@NonNull ApplicationBuildStatus status, @NonNull BuildActivity activity,
-                               @NonNull TaskListener listener, @NonNull EnvVars env) {
+    public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull BuildActivity activity,
+                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setArtifactFileName(artifactFileName);
+        activity.setArtifactFileSizeLimit(artifactFileSizeLimit);
+        long previousSize = activity.getArtifactFileSize();
+        activity.setArtifactFileSize(0);
+        activity.setArtifactFileSizeDelta(0);
         if (artifactFileName != null) {
-            // TODO According to workspace
-            File file = new File(artifactFileName);
-            if (file.exists()) {
+            final File file = MiscUtils.checkFilePathIllegalAccess(
+                    env.get("WORKSPACE", null),
+                    artifactFileName
+            );
+            if (file != null) {
                 try {
                     activity.setArtifactFileSize(file.length());
+                    activity.setArtifactFileSizeDelta(activity.getArtifactFileSize() - previousSize);
+                    listener.getLogger().println("Current file size: " + activity.getArtifactFileSize());
+                    listener.getLogger().println("Previous file size: " + previousSize);
+                    listener.getLogger().println("Delta: " + activity.getArtifactFileSizeDelta());
                 }
-                catch (Exception ignored) {}
+                catch (Exception ignored) { }
             }
         }
+        final boolean failure = artifactFileSizeLimit > 0 && activity.getArtifactFileSizeDelta() > 0;
+        if (failure) {
+            listener.getLogger().println("Current file size exceed limit: " + artifactFileSizeLimit);
+        }
+        return failure ? Result.FAILURE : null;
     }
 
     @Override

@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
@@ -67,13 +68,14 @@ public class UnitTestActivityReporter extends AbstractActivityReporter<UnitTestA
     }
 
     @Override
-    public void updateActivity(@NonNull ApplicationBuildStatus status, @NonNull UnitTestActivity activity,
-                               @NonNull TaskListener listener, @NonNull EnvVars env) {
+    public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull UnitTestActivity activity,
+                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setTestCoverage(testCoverage);
         activity.setTestsPassed(testsPassed);
         activity.setTestsFailed(testsFailed);
         activity.setTestsIgnored(testsIgnored);
         activity.setScore(testsFailed > 0 ? ActivityScore.D : ActivityScore.A);
+        return testsFailed > 0 ? Result.UNSTABLE : null;
     }
 
     @Override

@@ -15,6 +15,8 @@ public class BuildActivity extends AbstractActivity {
 
     private String artifactFileName;
     private long artifactFileSize;
+    private long artifactFileSizeDelta;
+    private long artifactFileSizeLimit;
 
     @DataBoundConstructor
     public BuildActivity(String applicationComponent) {
@@ -37,6 +39,32 @@ public class BuildActivity extends AbstractActivity {
     @DataBoundSetter
     public void setArtifactFileSize(long artifactFileSize) {
         this.artifactFileSize = artifactFileSize;
+    }
+
+    public long getArtifactFileSizeDelta() {
+        return artifactFileSizeDelta;
+    }
+
+    @DataBoundSetter
+    public void setArtifactFileSizeDelta(long artifactFileSizeDelta) {
+        this.artifactFileSizeDelta = artifactFileSizeDelta;
+    }
+
+    public long getArtifactFileSizeLimit() {
+        return artifactFileSizeLimit;
+    }
+
+    @DataBoundSetter
+    public void setArtifactFileSizeLimit(long artifactFileSizeLimit) {
+        this.artifactFileSizeLimit = artifactFileSizeLimit;
+    }
+
+    public String getArtifactFileSizeDeltaStr() {
+        String sign = "-";
+        if (artifactFileSizeDelta > 0) {
+            sign = "+";
+        }
+        return sign + MiscUtils.readableFileSize(Math.abs(artifactFileSizeDelta));
     }
 
     public String getArtifactFileNameStr() {

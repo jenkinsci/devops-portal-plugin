@@ -126,6 +126,9 @@
         html[data-theme="dark"] .build-dashboard .group-title {
             border-top: 2px solid #18181B;
         }
+        .unchanged { color: blue; }
+        .change-good { color: green; }
+        .change-bad { color: red }
     </style>
     <h1>
         ${it.displayName}
@@ -229,9 +232,30 @@
                                 ${activity.artifactFileNameStr}
                             </td>
                             <td colspan="2">
-                                <j:if test="${activity.artifactFileSize > 0}">
-                                    (${activity.artifactFileSizeStr})
+                                <j:if test="${activity.artifactFileSize == 0}">
+                                    <span class="activity-quality-gate failed" style="margin-right:.5rem">${%quality_gate_failed}</span>
                                 </j:if>
+                                <j:if test="${activity.artifactFileSize &gt; activity.artifactFileSizeLimit}">
+                                    <span class="activity-quality-gate failed" style="margin-right:.5rem">${%quality_gate_failed}</span>
+                                </j:if>
+                                <span>${%quality_item_fileSize}</span>
+                                <strong style="margin-left:.25rem">${activity.artifactFileSizeStr}</strong>
+                                <small>
+                                    <em>
+                                    (
+                                        <j:if test="${activity.artifactFileSizeDelta &gt; 0}">
+                                            <l:icon class="symbol-caret-up-outline plugin-ionicons-api icon-sm change-bad" />
+                                        </j:if>
+                                        <j:if test="${activity.artifactFileSizeDelta &lt; 0}">
+                                            <l:icon class="symbol-caret-down-outline plugin-ionicons-api icon-sm change-good" />
+                                        </j:if>
+                                        <j:if test="${activity.artifactFileSizeDelta == 0}">
+                                            <l:icon class="symbol-caret-forward-outline plugin-ionicons-api icon-sm unchanged" />
+                                        </j:if>
+                                        <span>${activity.artifactFileSizeDeltaStr}</span>
+                                    )
+                                    </em>
+                                </small>
                             </td>
                         </tr>
                     </j:forEach>
@@ -253,7 +277,6 @@
                                 <j:if test="${!activity.qualityGatePassed}">
                                     <span class="activity-quality-gate failed">${%quality_gate_failed}</span>
                                 </j:if>
-
                             </td>
                             <td colspan="2">
                                 ${%quality_item_passed} <strong>${activity.testsPassed}</strong>
