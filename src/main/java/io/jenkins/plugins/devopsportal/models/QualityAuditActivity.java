@@ -5,6 +5,9 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.sonarqube.ws.Hotspots;
 import org.sonarqube.ws.Issues;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A persistent record of a QUALITY_AUDIT activity.
  *
@@ -24,9 +27,16 @@ public class QualityAuditActivity extends AbstractActivity {
     private boolean qualityGatePassed = false;
     private boolean complete = false;
 
+    private List<QualityIssue> bugs;
+    private List<QualityIssue> vulnerabilities;
+    private List<SecurityHotspot> hotspots;
+
     @DataBoundConstructor
     public QualityAuditActivity(String applicationComponent) {
         super(ActivityCategory.QUALITY_AUDIT, applicationComponent);
+        this.bugs = new ArrayList<>();
+        this.vulnerabilities = new ArrayList<>();
+        this.hotspots = new ArrayList<>();
     }
 
     public int getBugCount() {
@@ -36,6 +46,9 @@ public class QualityAuditActivity extends AbstractActivity {
     @DataBoundSetter
     public void setBugCount(int bugCount) {
         this.bugCount = bugCount;
+        if (bugCount == 0) {
+            this.bugs = new ArrayList<>();
+        }
     }
 
     public ActivityScore getBugScore() {
@@ -54,6 +67,9 @@ public class QualityAuditActivity extends AbstractActivity {
     @DataBoundSetter
     public void setVulnerabilityCount(int vulnerabilityCount) {
         this.vulnerabilityCount = vulnerabilityCount;
+        if (vulnerabilityCount == 0) {
+            this.vulnerabilities = new ArrayList<>();
+        }
     }
 
     public ActivityScore getVulnerabilityScore() {
@@ -72,6 +88,9 @@ public class QualityAuditActivity extends AbstractActivity {
     @DataBoundSetter
     public void setHotspotCount(int hotspotCount) {
         this.hotspotCount = hotspotCount;
+        if (hotspotCount == 0) {
+            this.hotspots = new ArrayList<>();
+        }
     }
 
     public ActivityScore getHotspotScore() {
@@ -127,16 +146,41 @@ public class QualityAuditActivity extends AbstractActivity {
         this.complete = complete;
     }
 
+    public List<QualityIssue> getBugs() {
+        return bugs;
+    }
+
+    public List<QualityIssue> getVulnerabilities() {
+        return vulnerabilities;
+    }
+
+    public List<SecurityHotspot> getHotspots() {
+        return hotspots;
+    }
+
+    public boolean hasIssues() {
+        return bugs.size() > 0 || vulnerabilities.size() > 0 || hotspots.size() > 0;
+    }
+
     public void addBug(Issues.Issue issue) {
-        this.bugCount++;
+        if (issue != null) {
+            this.bugCount++;
+            this.bugs.add(new QualityIssue(issue));
+        }
     }
 
     public void addVulnerability(Issues.Issue issue) {
-        this.vulnerabilityCount++;
+        if (issue != null) {
+            this.vulnerabilityCount++;
+            this.vulnerabilities.add(new QualityIssue(issue));
+        }
     }
 
-    public void addHotSpot(Hotspots.SearchWsResponse.Hotspot hotspot) {
-        this.hotspotCount++;
+    public void addHotSpot(Hotspots.SearchWsResponse.Hotspot issue) {
+        if (issue != null) {
+            this.hotspotCount++;
+            this.hotspots.add(new SecurityHotspot(issue));
+        }
     }
 
 }

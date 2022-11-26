@@ -8,8 +8,8 @@
         ${it.displayName}
     </h1>
     <table class="run-dashboard jenkins-table">
-        <j:set var="categories" value="${it.descriptor.getConfigurationCategories(it.filter)}"/>
         <thead>
+            <j:set var="categories" value="${it.descriptor.getConfigurationCategories(it.filter)}"/>
             <j:if test="${categories.isEmpty()}">
                 <tr>
                     <td colspan="7">${%label_empty_list}</td>
@@ -217,23 +217,23 @@
     </j:forEach>
 
     <script type="text/javascript">
-    function toggleModal(id) {
-        var modal = document.getElementById('modal_' + id);
-        var span = modal.querySelector('.close');
-        modal.style.display = 'block';
-        function close() {
-            modal.style.display = 'none';
-            span.removeEventListener('click', close);
-            window.removeEventListener('click', windowClose);
-        }
-        function windowClose(event) {
-            if (event.target === modal) {
-                close();
+        function toggleModal(id) {
+            var modal = document.getElementById('modal_' + id);
+            var span = modal.querySelector('.close');
+            modal.style.display = 'block';
+            function close() {
+                modal.style.display = 'none';
+                span.removeEventListener('click', close);
+                window.removeEventListener('click', windowClose);
             }
+            function windowClose(event) {
+                if (event.target === modal) {
+                    close();
+                }
+            }
+            window.addEventListener('click', windowClose);
+            span.addEventListener('click', close);
         }
-        window.addEventListener('click', windowClose);
-        span.addEventListener('click', close);
-    }
     </script>
 
 </j:jelly>

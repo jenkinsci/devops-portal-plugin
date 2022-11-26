@@ -27,7 +27,7 @@ pipeline {
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
-                        artifactFileName: "${env.WORKSPACE}/target/plugin-devops-portal.hpi"
+                        artifactFileName: "target/plugin-devops-portal.hpi"
                     )
                 }
             }

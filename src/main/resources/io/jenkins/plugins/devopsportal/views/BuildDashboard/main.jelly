@@ -2,6 +2,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
 
     <link href="/jenkins/plugin/plugin-devops-portal/css/build-dashboard.css" type="text/css" rel="stylesheet"/>
+    <link href="/jenkins/plugin/plugin-devops-portal/css/modal.css" type="text/css" rel="stylesheet"/>
 
     <h1>
         ${it.displayName}
@@ -333,6 +334,74 @@
         </tbody>
     </table>
 
+    <!-- MODALS : environment deployments history -->
+    <!--
+    <j:forEach var="service" indexVar="i" items="${it.descriptor.getServicesConfiguration(it.filter)}">
+        <div id="modal_${service.id}" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close" />
+                    <div class="modal-title"><strong>${service.label}</strong></div>
+                    <div class="modal-subtitle">${service.hostname}</div>
+                </div>
+                <div class="modal-body">
+                    <table class="jenkins-table">
+                        <j:forEach var="deployment" indexVar="j" items="${it.descriptor.getDeploymentsByService(service.id)}">
+                            <j:if test="${j == 0}">
+                                <thead class="group-headers">
+                                    <tr>
+                                        <th>Application</th>
+                                        <th>Build</th>
+                                        <th>Deployment</th>
+                                    </tr>
+                                </thead>
+                            </j:if>
+                            <j:if test="${j &gt; 0}">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>${deployment.applicationName}</strong>
+                                            <span class="version-label badge" style="margin-left: .4rem">
+                                                <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/>
+                                                v ${deployment.applicationVersion}
+                                            </span>
+                                            <j:if test="${deployment.branchProvided}">
+                                                <span class="application-branch badge" style="margin-left: .4rem">
+                                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>
+                                                    ${deployment.buildBranch}
+                                                </span>
+                                            </j:if>
+                                        </td>
+                                        <td>
+                                            <span class="build-label">
+                                                <l:icon class="${deployment.getBuildStatusClass()} icon-sm"/>
+                                                <a style="margin-left:.4rem" href="${deployment.buildURL}">
+                                                    ${deployment.buildJob} #${deployment.buildNumber}
+                                                </a>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="build-date">
+                                                <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
+                                                ${it.formatDatetimeSeconds(deployment.timestamp)}
+                                            </span>
+                                            <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
+                                                <span class="deployment-tag badge">
+                                                    ${tag}
+                                                </span>
+                                            </j:forEach>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </j:if>
+                        </j:forEach>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </j:forEach>
+    -->
+
     <script type="text/javascript">
         function toggleVisibility(version) {
             const items = document.querySelectorAll("tr.version-activities[version='" + version + "']");
@@ -345,6 +414,23 @@
                 javascript:document.location.href = '/jenkins/build-api/delete-build-status?application='
                     + escape(application) + '&amp;version=' + escape(version) + '&amp;origin=' + escape(window.location.href);
             }
+        }
+        function toggleModal(id) {
+            var modal = document.getElementById('modal_' + id);
+            var span = modal.querySelector('.close');
+            modal.style.display = 'block';
+            function close() {
+                modal.style.display = 'none';
+                span.removeEventListener('click', close);
+                window.removeEventListener('click', windowClose);
+            }
+            function windowClose(event) {
+                if (event.target === modal) {
+                close();
+                }
+            }
+            window.addEventListener('click', windowClose);
+            span.addEventListener('click', close);
         }
     </script>
 
