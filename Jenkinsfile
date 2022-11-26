@@ -93,7 +93,7 @@ pipeline {
                                 bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
                             }
                         }*/
-                        bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
+                        bat "\"${env.MAVEN_PATH}\" -U -Djavax.net.ssl.trustStore=src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
                         reportSonarQubeAudit(
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
