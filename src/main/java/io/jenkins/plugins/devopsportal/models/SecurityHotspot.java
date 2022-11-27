@@ -1,18 +1,24 @@
 package io.jenkins.plugins.devopsportal.models;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.sonarqube.ws.Hotspots;
 
 import java.io.Serializable;
 
 public class SecurityHotspot implements Serializable {
 
-    public final String category;
-    public final String file;
-    public final int line;
-    public final String message;
-    public final String probability;
-    public final String creation;
+    private String category;
+    private String file;
+    private int line;
+    private String message;
+    private String probability;
+    private String creation;
+
+    @DataBoundConstructor
+    public SecurityHotspot() {
+    }
 
     public SecurityHotspot(@NonNull Hotspots.SearchWsResponse.Hotspot issue) {
         category = issue.getSecurityCategory();
@@ -21,6 +27,60 @@ public class SecurityHotspot implements Serializable {
         message = issue.getMessage();
         probability = issue.getVulnerabilityProbability();
         creation = issue.getCreationDate();
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    @DataBoundSetter
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    @DataBoundSetter
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    @DataBoundSetter
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    @DataBoundSetter
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getProbability() {
+        return probability;
+    }
+
+    @DataBoundSetter
+    public void setProbability(String probability) {
+        this.probability = probability;
+    }
+
+    public String getCreation() {
+        return creation;
+    }
+
+    @DataBoundSetter
+    public void setCreation(String creation) {
+        this.creation = creation;
     }
 
 }

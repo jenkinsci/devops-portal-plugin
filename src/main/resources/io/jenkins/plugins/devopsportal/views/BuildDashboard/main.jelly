@@ -243,6 +243,7 @@
                             </td>
                         </tr>
                     </j:forEach>
+                    <!-- DEPLOYMENT -->
                     <j:if test="${deployment != null}">
                         <j:if test="${target != null}">
                             <tr class="version-activities" hidden="true" version="${application}-${version}">
@@ -334,7 +335,51 @@
         </tbody>
     </table>
 
-    <!-- MODALS : environment deployments history -->
+    <!-- MODALS : quality audit issues -->
+
+    <j:forEach var="application" indexVar="i" items="${applications}">
+        <h2>${application}</h2>
+        <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
+        <j:forEach var="activity" indexVar="j" items="${it.descriptor.getBuildActivities(build, 'QUALITY_AUDIT')}">
+            <j:if test="${activity.hasIssues()}">
+                <strong>${activity.applicationComponent}</strong>
+                ${activity.complete}
+                <ul>
+                <j:forEach var="bug" indexVar="j" items="${activity.bugs}">
+                    <li>
+                        BUG
+                        ${bug.severity}
+                        ${bug.rule}
+                        ${bug.message}
+                        @
+                        ${bug.file}:${bug.line}
+                    </li>
+                </j:forEach>
+                <j:forEach var="vulnerability" indexVar="j" items="${activity.vulnerabilities}">
+                    <li>
+                        VULNERABILITY
+                        ${vulnerability.severity}
+                        ${vulnerability.rule}
+                        ${vulnerability.message}
+                        @
+                        ${vulnerability.file}:${vulnerability.line}
+                    </li>
+                </j:forEach>
+                <j:forEach var="hotspot" indexVar="j" items="${activity.hotspots}">
+                    <li>
+                        VULNERABILITY
+                        ${hotspot.category}
+                        ${hotspot.message}
+                        ${hotspot.probability}
+                        @
+                        ${hotspot.file}:${hotspot.line}
+                    </li>
+                </j:forEach>
+                </ul>
+            </j:if>
+        </j:forEach>
+    </j:forEach>
+
     <!--
     <j:forEach var="service" indexVar="i" items="${it.descriptor.getServicesConfiguration(it.filter)}">
         <div id="modal_${service.id}" class="modal">

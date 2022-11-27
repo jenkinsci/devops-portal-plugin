@@ -486,7 +486,10 @@ Version 3, 29 June 2007
 - [x] ~~reportUnitTest()~~
 - [x] ~~reportSurefireTest()~~
 - [x] ~~reportQualityAudit()~~
+  - [ ] Format Duplication rate: 11.1999996%
 - [x] ~~reportSonarQubeAudit()~~
+  - [ ] Test with invalid projectKey
+  - [ ] Test with invalid server
 - [ ] reportDependenciesAnalysis()
   - [x] ~~Maven~~
     - [x] ~~Dependencies~~

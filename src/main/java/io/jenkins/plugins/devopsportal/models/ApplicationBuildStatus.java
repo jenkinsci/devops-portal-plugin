@@ -262,7 +262,7 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
             }
             // Remove old activity
             removeComponentActivity(category, applicationComponent);
-            // Add new one
+            // Add new one TODO If category doesn't exists ?
             getActivitiesByCategory(category).add(activity);
             getDescriptor().save();
         }
