@@ -117,6 +117,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         if (upgrades != null && upgrades.containsKey(getApplicationComponent())) {
             List<DependencyUpgrade> list = upgrades.get(getApplicationComponent());
             activity.setOutdatedDependencies(list.size());
+            activity.setOutdatedDependenciesList(list);
             for (DependencyUpgrade record : list) {
                 listener.getLogger().println(" - Outdated dependency: " + record);
             }
@@ -136,6 +137,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         if (vulnerabilities != null && vulnerabilities.containsKey("ALL")) {
             List<DependencyVulnerability> list = vulnerabilities.get("ALL");
             activity.setVulnerabilities(list.size());
+            activity.setVulnerabilitiesList(list);
             for (DependencyVulnerability record : list) {
                 listener.getLogger().println(" - Vulnerable dependency: " + record);
             }

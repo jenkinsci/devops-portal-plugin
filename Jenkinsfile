@@ -104,13 +104,13 @@ pipeline {
                     }
 
                     // Dependencies analysis
-                    /*reportDependenciesAnalysis(
+                    reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
                         manifestFile: "pom.xml",
                         manager: "MAVEN"
-                    )*/
+                    )
 
                 }
             }
