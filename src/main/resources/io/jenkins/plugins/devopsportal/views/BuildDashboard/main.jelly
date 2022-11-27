@@ -196,7 +196,7 @@
                                     </j:if>
                                 </j:if>
                             </td>
-                            <td colspan="2">
+                            <td>
                                 <j:if test="${activity.complete}">
                                     ${%quality_item_bug} <strong>${activity.bugCount}</strong>
                                     <span class="activity-score score-${activity.bugScore}">
@@ -213,6 +213,13 @@
                                         <j:if test="${activity.hotspotScore == null}">??</j:if>
                                         <j:if test="${activity.hotspotScore != null}">${activity.hotspotScore}</j:if>
                                     </span>
+                                </j:if>
+                            </td>
+                            <td style="text-align:right">
+                                <j:if test="${activity.hasIssues()}">
+                                    <a class="jenkins-button" href="javascript:toggleModal('qa_${application}_${version}_${activity.applicationComponent}')">
+                                        <l:icon class="symbol-eye-outline plugin-ionicons-api icon-sm" />
+                                    </a>
                                 </j:if>
                             </td>
                         </tr>
@@ -338,114 +345,68 @@
     <!-- MODALS : quality audit issues -->
 
     <j:forEach var="application" indexVar="i" items="${applications}">
-        <h2>${application}</h2>
-        <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
-        <j:forEach var="activity" indexVar="j" items="${it.descriptor.getBuildActivities(build, 'QUALITY_AUDIT')}">
-            <j:if test="${activity.hasIssues()}">
-                <strong>${activity.applicationComponent}</strong>
-                ${activity.complete}
-                <ul>
-                <j:forEach var="bug" indexVar="j" items="${activity.bugs}">
-                    <li>
-                        BUG
-                        ${bug.severity}
-                        ${bug.rule}
-                        ${bug.message}
-                        @
-                        ${bug.file}:${bug.line}
-                    </li>
-                </j:forEach>
-                <j:forEach var="vulnerability" indexVar="j" items="${activity.vulnerabilities}">
-                    <li>
-                        VULNERABILITY
-                        ${vulnerability.severity}
-                        ${vulnerability.rule}
-                        ${vulnerability.message}
-                        @
-                        ${vulnerability.file}:${vulnerability.line}
-                    </li>
-                </j:forEach>
-                <j:forEach var="hotspot" indexVar="j" items="${activity.hotspots}">
-                    <li>
-                        VULNERABILITY
-                        ${hotspot.category}
-                        ${hotspot.message}
-                        ${hotspot.probability}
-                        @
-                        ${hotspot.file}:${hotspot.line}
-                    </li>
-                </j:forEach>
-                </ul>
-            </j:if>
+        <j:forEach var="version" indexVar="j" items="${it.descriptor.getApplicationVersions(application)}">
+            <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
+            <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'QUALITY_AUDIT')}">
+                <j:if test="${activity.hasIssues()}">
+                    <!-- TODO Application can contains spaces, also component name -->
+                    <div id="modal_qa_${application}_${version}_${activity.applicationComponent}" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close" />
+                                <div class="modal-title"><strong>${application} v${version}</strong></div>
+                                <div class="modal-subtitle">${activity.applicationComponent} (TODO ${activity.complete})</div>
+                            </div>
+                            <div class="modal-body">
+                                <table class="jenkins-table">
+                                    <j:if test="${k == 1}">
+                                        <thead class="group-headers">
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Severity</th>
+                                                <th>Category</th>
+                                                <th>Message</th>
+                                                <th>Location</th>
+                                            </tr>
+                                        </thead>
+                                    </j:if>
+                                    <tbody>
+                                        <j:forEach var="bug" indexVar="l" items="${activity.bugs}">
+                                            <tr>
+                                                <td>BUG</td>
+                                                <td>${bug.severity}</td>
+                                                <td>${bug.rule}</td>
+                                                <td>${bug.message}</td>
+                                                <td>${bug.file}:${bug.line}</td>
+                                            </tr>
+                                        </j:forEach>
+                                        <j:forEach var="vulnerability" indexVar="j" items="${activity.vulnerabilities}">
+                                            <tr>
+                                                <td>VULNERABILITY</td>
+                                                <td>${vulnerability.severity}</td>
+                                                <td>${vulnerability.rule}</td>
+                                                <td>${vulnerability.message}</td>
+                                                <td>${vulnerability.file}:${vulnerability.line}</td>
+                                            </tr>
+                                        </j:forEach>
+                                        <j:forEach var="hotspot" indexVar="j" items="${activity.hotspots}">
+                                            <tr>
+                                                <td>HOTSPOT</td>
+                                                <td>${hotspot.probability}</td>
+                                                <td>${hotspot.category}</td>
+                                                <td>${hotspot.message}</td>
+                                                <td>${hotspot.file}:${hotspot.line}</td>
+                                            </tr>
+                                        </j:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </j:if>
+            </j:forEach>
         </j:forEach>
     </j:forEach>
-
-    <!--
-    <j:forEach var="service" indexVar="i" items="${it.descriptor.getServicesConfiguration(it.filter)}">
-        <div id="modal_${service.id}" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close" />
-                    <div class="modal-title"><strong>${service.label}</strong></div>
-                    <div class="modal-subtitle">${service.hostname}</div>
-                </div>
-                <div class="modal-body">
-                    <table class="jenkins-table">
-                        <j:forEach var="deployment" indexVar="j" items="${it.descriptor.getDeploymentsByService(service.id)}">
-                            <j:if test="${j == 0}">
-                                <thead class="group-headers">
-                                    <tr>
-                                        <th>Application</th>
-                                        <th>Build</th>
-                                        <th>Deployment</th>
-                                    </tr>
-                                </thead>
-                            </j:if>
-                            <j:if test="${j &gt; 0}">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <strong>${deployment.applicationName}</strong>
-                                            <span class="version-label badge" style="margin-left: .4rem">
-                                                <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/>
-                                                v ${deployment.applicationVersion}
-                                            </span>
-                                            <j:if test="${deployment.branchProvided}">
-                                                <span class="application-branch badge" style="margin-left: .4rem">
-                                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>
-                                                    ${deployment.buildBranch}
-                                                </span>
-                                            </j:if>
-                                        </td>
-                                        <td>
-                                            <span class="build-label">
-                                                <l:icon class="${deployment.getBuildStatusClass()} icon-sm"/>
-                                                <a style="margin-left:.4rem" href="${deployment.buildURL}">
-                                                    ${deployment.buildJob} #${deployment.buildNumber}
-                                                </a>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="build-date">
-                                                <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
-                                                ${it.formatDatetimeSeconds(deployment.timestamp)}
-                                            </span>
-                                            <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
-                                                <span class="deployment-tag badge">
-                                                    ${tag}
-                                                </span>
-                                            </j:forEach>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </j:if>
-                        </j:forEach>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </j:forEach>
-    -->
 
     <script type="text/javascript">
         function toggleVisibility(version) {

@@ -159,7 +159,8 @@ public class QualityAuditActivity extends AbstractActivity {
     }
 
     public boolean hasIssues() {
-        return bugs.size() > 0 || vulnerabilities.size() > 0 || hotspots.size() > 0;
+        return (bugs != null && vulnerabilities != null && hotspots != null) &&
+                (bugs.size() > 0 || vulnerabilities.size() > 0 || hotspots.size() > 0);
     }
 
     public void addBug(Issues.Issue issue) {
