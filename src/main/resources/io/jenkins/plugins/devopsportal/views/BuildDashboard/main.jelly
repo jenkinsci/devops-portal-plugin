@@ -238,7 +238,7 @@
                             <td>
                                 ${%quality_item_dependenciesManager} <strong>${activity.manager}</strong>
                             </td>
-                            <td colspan="2">
+                            <td>
                                 <span>
                                     <l:icon class="symbol-timer-outline plugin-ionicons-api icon-sm"/>
                                     ${%quality_item_outdatedDependencies} <strong>${activity.outdatedDependencies}</strong>
@@ -247,6 +247,13 @@
                                     <l:icon class="symbol-bug-outline plugin-ionicons-api icon-sm"/>
                                     ${%quality_item_vulnerableDependencies} <strong>${activity.vulnerabilities}</strong>
                                 </span>
+                            </td>
+                            <td style="text-align:right">
+                                <j:if test="${activity.hasIssues()}">
+                                    <a class="jenkins-button" href="javascript:toggleModal('perf_${build.getUUID()}_${activity.getUUID()}')">
+                                        <l:icon class="symbol-eye-outline plugin-ionicons-api icon-sm" />
+                                    </a>
+                                </j:if>
                             </td>
                         </tr>
                     </j:forEach>
@@ -364,41 +371,71 @@
                             </div>
                             <div class="modal-body">
                                 <table class="jenkins-table">
-                                    <j:if test="${k == 1}">
-                                        <thead class="group-headers">
-                                            <tr>
-                                                <th>${%popup_activity_qa_title_type}</th>
-                                                <th>${%popup_activity_qa_title_severity}</th>
-                                                <th>${%popup_activity_qa_title_category}</th>
-                                                <th>${%popup_activity_qa_title_message}</th>
-                                                <th>${%popup_activity_qa_title_location}</th>
-                                            </tr>
-                                        </thead>
-                                    </j:if>
+                                    <thead class="group-headers">
+                                        <tr>
+                                            <th>${%popup_activity_qa_title_severity}</th>
+                                            <th>${%popup_activity_qa_title_category}</th>
+                                            <th>${%popup_activity_qa_title_message}</th>
+                                            <th>${%popup_activity_qa_title_location}</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         <j:forEach var="bug" indexVar="l" items="${activity.bugs}">
+                                            <j:if test="${l == 0}">
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <l:icon class="symbol-bug-outline plugin-ionicons-api icon-sm"/>
+                                                        <strong style="margin: 0 .25rem;text-transform: uppercase;">${%popup_activity_qa_label_bugs}</strong>
+                                                        <span class="activity-score score-${activity.bugScore}">
+                                                            <j:if test="${activity.bugScore == null}">??</j:if>
+                                                            <j:if test="${activity.bugScore != null}">${activity.bugScore}</j:if>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </j:if>
                                             <tr>
-                                                <td>BUG</td>
                                                 <td>${bug.severity}</td>
-                                                <td>${bug.rule}</td>
+                                                <td style="text-transform: uppercase;">${bug.rule}</td>
                                                 <td>${bug.message}</td>
                                                 <td>${bug.file}:${bug.line}</td>
                                             </tr>
                                         </j:forEach>
-                                        <j:forEach var="vulnerability" indexVar="j" items="${activity.vulnerabilities}">
+                                        <j:forEach var="vulnerability" indexVar="l" items="${activity.vulnerabilities}">
+                                            <j:if test="${l == 0}">
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <l:icon class="symbol-lock-open-outline plugin-ionicons-api icon-sm"/>
+                                                        <strong style="margin: 0 .25rem;text-transform: uppercase;">${%popup_activity_qa_label_vulnerabilities}</strong>
+                                                        <span class="activity-score score-${activity.vulnerabilityScore}">
+                                                            <j:if test="${activity.vulnerabilityScore == null}">??</j:if>
+                                                            <j:if test="${activity.vulnerabilityScore != null}">${activity.vulnerabilityScore}</j:if>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </j:if>
                                             <tr>
-                                                <td>VULNERABILITY</td>
                                                 <td>${vulnerability.severity}</td>
-                                                <td>${vulnerability.rule}</td>
+                                                <td style="text-transform: uppercase;">${vulnerability.rule}</td>
                                                 <td>${vulnerability.message}</td>
                                                 <td>${vulnerability.file}:${vulnerability.line}</td>
                                             </tr>
                                         </j:forEach>
-                                        <j:forEach var="hotspot" indexVar="j" items="${activity.hotspots}">
+                                        <j:forEach var="hotspot" indexVar="l" items="${activity.hotspots}">
+                                            <j:if test="${l == 0}">
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <l:icon class="symbol-flame-outline plugin-ionicons-api icon-sm"/>
+                                                        <strong style="margin: 0 .25rem;text-transform: uppercase;">${%popup_activity_qa_label_hotspots}</strong>
+                                                        <span class="activity-score score-${activity.hotspotScore}">
+                                                            <j:if test="${activity.hotspotScore == null}">??</j:if>
+                                                            <j:if test="${activity.hotspotScore != null}">${activity.hotspotScore}</j:if>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </j:if>
                                             <tr>
-                                                <td>HOTSPOT</td>
                                                 <td>${hotspot.probability}</td>
-                                                <td>${hotspot.category}</td>
+                                                <td style="text-transform: uppercase;">${hotspot.category}</td>
                                                 <td>${hotspot.message}</td>
                                                 <td>${hotspot.file}:${hotspot.line}</td>
                                             </tr>
@@ -415,7 +452,81 @@
 
     <!-- MODALS : dependencies analysis issues -->
 
-    <!-- TODO -->
+    <j:forEach var="application" indexVar="i" items="${applications}">
+        <j:forEach var="version" indexVar="j" items="${it.descriptor.getApplicationVersions(application)}">
+            <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
+            <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'DEPENDENCIES_ANALYSIS')}">
+                <j:if test="${activity.hasIssues()}">
+                    <div id="modal_perf_${build.getUUID()}_${activity.getUUID()}" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close" />
+                                <div class="modal-title"><strong>${application} v${version}</strong></div>
+                                <div class="modal-subtitle">
+                                    ${activity.applicationComponent}
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <table class="jenkins-table">
+                                    <j:if test="${k == 0}">
+                                        <thead class="group-headers">
+                                            <tr>
+                                                <th>${%popup_activity_perf_title_package}</th>
+                                                <th>${%popup_activity_perf_title_dependencies}</th>
+                                                <th>${%popup_activity_perf_title_information}</th>
+                                            </tr>
+                                        </thead>
+                                    </j:if>
+                                    <tbody>
+                                        <j:forEach var="item" indexVar="l" items="${activity.vulnerabilitiesList}">
+                                            <j:if test="${l == 0}">
+                                                <tr>
+                                                    <td colspan="3">
+                                                        <l:icon class="symbol-lock-open-outline plugin-ionicons-api icon-sm"/>
+                                                        <strong style="margin: 0 .25rem; text-transform: uppercase;">${%popup_activity_perf_label_vulnerabilities}</strong>
+                                                    </td>
+                                                </tr>
+                                            </j:if>
+                                            <tr>
+                                                <td>${item.dependency}</td>
+                                                <td>${item.packages}</td>
+                                                <td style="line-height:1.8rem">
+                                                    <j:forEach var="tag" indexVar="i" items="${item.vulnerabilities}">
+                                                        <span class="badge">
+                                                            ${tag}
+                                                        </span>
+                                                    </j:forEach>
+                                                </td>
+                                            </tr>
+                                        </j:forEach>
+                                        <j:forEach var="item" indexVar="l" items="${activity.outdatedDependenciesList}">
+                                            <j:if test="${l == 0}">
+                                                <tr>
+                                                    <td colspan="3">
+                                                        <l:icon class="symbol-hourglass-outline plugin-ionicons-api icon-sm"/>
+                                                        <strong style="margin: 0 .25rem; text-transform: uppercase;">${%popup_activity_perf_label_outdated}</strong>
+                                                    </td>
+                                                </tr>
+                                            </j:if>
+                                            <tr>
+                                                <td>${item.component} </td>
+                                                <td>${item.dependency}</td>
+                                                <td>
+                                                    <span class="badge">${item.currentVersion}</span>
+                                                    <l:icon class="symbol-arrow-forward-outline plugin-ionicons-api icon-sm"/>
+                                                    <span class="badge">${item.updateVersion}</span>
+                                                </td>
+                                            </tr>
+                                        </j:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </j:if>
+            </j:forEach>
+        </j:forEach>
+    </j:forEach>
 
 
 

@@ -516,6 +516,6 @@ Version 3, 29 June 2007
 - [ ] Popups with history
   - [x] Run: ~~deployment history~~
   - [ ] Build: TU results
-  - [ ] Build: Dependencies Analysis results
+  - [x] Build: ~~Dependencies Analysis results~~
   - [x] Build: ~~Quality Audit issues~~
 - [ ] Monitoring : rename ServiceMonitoring to EnvironmentMonitoring

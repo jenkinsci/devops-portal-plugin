@@ -73,4 +73,9 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
         this.vulnerabilitiesList = list;
     }
 
+    public boolean hasIssues() {
+        return (outdatedDependenciesList != null && vulnerabilitiesList != null)
+                && (!outdatedDependenciesList.isEmpty() || !vulnerabilitiesList.isEmpty());
+    }
+
 }

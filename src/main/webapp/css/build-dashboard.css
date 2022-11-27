@@ -23,13 +23,15 @@
 .build-dashboard .version-label {
     font-weight: bolder;
 }
-.build-dashboard .badge {
+.badge {
     background-color: #ddd;
     border-radius: 5px;
     padding: 2px 4px;
     margin-left: .25rem;
     color: #333;
     font-size: 90%;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 .build-dashboard .application-build .build-status-icon__wrapper {
     margin-right: 5px;
@@ -65,7 +67,7 @@
 .version-activities td:nth-child(2) {
     padding-left: 1rem;
 }
-.build-dashboard .activity-score {
+.activity-score {
     background: #888;
     color: #fff;
     padding: 2px 6px;
