@@ -10,7 +10,7 @@ pipeline {
         APPLICATION_NAME = "jenkins-plugin-devops-portal"
         APPLICATION_VERSION = "1.0.0"
         MAVEN_PATH = 'C:\\Program Files\\JetBrains\\IntelliJ IDEA Community Edition 2022.2.3\\plugins\\maven\\lib\\maven3\\bin\\mvn'
-        SONAR_SCANNER_OPTS = "-Djavax.net.ssl.trustStore=src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789"
+        SONAR_SCANNER_OPTS = "-Djavax.net.ssl.trustStore=${WORKSPACE}\\src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789"
     }
 
     stages {
