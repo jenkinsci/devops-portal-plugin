@@ -474,6 +474,7 @@ Version 3, 29 June 2007
   - [ ] Folders
   - [ ] Multibranch Pipelines
 - [ ] Check comment-block is present on each class
+- [ ] Check behavior with slaves workers (accessing local files)
 - [ ] UT
 - [x] ~~Dark theme compatibility~~
 - [x] ~~Synchronize I/O methods~~
