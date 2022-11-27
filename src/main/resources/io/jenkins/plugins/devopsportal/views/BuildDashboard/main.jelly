@@ -20,7 +20,7 @@
                     <th width="8%">${%column_version}</th>
                     <th width="25%">${%column_build}</th>
                     <th width="30%">${%column_commit}</th>
-                    <th>${%column_deployment}</th>
+                    <th width="*">${%column_deployment}</th>
                     <th width="0%"/>
                 </tr>
             </j:if>
@@ -217,7 +217,7 @@
                             </td>
                             <td style="text-align:right">
                                 <j:if test="${activity.hasIssues()}">
-                                    <a class="jenkins-button" href="javascript:toggleModal('qa_${application}_${version}_${activity.applicationComponent}')">
+                                    <a class="jenkins-button" href="javascript:toggleModal('qa_${build.getUUID()}_${activity.getUUID()}')">
                                         <l:icon class="symbol-eye-outline plugin-ionicons-api icon-sm" />
                                     </a>
                                 </j:if>
@@ -349,24 +349,29 @@
             <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
             <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'QUALITY_AUDIT')}">
                 <j:if test="${activity.hasIssues()}">
-                    <!-- TODO Application can contains spaces, also component name -->
-                    <div id="modal_qa_${application}_${version}_${activity.applicationComponent}" class="modal">
+                    <div id="modal_qa_${build.getUUID()}_${activity.getUUID()}" class="modal">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <span class="close" />
                                 <div class="modal-title"><strong>${application} v${version}</strong></div>
-                                <div class="modal-subtitle">${activity.applicationComponent} (TODO ${activity.complete})</div>
+                                <div class="modal-subtitle">
+                                    ${activity.applicationComponent}
+                                    <j:if test="${!activity.complete}">
+                                        <l:icon class="icon-grey-anime icon-sm"/>
+                                        ${%label_in_progress}
+                                    </j:if>
+                                </div>
                             </div>
                             <div class="modal-body">
                                 <table class="jenkins-table">
                                     <j:if test="${k == 1}">
                                         <thead class="group-headers">
                                             <tr>
-                                                <th>Type</th>
-                                                <th>Severity</th>
-                                                <th>Category</th>
-                                                <th>Message</th>
-                                                <th>Location</th>
+                                                <th>${%popup_activity_qa_title_type}</th>
+                                                <th>${%popup_activity_qa_title_severity}</th>
+                                                <th>${%popup_activity_qa_title_category}</th>
+                                                <th>${%popup_activity_qa_title_message}</th>
+                                                <th>${%popup_activity_qa_title_location}</th>
                                             </tr>
                                         </thead>
                                     </j:if>
@@ -407,6 +412,12 @@
             </j:forEach>
         </j:forEach>
     </j:forEach>
+
+    <!-- MODALS : dependencies analysis issues -->
+
+    <!-- TODO -->
+
+
 
     <script type="text/javascript">
         function toggleVisibility(version) {

@@ -517,5 +517,5 @@ Version 3, 29 June 2007
   - [x] Run: ~~deployment history~~
   - [ ] Build: TU results
   - [ ] Build: Dependencies Analysis results
-  - [ ] Build: Quality Audit issues
+  - [x] Build: ~~Quality Audit issues~~
 - [ ] Monitoring : rename ServiceMonitoring to EnvironmentMonitoring

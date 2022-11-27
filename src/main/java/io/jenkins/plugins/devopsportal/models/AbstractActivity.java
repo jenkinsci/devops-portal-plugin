@@ -4,6 +4,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * Abstract class for BUILD activity persistent data.
@@ -48,6 +49,10 @@ public abstract class AbstractActivity implements Serializable {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public String getUUID() {
+        return UUID.nameUUIDFromBytes(applicationComponent.getBytes()).toString();
     }
 
 }

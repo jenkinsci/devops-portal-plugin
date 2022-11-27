@@ -268,6 +268,10 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
         }
     }
 
+    public String getUUID() {
+        return UUID.nameUUIDFromBytes((applicationName + applicationVersion).getBytes()).toString();
+    }
+
     @Extension
     public static final class DescriptorImpl extends Descriptor<ApplicationBuildStatus> implements Serializable {
 
