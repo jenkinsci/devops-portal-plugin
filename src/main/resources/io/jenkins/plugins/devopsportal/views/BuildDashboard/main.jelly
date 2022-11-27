@@ -152,13 +152,18 @@
                                     <span class="activity-quality-gate failed">${%quality_gate_failed}</span>
                                 </j:if>
                             </td>
-                            <td colspan="2">
+                            <td>
                                 ${%quality_item_passed} <strong>${activity.testsPassed}</strong>
                                 ${%quality_item_failed} <strong>${activity.testsFailed}</strong>
                                 ${%quality_item_ignored} <strong>${activity.testsIgnored}</strong>
                                 <j:if test="${activity.testCoverage > 0}">
                                     ${%quality_item_coverage} <strong>${activity.testCoverage*100}%</strong>
                                 </j:if>
+                            </td>
+                            <td style="text-align:right">
+                                <a class="jenkins-button" href="${build.buildURL}">
+                                    <l:icon class="symbol-eye-outline plugin-ionicons-api icon-sm" />
+                                </a>
                             </td>
                         </tr>
                     </j:forEach>
