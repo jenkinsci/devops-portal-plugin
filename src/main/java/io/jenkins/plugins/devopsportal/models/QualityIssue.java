@@ -7,21 +7,20 @@ import java.io.Serializable;
 
 public class QualityIssue implements Serializable {
 
+    public final String severity;
+    public final String file;
+    public final int line;
+    public final String rule;
+    public final String message;
+    public final String creation;
+
     public QualityIssue(@NonNull Issues.Issue issue) {
-        String tmp = String.format(
-                "rule=%s line=%s proj=%s pr=%s key=%s cdate=%s severity=%s msg=%s status=%s component=%s",
-                issue.getRule(),
-                issue.getLine(),
-                issue.getProject(),
-                issue.getPullRequest(),
-                issue.getKey(),
-                issue.getCreationDate(),
-                issue.getSeverity().name(),
-                issue.getMessage(),
-                issue.getStatus(),
-                issue.getComments()
-        );
-        System.out.println(tmp);
+        severity = issue.getSeverity().name();
+        file = issue.getComponent();
+        line = issue.getLine();
+        rule = issue.getRule();
+        message = issue.getMessage();
+        creation = issue.getCreationDate();
     }
 
 }

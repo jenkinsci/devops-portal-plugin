@@ -130,6 +130,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         request.setComponentKeys(Collections.singletonList(item.projectKey));
         request.setTypes(Arrays.asList("BUG", "VULNERABILITY", "CODE_SMELL"));
         request.setSeverities(Arrays.asList("MAJOR", "CRITICAL", "BLOCKER"));
+        request.setStatuses(Collections.singletonList("OPEN"));
         request.setResolved("no");
         request.setPs("500");
         Issues.SearchWsResponse response = item.wsClient.issues().search(request);

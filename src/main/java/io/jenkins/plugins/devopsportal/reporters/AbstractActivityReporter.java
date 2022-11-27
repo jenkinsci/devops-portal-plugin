@@ -72,14 +72,7 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
             // Generic record data
             GenericRunModel.updateRecordFromRun(record, run, env);
 
-            // Create or update AbstractActivity
-            final Result result = record.updateActivity(applicationComponent, getActivityCategory(), listener, env, this);
-
-            // In case of failure
-            if (result != null && run.getResult() != Result.FAILURE && run.getResult() != Result.ABORTED) {
-                run.setResult(result);
-            }
-
+            // Log
             listener.getLogger().printf(
                     "Report build activity '%s' for application '%s' version %s component '%s'%n",
                     getActivityCategory(),
@@ -87,6 +80,26 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
                     record.getApplicationVersion(),
                     applicationComponent
             );
+
+            // Create or update AbstractActivity
+            try {
+                final Result result = record.updateActivity(applicationComponent, getActivityCategory(), listener, env, this);
+                // In case of failure
+                if (result != null && run.getResult() != Result.FAILURE && run.getResult() != Result.ABORTED) {
+                    listener.getLogger().printf("Build activity '%s' changed run result to: %s%n", getActivityCategory(), result);
+                    run.setResult(result);
+                }
+            }
+            catch (Exception ex) {
+                listener.getLogger().printf(
+                        "Build activity '%s' changed run result to: %s due to an %s : %s%n",
+                        getActivityCategory(),
+                        Result.FAILURE,
+                        ex.getClass().getSimpleName(),
+                        ex.getMessage()
+                );
+                run.setResult(Result.FAILURE);
+            }
 
         });
     }

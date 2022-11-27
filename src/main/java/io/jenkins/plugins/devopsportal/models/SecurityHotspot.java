@@ -7,19 +7,20 @@ import java.io.Serializable;
 
 public class SecurityHotspot implements Serializable {
 
+    public final String category;
+    public final String file;
+    public final int line;
+    public final String message;
+    public final String probability;
+    public final String creation;
+
     public SecurityHotspot(@NonNull Hotspots.SearchWsResponse.Hotspot issue) {
-        String tmp = String.format(
-                "status=%s line=%s proj=%s rule=%s key=%s cdate=%s component=%s msg=%s",
-                issue.getStatus(),
-                issue.getLine(),
-                issue.getProject(),
-                issue.getRuleKey(),
-                issue.getKey(),
-                issue.getCreationDate(),
-                issue.getComponent(),
-                issue.getMessage()
-        );
-        System.out.println(tmp);
+        category = issue.getSecurityCategory();
+        file = issue.getComponent();
+        line = issue.getLine();
+        message = issue.getMessage();
+        probability = issue.getVulnerabilityProbability();
+        creation = issue.getCreationDate();
     }
 
 }
