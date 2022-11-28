@@ -413,7 +413,7 @@ flowchart TD
     end
     
     subgraph Configuration
-    ManageEnvironment:::view --> EnvironmentConfiguration:::entity
+    ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
     
     subgraph BuildActivities[Build Activities]
@@ -435,7 +435,7 @@ flowchart TD
     end
     
     subgraph RunMonitoring[Run Monitoring]
-    MonitoringPeriodicWork:::worker --> EnvironmentMonitoring:::entity
+    MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
     end
    
     Configuration --> RunOperations
