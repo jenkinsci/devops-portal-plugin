@@ -417,7 +417,7 @@ flowchart TD
     end
     
     subgraph BuildActivities[Build Activities]
-    direction TD  %%
+    direction TD
     BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
     UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
     SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
