@@ -11,13 +11,16 @@
         <f:textbox />
     </f:entry>
 
-    <f:entry title="${%RegistryName_Label}" field="registryName">
+    <f:entry title="${%RegistryName_Label}" field="repositoryName">
         <f:textbox />
     </f:entry>
-    <f:entry title="${%ImageName_Label}" field="imageName">
+    <f:entry title="${%ImageName_Label}" field="artifactName">
         <f:textbox />
     </f:entry>
     <f:entry title="${%Tags_Label}" field="tags">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="${%URL_Label}" field="artifactURL">
         <f:textbox />
     </f:entry>
 

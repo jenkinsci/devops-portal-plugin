@@ -161,55 +161,59 @@
                 </div>
                 <div class="modal-body">
                     <table class="jenkins-table">
+                        <thead class="group-headers">
+                            <tr>
+                                <th>${%popup_title_severity}</th>
+                                <th>${%popup_title_category}</th>
+                                <th>${%popup_message}</th>
+                                <th width="0%" />
+                            </tr>
+                        </thead>
+                        <tbody>
                         <j:forEach var="deployment" indexVar="j" items="${it.descriptor.getDeploymentsByService(service.id)}">
-                            <j:if test="${j == 0}">
-                                <thead class="group-headers">
-                                    <tr>
-                                        <th>Application</th>
-                                        <th>Build</th>
-                                        <th>Deployment</th>
-                                    </tr>
-                                </thead>
-                            </j:if>
-                            <j:if test="${j &gt; 0}">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <strong>${deployment.applicationName}</strong>
-                                            <span class="version-label badge" style="margin-left: .4rem">
-                                                <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/>
-                                                v ${deployment.applicationVersion}
+                                <tr>
+                                    <td>
+                                        <strong>${deployment.applicationName}</strong>
+                                        <span class="version-label badge" style="margin-left: .4rem">
+                                            <l:icon class="symbol-pricetag-outline plugin-ionicons-api icon-sm"/>
+                                            v ${deployment.applicationVersion}
+                                        </span>
+                                        <j:if test="${deployment.branchProvided}">
+                                            <span class="application-branch badge" style="margin-left: .4rem">
+                                                <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>
+                                                ${deployment.buildBranch}
                                             </span>
-                                            <j:if test="${deployment.branchProvided}">
-                                                <span class="application-branch badge" style="margin-left: .4rem">
-                                                    <l:icon class="symbol-git-branch-outline plugin-ionicons-api icon-sm"/>
-                                                    ${deployment.buildBranch}
-                                                </span>
-                                            </j:if>
-                                        </td>
-                                        <td>
-                                            <span class="build-label">
-                                                <l:icon class="${deployment.getBuildStatusClass()} icon-sm"/>
-                                                <a style="margin-left:.4rem" href="${deployment.buildURL}">
-                                                    ${deployment.buildJob} #${deployment.buildNumber}
-                                                </a>
+                                        </j:if>
+                                    </td>
+                                    <td>
+                                        <span class="build-label">
+                                            <l:icon class="${deployment.getBuildStatusClass()} icon-sm"/>
+                                            <a style="margin-left:.4rem" href="${deployment.buildURL}">
+                                                ${deployment.buildJob} #${deployment.buildNumber}
+                                            </a>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="build-date">
+                                            <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
+                                            ${it.formatDatetimeSeconds(deployment.timestamp)}
+                                        </span>
+                                        <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
+                                            <span class="deployment-tag badge">
+                                                ${tag}
                                             </span>
-                                        </td>
-                                        <td>
-                                            <span class="build-date">
-                                                <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
-                                                ${it.formatDatetimeSeconds(deployment.timestamp)}
-                                            </span>
-                                            <j:forEach var="tag" indexVar="i" items="${deployment.tags}">
-                                                <span class="deployment-tag badge">
-                                                    ${tag}
-                                                </span>
-                                            </j:forEach>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </j:if>
-                        </j:forEach>
+                                        </j:forEach>
+                                    </td>
+                                    <td>
+                                        <l:isAdmin>
+                                            <a class="jenkins-button" href="javascript:deleteOperation('${service.id}', '${deployment.buildJob}', '${deployment.buildNumber}')">
+                                                <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
+                                            </a>
+                                        </l:isAdmin>
+                                    </td>
+                                </tr>
+                            </j:forEach>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -217,6 +221,12 @@
     </j:forEach>
 
     <script type="text/javascript">
+        function deleteOperation(environment, job, number) {
+            if (confirm('${%confirm_delete_operation}')) {
+                javascript:document.location.href = '/jenkins/run-api/delete-operation?environment='
+                    + escape(environment) + '&amp;job=' + escape(job) + '&amp;number=' + number + '&amp;origin=' + escape(window.location.href);
+            }
+        }
         function toggleModal(id) {
             var modal = document.getElementById('modal_' + id);
             var span = modal.querySelector('.close');

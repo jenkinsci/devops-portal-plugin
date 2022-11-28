@@ -18,7 +18,7 @@ import org.kohsuke.stapler.DataBoundSetter;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class ImageReleaseActivityReporter extends AbstractActivityReporter<ArtifactReleaseActivity> {
+public class ArtifactReleaseActivityReporter extends AbstractActivityReporter<ArtifactReleaseActivity> {
 
     private String repositoryName;
     private String artifactName;
@@ -26,7 +26,7 @@ public class ImageReleaseActivityReporter extends AbstractActivityReporter<Artif
     private String tags;
 
     @DataBoundConstructor
-    public ImageReleaseActivityReporter(String applicationName, String applicationVersion, String applicationComponent) {
+    public ArtifactReleaseActivityReporter(String applicationName, String applicationVersion, String applicationComponent) {
         super(applicationName, applicationVersion, applicationComponent);
     }
 

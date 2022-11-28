@@ -261,7 +261,7 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
                     .filter(item -> item.getApplicationName().equals(applicationName))
                     .filter(item -> item.getApplicationVersion().equals(applicationVersion))
                     .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
-                    .max(Comparator.comparingLong(ServiceOperation::getTimestamp));
+                    .max((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp()));
         }
 
         public List<ServiceOperation> getDeploymentsByService(String serviceId) {

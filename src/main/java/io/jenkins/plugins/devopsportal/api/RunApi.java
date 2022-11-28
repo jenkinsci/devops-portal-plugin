@@ -14,7 +14,7 @@ import org.kohsuke.stapler.WebMethod;
 import org.kohsuke.stapler.verb.GET;
 
 @Extension
-public class BuildApi implements RootAction {
+public class RunApi implements RootAction {
 
     @CheckForNull
     @Override
@@ -30,22 +30,19 @@ public class BuildApi implements RootAction {
 
     @Override
     public String getUrlName() {
-        return "build-api";
-    }
-
-    public ApplicationBuildStatus.DescriptorImpl getDescriptor() {
-        return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
+        return "run-api";
     }
 
     @GET
-    @WebMethod(name = "delete-build-status")
-    public HttpResponse deleteBuildStatusByVersion(@QueryParameter(required = true) String application,
-                                                   @QueryParameter(required = true) String version,
-                                                   @QueryParameter(required = true) String origin) {
-        boolean admin = Jenkins.get().hasPermission(Jenkins.ADMINISTER);
+    @WebMethod(name = "delete-operation")
+    public HttpResponse deleteRunOperation(@QueryParameter(required = true) String environment,
+                                           @QueryParameter(required = true) String job,
+                                           @QueryParameter(required = true) String number,
+                                           @QueryParameter(required = true) String origin) {
+        /*boolean admin = Jenkins.get().hasPermission(Jenkins.ADMINISTER);
         if (admin && getDescriptor().delete(application, version)) {
             return new HttpRedirect(origin);
-        }
+        }*/
         return new Failure(Messages.FormValidation_Error_Unauthorized());
     }
 
