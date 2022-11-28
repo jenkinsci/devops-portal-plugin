@@ -107,10 +107,14 @@
                             </td>
                             <td colspan="2">
                                 <j:if test="${activity.artifactFileSize == 0}">
-                                    <span class="activity-quality-gate failed" style="margin-right:.5rem">${%quality_gate_failed}</span>
+                                    <span class="activity-quality-gate failed" style="margin-right:.5rem" title="Empty artifact">
+                                        ${%quality_gate_failed}
+                                    </span>
                                 </j:if>
-                                <j:if test="${activity.artifactFileSize &gt; activity.artifactFileSizeLimit}">
-                                    <span class="activity-quality-gate failed" style="margin-right:.5rem">${%quality_gate_failed}</span>
+                                <j:if test="${activity.artifactFileSizeLimit &gt; 0 &amp;&amp; activity.artifactFileSize &gt; activity.artifactFileSizeLimit}">
+                                    <span class="activity-quality-gate failed" style="margin-right:.5rem" title="Size limit: ${activity.artifactFileSize} &gt; ${activity.artifactFileSizeLimit}}">
+                                        ${%quality_gate_failed}
+                                    </span>
                                 </j:if>
                                 <span>${%quality_item_fileSize}</span>
                                 <strong style="margin-left:.25rem">${activity.artifactFileSizeStr}</strong>
@@ -325,8 +329,8 @@
                             </td>
                         </tr>
                     </j:forEach>
-                    <!-- IMAGE_RELEASE activities -->
-                    <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'IMAGE_RELEASE')}">
+                    <!-- ARTIFACT_RELEASE activities -->
+                    <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'ARTIFACT_RELEASE')}">
                         <tr class="version-activities" hidden="true" version="${application}-${version}">
                             <td />
                             <td>
@@ -337,14 +341,21 @@
                                 <strong>${activity.applicationComponent}</strong>
                             </td>
                             <td>
-                                ${activity.registryName}:<strong>${activity.imageName}</strong>
+                                ${activity.repositoryName}:<strong>${activity.artifactName}</strong>
                             </td>
-                            <td colspan="2">
+                            <td>
                                 <j:forEach var="tag" indexVar="i" items="${activity.tags}">
                                     <span class="deployment-tag badge">
                                         ${tag}
                                     </span>
                                 </j:forEach>
+                            </td>
+                            <td style="text-align:right">
+                                <j:if test="${activity.urlPresent}">
+                                    <a class="jenkins-button" href="${activity.artifactURL}" target="_blank">
+                                        <l:icon class="symbol-arrow-redo-outline plugin-ionicons-api icon-sm" />
+                                    </a>
+                                </j:if>
                             </td>
                         </tr>
                     </j:forEach>

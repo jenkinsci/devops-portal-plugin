@@ -366,9 +366,9 @@ Dashboard preview:
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
-| Build step         |
-|--------------------|
-| `Record a release` |
+| Build step                   |
+|------------------------------|
+| `Record an artifact release` |
 
 Run with pipeline script (DSL):
 
@@ -378,10 +378,10 @@ reportRelease(
     applicationVersion: String,    // Version of application built
     applicationComponent: String,  // Name of application component built
     repositoryName: String,        // Registry server hostname
-    releaseName: String,           // Image name released
+    artifactName: String,          // Image name released
     tags: String?,                 // Optional: comma-separated list of image's tags
                                    // Eg. "docker", "artifactory", "nexus", "ftp"
-    releaseURL: String?            // Optional: a link to the release        
+    artifactURL: String?           // Optional: a link to the release        
 )
 ```
 
@@ -430,7 +430,7 @@ flowchart TD
     QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
     SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
     PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
-    ReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
+    ArtifactReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
     AbstractActivity:::entity --o ApplicationBuildStatus:::entity
     SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
     SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
@@ -505,12 +505,12 @@ Version 3, 29 June 2007
   - [ ] Field: QualityGate -> (Errors == 0)
 - [ ] reportJmeterPerformanceTest()
   - [ ] Field: Report file path
-- [ ] reportImageRelease()
-  - [x] Rename to "reportImageRelease()" and "ArtifactReleaseActivityReporter" and "ArtifactReleaseActivity"
-  - [x] Rename label of build step : "Record a release"
-  - [x] Rename "registryName" to "repositoryName"
-  - [x] Rename "imageName" to "releaseName"
-  - [x] Add optional property: "releaseURL"
+- [x] ~~reportImageRelease()~~
+  - [x] ~~Rename to "reportImageRelease()" and "ArtifactReleaseActivityReporter" and "ArtifactReleaseActivity"~~
+  - [x] ~~Rename label of build step : "Record a release"~~
+  - [x] ~~Rename "registryName" to "repositoryName"~~
+  - [x] ~~Rename "imageName" to "releaseName"~~
+  - [x] ~~Add optional property: "releaseURL"~~
 - [ ] reportRunOperation()
   - [ ] Rename to DeploymentOperation
   - [ ] Remove boolean status flag

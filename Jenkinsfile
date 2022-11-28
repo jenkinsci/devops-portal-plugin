@@ -37,13 +37,8 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    /*if (isUnix()) {
-                        sh 'mvn -B test'
-                    }
-                    else {
-                        bat "\"${env.MAVEN_PATH}\" -B test"
-                    }*/
-                    reportUnitTest(
+
+                    /*reportUnitTest(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "other-component",
@@ -51,13 +46,23 @@ pipeline {
                         testsFailed: 6,
                         testsIgnored: 2,
                         testCoverage: 0.51
-                    )
-                    reportSurefireTest(
-                        applicationName: env.APPLICATION_NAME,
-                        applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin-devops-portal",
-                        surefireReportPath: "target/surefire-reports/TEST-InjectedTest.xml"
-                    )
+                    )*/
+
+
+                    withMaven() {
+                        /*if (isUnix()) {
+                            sh 'mvn -B test'
+                        }
+                        else {
+                            bat "mvn -B test"
+                        }*/
+                        reportSurefireTest(
+                            applicationName: env.APPLICATION_NAME,
+                            applicationVersion: env.APPLICATION_VERSION,
+                            applicationComponent: "plugin-devops-portal",
+                            surefireReportPath: "target/surefire-reports/TEST-InjectedTest.xml"
+                        )
+                    }
                 }
             }
         }
@@ -115,7 +120,7 @@ pipeline {
             }
         }
 
-        stage('Publish') {
+        stage('Release') {
             steps {
                 script {
                     reportArtifactRelease(

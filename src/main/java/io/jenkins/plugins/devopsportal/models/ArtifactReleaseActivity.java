@@ -52,6 +52,10 @@ public class ArtifactReleaseActivity extends AbstractActivity {
         this.artifactURL = artifactURL;
     }
 
+    public boolean isUrlPresent() {
+        return artifactURL != null && !artifactURL.isEmpty();
+    }
+
     public List<String> getTags() {
         return tags;
     }
