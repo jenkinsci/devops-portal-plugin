@@ -416,7 +416,8 @@ flowchart TD
     ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
     
-    subgraph BuildActivities[Build Activities] TD
+    subgraph BuildActivities[Build Activities]
+    direction TD  %%
     BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
     UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
     SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
