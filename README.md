@@ -512,7 +512,7 @@ Version 3, 29 June 2007
   - [x] ~~Rename "imageName" to "releaseName"~~
   - [x] ~~Add optional property: "releaseURL"~~
 - [ ] reportRunOperation()
-  - [ ] Delete operation from popup 
+  - [x] ~~Delete (from popup)~~
   - [ ] Rename to DeploymentOperation
   - [ ] Remove boolean status flag
 - [X] ~~Popups with history~~

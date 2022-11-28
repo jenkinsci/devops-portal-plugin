@@ -338,7 +338,7 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
             return getBuildStatus().stream().anyMatch(item -> applicationName.equals(item.getApplicationName()));
         }
 
-        public boolean delete(String applicationName, String applicationVersion) {
+        public boolean deleteBuildStatusByApplicationVersion(String applicationName, String applicationVersion) {
             final ApplicationBuildStatus status = getBuildStatusByApplication(applicationName, applicationVersion)
                     .orElse(null);
             if (status != null) {

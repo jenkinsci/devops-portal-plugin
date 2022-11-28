@@ -43,7 +43,7 @@ public class BuildApi implements RootAction {
                                                    @QueryParameter(required = true) String version,
                                                    @QueryParameter(required = true) String origin) {
         boolean admin = Jenkins.get().hasPermission(Jenkins.ADMINISTER);
-        if (admin && getDescriptor().delete(application, version)) {
+        if (admin && getDescriptor().deleteBuildStatusByApplicationVersion(application, version)) {
             return new HttpRedirect(origin);
         }
         return new Failure(Messages.FormValidation_Error_Unauthorized());

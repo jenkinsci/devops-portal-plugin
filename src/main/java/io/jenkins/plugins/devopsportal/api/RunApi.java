@@ -5,7 +5,7 @@ import hudson.Extension;
 import hudson.model.Failure;
 import hudson.model.RootAction;
 import io.jenkins.plugins.devopsportal.Messages;
-import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
+import io.jenkins.plugins.devopsportal.models.ServiceOperation;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
@@ -33,16 +33,20 @@ public class RunApi implements RootAction {
         return "run-api";
     }
 
+    public ServiceOperation.DescriptorImpl getDescriptor() {
+        return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
+    }
+
     @GET
     @WebMethod(name = "delete-operation")
     public HttpResponse deleteRunOperation(@QueryParameter(required = true) String environment,
                                            @QueryParameter(required = true) String job,
                                            @QueryParameter(required = true) String number,
                                            @QueryParameter(required = true) String origin) {
-        /*boolean admin = Jenkins.get().hasPermission(Jenkins.ADMINISTER);
-        if (admin && getDescriptor().delete(application, version)) {
+        boolean admin = Jenkins.get().hasPermission(Jenkins.ADMINISTER);
+        if (admin && getDescriptor().deleteDeploymentByRun(environment, job, number)) {
             return new HttpRedirect(origin);
-        }*/
+        }
         return new Failure(Messages.FormValidation_Error_Unauthorized());
     }
 

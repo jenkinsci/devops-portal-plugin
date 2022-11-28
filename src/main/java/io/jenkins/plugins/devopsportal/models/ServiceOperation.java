@@ -261,7 +261,7 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
                     .filter(item -> item.getApplicationName().equals(applicationName))
                     .filter(item -> item.getApplicationVersion().equals(applicationVersion))
                     .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
-                    .max((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp()));
+                    .max(Comparator.comparingLong(ServiceOperation::getTimestamp));
         }
 
         public List<ServiceOperation> getDeploymentsByService(String serviceId) {
@@ -271,6 +271,30 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
                     .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
                     .sorted((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp()))
                     .collect(Collectors.toList());
+        }
+
+        public Optional<ServiceOperation> getDeploymentByRun(String environmentId, String jobName, String runNumber) {
+            return getRunOperations()
+                    .stream()
+                    .filter(item -> environmentId.equals(item.getServiceId()))
+                    .filter(item -> jobName.equals(item.getBuildJob()))
+                    .filter(item -> runNumber.equals(item.getBuildNumber()))
+                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
+                    .max((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp()));
+        }
+
+        public boolean deleteDeploymentByRun(String environmentId, String jobName, String runNumber) {
+            final ServiceOperation operation = getDeploymentByRun(environmentId, jobName, runNumber)
+                    .orElse(null);
+            if (operation != null) {
+                synchronized (this) {
+                    if (runOperations.remove(operation)) {
+                        save();
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
     }
