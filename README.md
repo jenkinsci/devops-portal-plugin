@@ -172,7 +172,7 @@ reportBuild(
     applicationVersion: String,          // Version of application built
     applicationComponent: String,        // Name of application component built
     artifactFileName: String,            // Path to generated artifact
-    artifactFileSizeLimit: Integer = 0   // Optional: put a limit on the artifact file size, causing the build to fail if exceeded
+    artifactFileSizeLimit: int = 0       // Optional: put a limit on the artifact file size, causing the build to fail if exceeded
 )
 ```
 
@@ -197,7 +197,7 @@ reportUnitTest(
     applicationName: String,          // Name of application built
     applicationVersion: String,       // Version of application built
     applicationComponent: String,     // Name of application component built
-    testCoverage: Float = 0,          // Optional: coverage ratio (between 0-1)
+    testCoverage: float = 0.0,        // Optional: coverage ratio (between 0-1)
     testsPassed: int,                 // Number of passed tests
     testsFailed: int,                 // Number of failed tests
     testsIgnored: int                 // Number of skipped tests
