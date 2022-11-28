@@ -12,7 +12,7 @@ public enum ActivityCategory {
     QUALITY_AUDIT(QualityAuditActivity.class),
     DEPENDENCIES_ANALYSIS(DependenciesAnalysisActivity.class),
     PERFORMANCE_TEST(PerformanceTestActivity.class),
-    IMAGE_RELEASE(ImageReleaseActivity.class);
+    ARTIFACT_RELEASE(ArtifactReleaseActivity.class);
 
     private final Class<? extends AbstractActivity> clazz;
 

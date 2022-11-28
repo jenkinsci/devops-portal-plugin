@@ -506,11 +506,11 @@ Version 3, 29 June 2007
 - [ ] reportJmeterPerformanceTest()
   - [ ] Field: Report file path
 - [ ] reportImageRelease()
-  - [ ] Rename to "report~~Image~~Release()" and "~~Image~~ReleaseActivityReporter" and "~~Image~~ReleaseActivity"
-  - [ ] Rename label of build step : "Record a release"
-  - [ ] Rename "registryName" to "repositoryName"
-  - [ ] Rename "imageName" to "releaseName"
-  - [ ] Add optional property: "releaseURL"
+  - [x] Rename to "reportImageRelease()" and "ArtifactReleaseActivityReporter" and "ArtifactReleaseActivity"
+  - [x] Rename label of build step : "Record a release"
+  - [x] Rename "registryName" to "repositoryName"
+  - [x] Rename "imageName" to "releaseName"
+  - [x] Add optional property: "releaseURL"
 - [ ] reportRunOperation()
   - [ ] Rename to DeploymentOperation
   - [ ] Remove boolean status flag

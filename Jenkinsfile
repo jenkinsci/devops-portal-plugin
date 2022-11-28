@@ -67,7 +67,7 @@ pipeline {
                 script {
 
                     // Quality audit manually reported
-                    reportQualityAudit(
+                    /*reportQualityAudit(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "other-component",
@@ -81,7 +81,7 @@ pipeline {
                         testCoverage: 0.35,
                         linesCount: 32000,
                         qualityGatePassed: true
-                    )
+                    )*/
 
                     // Quality audit reported from Sonar Qube
                     withSonarQubeEnv(credentialsId: 'c191d43f-0199-4f04-95a1-3afe1cd9803e', installationName: 'SonarQube Scanner') {
@@ -93,24 +93,23 @@ pipeline {
                                 bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
                             }
                         }*/
-                        bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=\"${WORKSPACE}\\src\\test\\jobs\\test.jks\" -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
-                        //bat "\"${env.MAVEN_PATH}\" sonar:sonar"
-                        reportSonarQubeAudit(
+                        //bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=\"${WORKSPACE}\\src\\test\\jobs\\test.jks\" -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
+                        /*reportSonarQubeAudit(
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
                             applicationComponent: "plugin-devops-portal",
                             projectKey: "io.jenkins.plugins:plugin-devops-portal"
-                        )
+                        )*/
                     }
 
                     // Dependencies analysis
-                    reportDependenciesAnalysis(
+                    /*reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
                         manifestFile: "pom.xml",
                         manager: "MAVEN"
-                    )
+                    )*/
 
                 }
             }
@@ -119,13 +118,14 @@ pipeline {
         stage('Publish') {
             steps {
                 script {
-                    reportImageRelease(
+                    reportArtifactRelease(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
-                        registryName: "registry.mydomain.com",
-                        imageName: env.APPLICATION_NAME,
-                        tags: "latest,${env.APPLICATION_VERSION}"
+                        repositoryName: "registry.mydomain.com",
+                        artifactName: env.APPLICATION_NAME,
+                        tags: "docker-image,snapshot,${env.APPLICATION_VERSION}",
+                        artifactURL: "https://registry.mydomain.com/projects/plugin-devops-portal/${env.APPLICATION_VERSION}"
                     )
                 }
             }

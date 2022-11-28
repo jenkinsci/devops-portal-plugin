@@ -8,7 +8,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
-import io.jenkins.plugins.devopsportal.models.ImageReleaseActivity;
+import io.jenkins.plugins.devopsportal.models.ArtifactReleaseActivity;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -18,10 +18,11 @@ import org.kohsuke.stapler.DataBoundSetter;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class ImageReleaseActivityReporter extends AbstractActivityReporter<ImageReleaseActivity> {
+public class ImageReleaseActivityReporter extends AbstractActivityReporter<ArtifactReleaseActivity> {
 
-    private String registryName;
-    private String imageName;
+    private String repositoryName;
+    private String artifactName;
+    private String artifactURL;
     private String tags;
 
     @DataBoundConstructor
@@ -29,22 +30,31 @@ public class ImageReleaseActivityReporter extends AbstractActivityReporter<Image
         super(applicationName, applicationVersion, applicationComponent);
     }
 
-    public String getRegistryName() {
-        return registryName;
+    public String getRepositoryName() {
+        return repositoryName;
     }
 
     @DataBoundSetter
-    public void setRegistryName(String registryName) {
-        this.registryName = registryName;
+    public void setRepositoryName(String repositoryName) {
+        this.repositoryName = repositoryName;
     }
 
-    public String getImageName() {
-        return imageName;
+    public String getArtifactName() {
+        return artifactName;
     }
 
     @DataBoundSetter
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setArtifactName(String artifactName) {
+        this.artifactName = artifactName;
+    }
+
+    public String getArtifactURL() {
+        return artifactURL;
+    }
+
+    @DataBoundSetter
+    public void setArtifactURL(String artifactURL) {
+        this.artifactURL = artifactURL;
     }
 
     public String getTags() {
@@ -57,25 +67,26 @@ public class ImageReleaseActivityReporter extends AbstractActivityReporter<Image
     }
 
     @Override
-    public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull ImageReleaseActivity activity,
+    public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull ArtifactReleaseActivity activity,
                                  @NonNull TaskListener listener, @NonNull EnvVars env) {
-        activity.setRegistryName(registryName);
-        activity.setImageName(imageName);
+        activity.setRepositoryName(repositoryName);
+        activity.setArtifactName(artifactName);
+        activity.setArtifactURL(artifactURL);
         activity.setTags(tags);
         return null;
     }
 
     @Override
     public ActivityCategory getActivityCategory() {
-        return ActivityCategory.IMAGE_RELEASE;
+        return ActivityCategory.ARTIFACT_RELEASE;
     }
 
-    @Symbol("reportImageRelease")
+    @Symbol("reportArtifactRelease")
     @Extension
     public static final class DescriptorImpl extends AbstractActivityDescriptor {
 
         public DescriptorImpl() {
-            super(Messages.ImageReleaseActivityReporter_DisplayName());
+            super(Messages.ArtifactReleaseActivityReporter_DisplayName());
         }
 
     }
