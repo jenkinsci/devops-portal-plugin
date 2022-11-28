@@ -324,7 +324,7 @@ reportDependenciesAnalysis(
     applicationComponent: String,  // Name of application component built
     manager: String,               // Only 'MAVEN' is supported actually
     manifestFile: String,          // Path to project manifest file (pom.xml)
-    managerCommand: String?        // Optional: shell command to run the manager
+    managerCommand?: String        // Optional: shell command to run the manager
                                    // If not provided, the plugin will try to guess it 
 )
 ```
