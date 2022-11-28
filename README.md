@@ -36,11 +36,11 @@ A Jenkins Dashboard Plugin with many features :
 - Jenkins version
 - Current supported translations: 🇫🇷 🇬🇧
 - Required plugins : maven, sonar
-- Enable plugin from Jenkins Administration
+- Install and enable plugin from Jenkins Administration
 
 ## <a name="section-manage"></a> ⚡ Manage Environments
 
-In Jenkins Administration, a link allows to configure managed environments:
+After the installation, a link allows to configure managed environments in **Jenkins Administration**:
 
 ![PluginManagementLink](.doc/PluginManagementLink.png)
 
@@ -120,7 +120,7 @@ reportDeployOperation(
     targetService: String,        // Name for target environment to deploy to
     applicationName: String,      // Name of application deployed
     applicationVersion: String,   // Version of application deployed
-    tags: String?                 // Optional: comma-separated list
+    tags: String = null           // Optional: comma-separated list
 )
 ```
 
@@ -168,11 +168,11 @@ Run with pipeline script (DSL):
 
 ```groovy
 reportBuild(
-    applicationName: String,       // Name of application built
-    applicationVersion: String,    // Version of application built
-    applicationComponent: String,  // Name of application component built
-    artifactFileName: String,      // Path to generated artifact
-    artifactFileSizeLimit: int?    // Optional: put a limit on the artifact file size, causing the build to fail if exceeded
+    applicationName: String,             // Name of application built
+    applicationVersion: String,          // Version of application built
+    applicationComponent: String,        // Name of application component built
+    artifactFileName: String,            // Path to generated artifact
+    artifactFileSizeLimit: Integer = 0   // Optional: put a limit on the artifact file size, causing the build to fail if exceeded
 )
 ```
 
@@ -194,13 +194,13 @@ Run with pipeline script (DSL):
 
 ```groovy
 reportUnitTest(
-    applicationName: String,       // Name of application built
-    applicationVersion: String,    // Version of application built
-    applicationComponent: String,  // Name of application component built
-    testCoverage: float?,          // Optional: coverage ratio (between 0-1)
-    testsPassed: int,              // Number of passed tests
-    testsFailed: int,              // Number of failed tests
-    testsIgnored: int              // Number of skipped tests
+    applicationName: String,          // Name of application built
+    applicationVersion: String,       // Version of application built
+    applicationComponent: String,     // Name of application component built
+    testCoverage: Float = 0,          // Optional: coverage ratio (between 0-1)
+    testsPassed: int,                 // Number of passed tests
+    testsFailed: int,                 // Number of failed tests
+    testsIgnored: int                 // Number of skipped tests
 )
 ```
 
@@ -324,7 +324,7 @@ reportDependenciesAnalysis(
     applicationComponent: String,  // Name of application component built
     manager: String,               // Only 'MAVEN' is supported actually
     manifestFile: String,          // Path to project manifest file (pom.xml)
-    managerCommand?: String        // Optional: shell command to run the manager
+    managerCommand: String = null  // Optional: shell command to run the manager
                                    // If not provided, the plugin will try to guess it 
 )
 ```
@@ -373,9 +373,9 @@ reportRelease(
     applicationComponent: String,  // Name of application component built
     repositoryName: String,        // Registry server hostname
     artifactName: String,          // Image name released
-    tags: String?,                 // Optional: comma-separated list of image's tags
+    tags: String = null,           // Optional: comma-separated list of image's tags
                                    // Eg. "docker", "artifactory", "nexus", "ftp"
-    artifactURL: String?           // Optional: a link to the release        
+    artifactURL: String = null     // Optional: a link to the release        
 )
 ```
 
