@@ -406,37 +406,37 @@ Dashboard preview:
 flowchart TD
 
     subgraph Legend
-    View:::view
-    BuildStep:::reporter
-    Persistent:::entity
-    AsyncPeriodicWork:::worker
+        View:::view
+        BuildStep:::reporter
+        Persistent:::entity
+        AsyncPeriodicWork:::worker
     end
     
     subgraph Configuration
-    ManageEnvironment:::view --> ServiceConfiguration:::entity
+        ManageEnvironment:::view --> ServiceConfiguration:::entity
     end
     
     subgraph BuildActivities[Build Activities]
-    direction TD
-    BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
-    UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
-    SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
-    DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
-    QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
-    SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
-    PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
-    ArtifactReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
-    AbstractActivity:::entity --o ApplicationBuildStatus:::entity
-    SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
-    SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
+        direction TD
+        BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
+        UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
+        SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
+        DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
+        QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
+        SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
+        PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
+        ArtifactReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
+        AbstractActivity:::entity --o ApplicationBuildStatus:::entity
+        SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
+        SonarQubeCheckPeriodicWork:::worker --> ApplicationBuildStatus:::entity
     end
 
     subgraph RunOperations[Run Operations]
-    DeploymentOperationReporter:::reporter --> DeploymentOperation:::entity
+        DeploymentOperationReporter:::reporter --> DeploymentOperation:::entity
     end
     
     subgraph RunMonitoring[Run Monitoring]
-    MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
+        MonitoringPeriodicWork:::worker --> ServiceMonitoring:::entity
     end
    
     Configuration --> RunOperations
