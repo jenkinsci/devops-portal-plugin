@@ -19,6 +19,7 @@ public final class MiscUtils {
 
     private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
+    @SuppressWarnings("unused")
     public static String readableFileSize(long size) {
         if (size <= 0) return "0 kB";
         final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
@@ -26,10 +27,12 @@ public final class MiscUtils {
         return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
+    @SuppressWarnings("unused")
     public static <T> T filterLines(File workingDir, List<String> cmd, Function<List<String>, T> mapper) {
         return filterLines(workingDir, cmd, mapper, null);
     }
 
+    @SuppressWarnings("unused")
     public static <T> T filterLines(File workingDir, List<String> cmd, Function<List<String>, T> mapper, String matchStop) {
         try {
             List<String> list = new ArrayList<>();
@@ -60,6 +63,7 @@ public final class MiscUtils {
         }
     }
 
+    @SuppressWarnings("unused")
     public static <T, E extends Exception> T callWithTimeout(long timeoutDurationMs, ThrowingSupplier<T, E> supplier) {
         final AtomicReference<T> value = new AtomicReference<>();
         final AtomicReference<Boolean> done = new AtomicReference<>(false);

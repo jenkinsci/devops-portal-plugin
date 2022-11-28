@@ -5,9 +5,9 @@ import hudson.Extension;
 import hudson.model.*;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
+import io.jenkins.plugins.devopsportal.models.DeploymentOperation;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import io.jenkins.plugins.devopsportal.models.ServiceMonitoring;
-import io.jenkins.plugins.devopsportal.models.ServiceOperation;
 import io.jenkins.plugins.devopsportal.utils.TimeAgoUtils;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.*;
@@ -69,13 +69,16 @@ public class RunDashboard extends View {
         this.filter = filter;
     }
 
+    @SuppressWarnings("unused")
     public String formatDateMs(long timestamp) {
         return dateFormat.format(new java.util.Date(timestamp));
     }
+
     public String formatDatetimeSeconds(long timestamp) {
         return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
     }
 
+    @SuppressWarnings("unused")
     public String formatUptime(long timestamp) {
         if (timestamp <= 0) {
             return io.jenkins.plugins.devopsportal.Messages.TimeAgo_Never();
@@ -104,10 +107,11 @@ public class RunDashboard extends View {
             return Jenkins.get().getDescriptorByType(ServiceMonitoring.DescriptorImpl.class);
         }
 
-        public ServiceOperation.DescriptorImpl getOperationDescriptor() {
-            return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
+        public DeploymentOperation.DescriptorImpl getOperationDescriptor() {
+            return Jenkins.get().getDescriptorByType(DeploymentOperation.DescriptorImpl.class);
         }
 
+        @SuppressWarnings("unused")
         public List<String> getConfigurationCategories(String filter) {
             Stream<String> stream = getServiceDescriptor()
                     .getServiceConfigurations()
@@ -126,6 +130,7 @@ public class RunDashboard extends View {
             return stream.collect(Collectors.toList());
         }
 
+        @SuppressWarnings("unused")
         public List<ServiceConfiguration> getConfigurationsByCategory(@NonNull String category) {
             return getServiceDescriptor()
                     .getServiceConfigurations()
@@ -139,10 +144,11 @@ public class RunDashboard extends View {
             return getMonitoringDescriptor().getMonitoringByService(serviceId).orElse(new ServiceMonitoring(serviceId));
         }
 
-        public ServiceOperation getLastDeploymentByService(String serviceId) {
+        public DeploymentOperation getLastDeploymentByService(String serviceId) {
             return getOperationDescriptor().getLastDeploymentByService(serviceId).orElse(null);
         }
 
+        @SuppressWarnings("unused")
         public List<ServiceConfiguration> getServicesConfiguration(String filter) {
             Stream<ServiceConfiguration> stream = getServiceDescriptor()
                     .getServiceConfigurations()
@@ -159,10 +165,11 @@ public class RunDashboard extends View {
             return stream.collect(Collectors.toList());
         }
 
-        public List<ServiceOperation> getDeploymentsByService(String serviceId) {
+        public List<DeploymentOperation> getDeploymentsByService(String serviceId) {
             return getOperationDescriptor().getDeploymentsByService(serviceId);
         }
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckFilter(@QueryParameter String filter) {
             if (filter != null && !filter.isEmpty()) {
                 try {

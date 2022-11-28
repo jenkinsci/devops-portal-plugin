@@ -198,14 +198,17 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration>, 
             return Messages.ServiceConfiguration_DisplayName();
         }
 
+        @SuppressWarnings("unused")
         public boolean getDefaultEnableMonitoring() {
             return true;
         }
 
+        @SuppressWarnings("unused")
         public int getDefaultDelayMonitoringMinutes() {
             return 5;
         }
 
+        @SuppressWarnings("unused")
         public boolean getDefaultAcceptInvalidCertificate() {
             return false;
         }
@@ -232,6 +235,7 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration>, 
                     .findFirst();
         }
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckLabel(@QueryParameter String label, @QueryParameter String id) {
             if (label == null || label.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
@@ -248,6 +252,7 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration>, 
             return FormValidation.ok();
         }
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckDelayMonitoringMinutes(@QueryParameter int delayMonitoringMinutes) {
             if (delayMonitoringMinutes <= 0) {
                 return FormValidation.error(Messages.FormValidation_Error_InvalidValue());

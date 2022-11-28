@@ -197,10 +197,12 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
             return list;
         }
 
+        @SuppressWarnings("unused")
         public ListBoxModel doFillVulnerabilityScoreItems() {
             return doFillBugScoreItems();
         }
 
+        @SuppressWarnings("unused")
         public ListBoxModel doFillHotspotScoreItems() {
             return doFillBugScoreItems();
         }

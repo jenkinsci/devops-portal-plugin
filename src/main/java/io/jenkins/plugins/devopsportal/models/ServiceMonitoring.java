@@ -62,6 +62,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         this.currentMonitoringStatus = currentMonitoringStatus;
     }
 
+    @SuppressWarnings("unused")
     public long getLastSuccessTimestamp() {
         return lastSuccessTimestamp;
     }
@@ -71,6 +72,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         this.lastSuccessTimestamp = lastSuccessTimestamp;
     }
 
+    @SuppressWarnings("unused")
     public long getLastFailureTimestamp() {
         return lastFailureTimestamp;
     }
@@ -80,6 +82,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         this.lastFailureTimestamp = lastFailureTimestamp;
     }
 
+    @SuppressWarnings("unused")
     public String getLastFailureReason() {
         return lastFailureReason;
     }
@@ -89,6 +92,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         this.lastFailureReason = lastFailureReason;
     }
 
+    @SuppressWarnings("unused")
     public int getFailureCount() {
         return failureCount;
     }
@@ -111,6 +115,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         this.lastCertificateCheckTimestamp = lastCertificateCheckTimestamp;
     }
 
+    @SuppressWarnings("unused")
     public long getCertificateExpiration() {
         return certificateExpiration;
     }
@@ -131,6 +136,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         return Math.max(lastSuccessTimestamp, lastFailureTimestamp);
     }
 
+    @SuppressWarnings("unused")
     public long getSinceTimestamp() {
         if (isFailure()) {
             return lastSuccessTimestamp;
@@ -205,6 +211,7 @@ public class ServiceMonitoring implements Describable<ServiceMonitoring>, Serial
         return getLastCertificateCheckTimestamp() + 3600L <= Instant.now().getEpochSecond();
     }
 
+    @SuppressWarnings("unused")
     public boolean isCertificateExpired() {
         if (certificateExpiration > 0) {
             return Instant.now().toEpochMilli() > certificateExpiration;

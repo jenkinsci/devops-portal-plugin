@@ -87,6 +87,7 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
             super(Messages.PerformanceTestActivityReporter_DisplayName());
         }
 
+        @SuppressWarnings("unused")
         public ListBoxModel doFillBugScoreItems() {
             ListBoxModel list = new ListBoxModel();
             for (ActivityScore status : ActivityScore.values()) {

@@ -23,16 +23,14 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- * A persisted record of an exploitation operation performed on a run platform.
+ * A persisted record of a DEPLOYMENT operation performed on a run environment.
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class ServiceOperation implements Describable<ServiceOperation>, Serializable, GenericRunModel {
+public class DeploymentOperation implements Describable<DeploymentOperation>, Serializable, GenericRunModel {
 
     private String serviceId;
 
-    private RunOperations operation;
-    private boolean success;
     private long timestamp; // seconds
 
     private String applicationName;
@@ -47,7 +45,7 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
     private final List<String> tags;
 
     @DataBoundConstructor
-    public ServiceOperation() {
+    public DeploymentOperation() {
         tags = new ArrayList<>();
     }
 
@@ -58,24 +56,6 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
     @DataBoundSetter
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
-    }
-
-    public RunOperations getOperation() {
-        return operation;
-    }
-
-    @DataBoundSetter
-    public void setOperation(RunOperations operation) {
-        this.operation = operation;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    @DataBoundSetter
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 
     public long getTimestamp() {
@@ -162,20 +142,21 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
         }
     }
 
+    @SuppressWarnings("unused")
     public boolean isBranchProvided() {
         return buildBranch != null && !buildBranch.isEmpty();
     }
 
     @Override
-    public Descriptor<ServiceOperation> getDescriptor() {
-        return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
+    public Descriptor<DeploymentOperation> getDescriptor() {
+        return Jenkins.get().getDescriptorByType(DeploymentOperation.DescriptorImpl.class);
     }
 
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final ServiceOperation other = (ServiceOperation) that;
+        final DeploymentOperation other = (DeploymentOperation) that;
         return new EqualsBuilder()
                 .append(applicationName, other.applicationName)
                 .append(applicationVersion, other.applicationVersion)
@@ -219,72 +200,68 @@ public class ServiceOperation implements Describable<ServiceOperation>, Serializ
     }
 
     @Extension
-    public static final class DescriptorImpl extends Descriptor<ServiceOperation> implements Serializable {
+    public static final class DescriptorImpl extends Descriptor<DeploymentOperation> implements Serializable {
 
-        private final CopyOnWriteList<ServiceOperation> runOperations = new CopyOnWriteList<>();
+        private final CopyOnWriteList<DeploymentOperation> runOperations = new CopyOnWriteList<>();
 
         public DescriptorImpl() {
-            super(ServiceOperation.class);
+            super(DeploymentOperation.class);
             load();
         }
 
         @NonNull
         @Override
         public String getDisplayName() {
-            return Messages.BuildStatus_DisplayName();
+            return Messages.DeploymentOperation_DisplayName();
         }
 
-        public synchronized List<ServiceOperation> getRunOperations() {
-            List<ServiceOperation> retVal = new ArrayList<>(runOperations.getView());
-            retVal.sort(Comparator.comparing(ServiceOperation::getApplicationName));
+        public synchronized List<DeploymentOperation> getRunOperations() {
+            List<DeploymentOperation> retVal = new ArrayList<>(runOperations.getView());
+            retVal.sort(Comparator.comparing(DeploymentOperation::getApplicationName));
             return retVal;
         }
 
-        public synchronized void append(Consumer<ServiceOperation> updater) {
-            ServiceOperation record = new ServiceOperation();
+        public synchronized void append(Consumer<DeploymentOperation> updater) {
+            DeploymentOperation record = new DeploymentOperation();
             runOperations.add(record);
             updater.accept(record);
             save();
         }
 
-        public Optional<ServiceOperation> getLastDeploymentByService(String serviceId) {
+        public Optional<DeploymentOperation> getLastDeploymentByService(String serviceId) {
             return getRunOperations()
                     .stream()
                     .filter(item -> serviceId.equals(item.getServiceId()))
-                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
-                    .max(Comparator.comparingLong(ServiceOperation::getTimestamp));
+                    .max(Comparator.comparingLong(DeploymentOperation::getTimestamp));
         }
 
-        public Optional<ServiceOperation> getLastDeploymentByApplication(String applicationName, String applicationVersion) {
+        public Optional<DeploymentOperation> getLastDeploymentByApplication(String applicationName, String applicationVersion) {
             return getRunOperations()
                     .stream()
                     .filter(item -> item.getApplicationName().equals(applicationName))
                     .filter(item -> item.getApplicationVersion().equals(applicationVersion))
-                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
-                    .max(Comparator.comparingLong(ServiceOperation::getTimestamp));
+                    .max(Comparator.comparingLong(DeploymentOperation::getTimestamp));
         }
 
-        public List<ServiceOperation> getDeploymentsByService(String serviceId) {
+        public List<DeploymentOperation> getDeploymentsByService(String serviceId) {
             return getRunOperations()
                     .stream()
                     .filter(item -> serviceId.equals(item.getServiceId()))
-                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
                     .sorted((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp()))
                     .collect(Collectors.toList());
         }
 
-        public Optional<ServiceOperation> getDeploymentByRun(String environmentId, String jobName, String runNumber) {
+        public Optional<DeploymentOperation> getDeploymentByRun(String environmentId, String jobName, String runNumber) {
             return getRunOperations()
                     .stream()
                     .filter(item -> environmentId.equals(item.getServiceId()))
                     .filter(item -> jobName.equals(item.getBuildJob()))
                     .filter(item -> runNumber.equals(item.getBuildNumber()))
-                    .filter(item -> item.getOperation() == RunOperations.DEPLOYMENT)
                     .max((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp()));
         }
 
         public boolean deleteDeploymentByRun(String environmentId, String jobName, String runNumber) {
-            final ServiceOperation operation = getDeploymentByRun(environmentId, jobName, runNumber)
+            final DeploymentOperation operation = getDeploymentByRun(environmentId, jobName, runNumber)
                     .orElse(null);
             if (operation != null) {
                 synchronized (this) {

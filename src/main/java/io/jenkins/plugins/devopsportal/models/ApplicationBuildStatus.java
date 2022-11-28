@@ -124,10 +124,12 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
         return activities;
     }
 
+    @SuppressWarnings("unused")
     public boolean isBuildBranchPresent() {
         return buildBranch != null && !buildBranch.isEmpty();
     }
 
+    @SuppressWarnings("unused")
     public boolean isBuildCommitPresent() {
         return buildCommit != null && !buildCommit.isEmpty();
     }
@@ -242,6 +244,7 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
         }
     }
 
+
     public boolean removeComponentActivity(@NonNull ActivityCategory category, @NonNull String applicationComponent) {
         Optional<AbstractActivity> activity = getComponentActivityByCategory(category, applicationComponent);
         if (activity.isPresent()) {
@@ -268,6 +271,7 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
         }
     }
 
+    @SuppressWarnings("unused")
     public String getUUID() {
         return UUID.nameUUIDFromBytes((applicationName + applicationVersion).getBytes()).toString();
     }

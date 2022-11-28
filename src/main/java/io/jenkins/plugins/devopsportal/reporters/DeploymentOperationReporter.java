@@ -11,13 +11,11 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
-import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
-import io.jenkins.plugins.devopsportal.models.RunOperations;
+import io.jenkins.plugins.devopsportal.models.DeploymentOperation;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.GenericRunModel;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
-import io.jenkins.plugins.devopsportal.models.ServiceOperation;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
@@ -29,27 +27,22 @@ import java.io.IOException;
 import java.time.Instant;
 
 /**
- * Build step of a project used to record the execution of an exploitation operation.
+ * Build step of a project used to record the execution of a DEPLOYMENT operation.
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class RunOperationReporter extends Builder implements SimpleBuildStep {
+public class DeploymentOperationReporter extends Builder implements SimpleBuildStep {
 
     private String targetService;
     private String applicationName;
     private String applicationVersion;
-    private RunOperations operation;
-    private boolean success;
     private String tags;
 
     @DataBoundConstructor
-    public RunOperationReporter(String targetService, String applicationName, String applicationVersion,
-                                RunOperations operation, boolean success) {
+    public DeploymentOperationReporter(String targetService, String applicationName, String applicationVersion) {
         this.targetService = targetService;
         this.applicationName = applicationName;
         this.applicationVersion = applicationVersion;
-        this.operation = operation;
-        this.success = success;
     }
 
     public String getTargetService() {
@@ -79,28 +72,6 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
         this.applicationVersion = applicationVersion;
     }
 
-    public RunOperations getOperation() {
-        return operation;
-    }
-
-    public void setOperation(RunOperations operation) {
-        this.operation = operation;
-    }
-
-    @DataBoundSetter
-    public void setOperation(String operation) {
-        this.operation = (operation == null || operation.isEmpty()) ? null : RunOperations.valueOf(operation);
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    @DataBoundSetter
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
     public String getTags() {
         return tags;
     }
@@ -127,20 +98,16 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
 
             GenericRunModel.updateRecordFromRun(record, run, env);
             record.setServiceId(service.getId());
-            record.setOperation(operation);
-            record.setSuccess(success);
             record.setTimestamp(Instant.now().getEpochSecond());
             record.setApplicationName(applicationName);
             record.setApplicationVersion(applicationVersion);
             record.setTags(tags);
 
             listener.getLogger().printf(
-                    "Report run operation '%s' on application '%s' to environment '%s' (%s) : %s\n",
-                    operation,
+                    "Report run operation 'DEPLOYMENT' on application '%s' to environment '%s' (%s)\n",
                     applicationName,
                     service.getCategory(),
-                    service.getHostname(),
-                    success
+                    service.getHostname()
             );
         });
     }
@@ -149,18 +116,19 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
         return Jenkins.get().getDescriptorByType(ServiceConfiguration.DescriptorImpl.class);
     }
 
-    public static ServiceOperation.DescriptorImpl getServiceOperationDescriptor() {
-        return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
+    public static DeploymentOperation.DescriptorImpl getServiceOperationDescriptor() {
+        return Jenkins.get().getDescriptorByType(DeploymentOperation.DescriptorImpl.class);
     }
 
     public static ApplicationBuildStatus.DescriptorImpl getBuildStatusDescriptor() {
         return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
     }
 
-    @Symbol("reportRunOperation")
+    @Symbol("reportDeployOperation")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckTargetService(@QueryParameter String targetService) {
             if (targetService == null || targetService.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
@@ -171,6 +139,7 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckApplicationName(@QueryParameter String applicationName) {
             if (applicationName == null || applicationName.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
@@ -181,32 +150,12 @@ public class RunOperationReporter extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckApplicationVersion(@QueryParameter String applicationVersion) {
             if (applicationVersion == null || applicationVersion.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
             }
             return FormValidation.ok();
-        }
-
-        public FormValidation doCheckOperation(@QueryParameter String operation) {
-            if (operation.trim().isEmpty()) {
-                return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
-            }
-            try {
-                RunOperations.valueOf(operation);
-            }
-            catch (IllegalArgumentException ex) {
-                return FormValidation.error(Messages.FormValidation_Error_InvalidValue());
-            }
-            return FormValidation.ok();
-        }
-
-        public ListBoxModel doFillOperationItems() {
-            ListBoxModel list = new ListBoxModel();
-            for (RunOperations operation : RunOperations.values()) {
-                list.add(operation.name(), operation.name());
-            }
-            return list;
         }
 
         @Override

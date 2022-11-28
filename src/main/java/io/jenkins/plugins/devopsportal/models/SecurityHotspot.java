@@ -65,10 +65,12 @@ public class SecurityHotspot implements Serializable {
         this.message = message;
     }
 
+    @SuppressWarnings("unused")
     public String getProbability() {
         return probability;
     }
 
+    @SuppressWarnings("unused")
     @DataBoundSetter
     public void setProbability(String probability) {
         this.probability = probability;

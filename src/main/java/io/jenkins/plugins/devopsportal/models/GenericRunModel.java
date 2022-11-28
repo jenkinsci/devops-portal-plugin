@@ -16,6 +16,7 @@ public interface GenericRunModel {
     void setBuildBranch(String buildJob);
     void setBuildCommit(String buildJob);
 
+    @SuppressWarnings("unused")
     static void updateRecordFromRun(GenericRunModel record, Run<?,?> run, EnvVars env) {
         record.setBuildJob(env.get("JOB_NAME"));
         record.setBuildNumber(env.get("BUILD_NUMBER"));

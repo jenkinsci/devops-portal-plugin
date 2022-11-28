@@ -5,7 +5,7 @@ import hudson.Extension;
 import hudson.model.Failure;
 import hudson.model.RootAction;
 import io.jenkins.plugins.devopsportal.Messages;
-import io.jenkins.plugins.devopsportal.models.ServiceOperation;
+import io.jenkins.plugins.devopsportal.models.DeploymentOperation;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
@@ -33,8 +33,8 @@ public class RunApi implements RootAction {
         return "run-api";
     }
 
-    public ServiceOperation.DescriptorImpl getDescriptor() {
-        return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
+    public DeploymentOperation.DescriptorImpl getDescriptor() {
+        return Jenkins.get().getDescriptorByType(DeploymentOperation.DescriptorImpl.class);
     }
 
     @GET

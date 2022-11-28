@@ -96,23 +96,19 @@ The dashboard provides some information:
 
 Once the dashboard is created, you can feed it using an **Operation Reporter**.
 
-#### Report a run operation using the Jenkins interfaces (GUI)
+#### Report a Deployment operation using the Jenkins interfaces (GUI)
 
-You can report run operations, such as Deployment, using a special build task.
+You can report Deployment operations, using a special build task.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose
-`Record a run operation`.
+`Record a Deployment operation`.
 
-![Run Operation Reporter](.doc/RunOperationReporter.png)
+![Deployment Operation Reporter](.doc/DeploymentOperationReporter.png)
 
 You have to fill in:
 
 - The target environment name (declared previously in `Manage Environments`)
 - The name of concerned application
 - The version of concerned application
-- The performed operation:
-  - `DEPLOYMENT`
-  - `ROLLBACK`
-- A success/failure status
 - Optionally, you can add tags to describe the operation (comma-separated)
 
 #### Run with pipeline script (DSL):
@@ -120,12 +116,10 @@ You have to fill in:
 The report can also be made using a Groovy Pipeline script using this command:
 
 ```groovy
-reportRunOperation(
-    targetService: String,        // Name for target environnement to deploy to
+reportDeployOperation(
+    targetService: String,        // Name for target environment to deploy to
     applicationName: String,      // Name of application deployed
     applicationVersion: String,   // Version of application deployed
-    operation: String,            // Operation name among: 'DEPLOYMENT' and 'ROLLBACK'
-    status: boolean,              // Status
     tags: String?                 // Optional: comma-separated list
 )
 ```
@@ -473,6 +467,7 @@ Version 3, 29 June 2007
 - [ ] Ensure JenkinsUtils.getBuild() works with:
   - [ ] Folders
   - [ ] Multibranch Pipelines
+  - [ ] Maven project
 - [ ] Check comment-block is present on each class
 - [ ] Check behavior with slaves workers (accessing local files)
 - [ ] UT
@@ -511,10 +506,10 @@ Version 3, 29 June 2007
   - [x] ~~Rename "registryName" to "repositoryName"~~
   - [x] ~~Rename "imageName" to "releaseName"~~
   - [x] ~~Add optional property: "releaseURL"~~
-- [ ] reportRunOperation()
+- [x] ~~reportRunOperation()~~
   - [x] ~~Delete (from popup)~~
-  - [ ] Rename to DeploymentOperation
-  - [ ] Remove boolean status flag
+  - [x] ~~Rename to DeploymentOperation~~
+  - [x] ~~Remove boolean status flag~~
 - [X] ~~Popups with history~~
   - [x] Run: ~~deployment history~~
   - [X] Build: ~~TU results~~

@@ -97,6 +97,7 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
             super(Messages.BuildActivityReporter_DisplayName());
         }
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckArtifactFileName(@QueryParameter String artifactFileName) {
             if (artifactFileName == null || artifactFileName.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());

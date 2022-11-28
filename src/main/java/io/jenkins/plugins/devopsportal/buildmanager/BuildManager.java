@@ -23,6 +23,7 @@ public @interface BuildManager {
      * An optional canonical path to the binary.
      * If not provided, the application will try to guess it.
      */
+    @SuppressWarnings("unused")
     String binaryPath() default "";
 
 }

@@ -52,6 +52,7 @@ public class ArtifactReleaseActivity extends AbstractActivity {
         this.artifactURL = artifactURL;
     }
 
+    @SuppressWarnings("unused")
     public boolean isUrlPresent() {
         return artifactURL != null && !artifactURL.isEmpty();
     }

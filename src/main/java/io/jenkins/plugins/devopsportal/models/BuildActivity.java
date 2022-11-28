@@ -59,6 +59,7 @@ public class BuildActivity extends AbstractActivity {
         this.artifactFileSizeLimit = artifactFileSizeLimit;
     }
 
+    @SuppressWarnings("unused")
     public String getArtifactFileSizeDeltaStr() {
         String sign = "-";
         if (artifactFileSizeDelta > 0) {
@@ -67,6 +68,7 @@ public class BuildActivity extends AbstractActivity {
         return sign + MiscUtils.readableFileSize(Math.abs(artifactFileSizeDelta));
     }
 
+    @SuppressWarnings("unused")
     public String getArtifactFileNameStr() {
         if (artifactFileName != null && !artifactFileName.isEmpty()) {
             return Paths.get(artifactFileName).getFileName().toString();
@@ -74,6 +76,7 @@ public class BuildActivity extends AbstractActivity {
         return "";
     }
 
+    @SuppressWarnings("unused")
     public String getArtifactFileSizeStr() {
         return MiscUtils.readableFileSize(artifactFileSize);
     }

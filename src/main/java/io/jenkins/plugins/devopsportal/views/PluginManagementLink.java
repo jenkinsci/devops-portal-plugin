@@ -55,6 +55,7 @@ public class PluginManagementLink extends ManagementLink {
         return Category.CONFIGURATION;
     }
 
+    @SuppressWarnings("unused")
     public void doSaveSettings(final StaplerRequest req, final StaplerResponse rsp) throws IOException {
         // TODO Check unicity of service name
         Jenkins jenkins = Jenkins.getInstanceOrNull();

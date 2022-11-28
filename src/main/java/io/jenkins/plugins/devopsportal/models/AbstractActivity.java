@@ -51,6 +51,7 @@ public abstract class AbstractActivity implements Serializable {
         return timestamp;
     }
 
+    @SuppressWarnings("unused")
     public String getUUID() {
         return UUID.nameUUIDFromBytes(applicationComponent.getBytes()).toString();
     }

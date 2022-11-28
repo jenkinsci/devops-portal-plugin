@@ -81,10 +81,12 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         this.vulnerabilities = vulnerabilities;
     }
 
+    @SuppressWarnings("unused")
     public String getManagerCommand() {
         return managerCommand;
     }
 
+    @SuppressWarnings("unused")
     @DataBoundSetter
     public void setManagerCommand(String managerCommand) {
         this.managerCommand = managerCommand;
@@ -217,6 +219,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
             return Optional.empty();
         }
 
+        @SuppressWarnings("unused")
         public ListBoxModel doFillManagerItems() {
             final ListBoxModel list = new ListBoxModel();
             for (BuildManager manager : MANAGERS.keySet()) {
@@ -225,6 +228,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
             return list;
         }
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckManager(@QueryParameter String manager) {
             if (manager == null || manager.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());

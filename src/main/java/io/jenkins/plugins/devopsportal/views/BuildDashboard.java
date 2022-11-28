@@ -7,9 +7,7 @@ import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.*;
 import jenkins.model.Jenkins;
-import org.apache.http.client.HttpResponseException;
 import org.kohsuke.stapler.*;
-import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -30,7 +28,6 @@ import java.util.stream.Stream;
  */
 public class BuildDashboard extends View {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_Date());
     private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
 
     private String filter = "";
@@ -74,11 +71,6 @@ public class BuildDashboard extends View {
         return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
     }
 
-    @RequirePOST
-    public HttpResponse doDeleteVersion(StaplerRequest request, StaplerResponse rsp) throws HttpResponseException {
-        return null;
-    }
-
     @Extension
     public static final class DescriptorImpl extends ViewDescriptor {
 
@@ -100,10 +92,11 @@ public class BuildDashboard extends View {
             return Jenkins.get().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
         }
 
-        public ServiceOperation.DescriptorImpl getServiceOperationDescriptor() {
-            return Jenkins.get().getDescriptorByType(ServiceOperation.DescriptorImpl.class);
+        public DeploymentOperation.DescriptorImpl getServiceOperationDescriptor() {
+            return Jenkins.get().getDescriptorByType(DeploymentOperation.DescriptorImpl.class);
         }
 
+        @SuppressWarnings("unused")
         public List<String> getApplicationNames(String filter) {
             Stream<String> stream = getBuildStatusDescriptor()
                     .getBuildStatus()
@@ -123,6 +116,7 @@ public class BuildDashboard extends View {
             return stream.collect(Collectors.toList());
         }
 
+        @SuppressWarnings("unused")
         public List<String> getApplicationVersions(String applicationName) {
             return getBuildStatusDescriptor()
                     .getBuildStatus()
@@ -135,6 +129,7 @@ public class BuildDashboard extends View {
                     .collect(Collectors.toList());
         }
 
+        @SuppressWarnings("unused")
         public ApplicationBuildStatus getApplicationBuild(String applicationName, String applicationVersion) {
             return getBuildStatusDescriptor()
                     .getBuildStatus()
@@ -145,22 +140,25 @@ public class BuildDashboard extends View {
                     .orElse(null);
         }
 
+        @SuppressWarnings("unused")
         public List<AbstractActivity> getBuildActivities(ApplicationBuildStatus build, String category) {
             return build.getActivitiesByCategory(ActivityCategory.valueOf(category));
         }
 
-        public ServiceOperation getLastDeploymentByApplication(String applicationName, String applicationVersion) {
+        public DeploymentOperation getLastDeploymentByApplication(String applicationName, String applicationVersion) {
             return getServiceOperationDescriptor()
                     .getLastDeploymentByApplication(applicationName, applicationVersion).orElse(null);
         }
 
-        public ServiceConfiguration getDeploymentTarget(ServiceOperation operation) {
+        @SuppressWarnings("unused")
+        public ServiceConfiguration getDeploymentTarget(DeploymentOperation operation) {
             if (operation != null) {
                 return getServiceConfigurationDescriptor().getService(operation.getServiceId()).orElse(null);
             }
             return null;
         }
 
+        @SuppressWarnings("unused")
         public FormValidation doCheckFilter(@QueryParameter String filter) {
             if (filter != null && !filter.isEmpty()) {
                 try {

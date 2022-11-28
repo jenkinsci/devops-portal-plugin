@@ -55,6 +55,7 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
         this.vulnerabilities = vulnerabilities;
     }
 
+    @SuppressWarnings("unused")
     public List<DependencyUpgrade> getOutdatedDependenciesList() {
         return outdatedDependenciesList;
     }
@@ -64,6 +65,7 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
         this.outdatedDependenciesList = list;
     }
 
+    @SuppressWarnings("unused")
     public List<DependencyVulnerability> getVulnerabilitiesList() {
         return vulnerabilitiesList;
     }
@@ -73,6 +75,7 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
         this.vulnerabilitiesList = list;
     }
 
+    @SuppressWarnings("unused")
     public boolean hasIssues() {
         return (outdatedDependenciesList != null && vulnerabilitiesList != null)
                 && (!outdatedDependenciesList.isEmpty() || !vulnerabilitiesList.isEmpty());

@@ -1,8 +1,5 @@
 package io.jenkins.plugins.devopsportal.models;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-
 /**
  * List of all Scores used to measure achievement of a build activity.
  *

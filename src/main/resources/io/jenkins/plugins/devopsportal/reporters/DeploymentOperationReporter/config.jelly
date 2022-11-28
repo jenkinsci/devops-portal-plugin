@@ -10,13 +10,6 @@
     <f:entry title="${%ApplicationVersion_Label}" field="applicationVersion">
         <f:textbox />
     </f:entry>
-    <f:entry title="${%Operation_Label}" field="operation">
-        <f:select>
-        </f:select>
-    </f:entry>
-    <f:entry title="${%Success_Label}" field="success">
-        <f:checkbox/>
-    </f:entry>
     <f:entry title="${%Tags_Label}" field="tags" description="${%Tags_Desc}">
         <f:textbox />
     </f:entry>

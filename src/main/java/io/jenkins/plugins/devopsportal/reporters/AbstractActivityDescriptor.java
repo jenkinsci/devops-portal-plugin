@@ -22,6 +22,7 @@ public abstract class AbstractActivityDescriptor extends BuildStepDescriptor<Bui
         this.displayName = displayName;
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckApplicationName(@QueryParameter String applicationName) {
         if (applicationName.trim().isEmpty()) {
             return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
@@ -29,6 +30,7 @@ public abstract class AbstractActivityDescriptor extends BuildStepDescriptor<Bui
         return FormValidation.ok();
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckApplicationVersion(@QueryParameter String applicationVersion) {
         if (applicationVersion.trim().isEmpty()) {
             return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
@@ -36,6 +38,7 @@ public abstract class AbstractActivityDescriptor extends BuildStepDescriptor<Bui
         return FormValidation.ok();
     }
 
+    @SuppressWarnings("unused")
     public FormValidation doCheckApplicationComponent(@QueryParameter String applicationComponent) {
         if (applicationComponent.trim().isEmpty()) {
             return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
