@@ -5,7 +5,6 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.Result;
 import hudson.model.TaskListener;
-import hudson.util.ListBoxModel;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ActivityScore;
@@ -22,49 +21,53 @@ import org.kohsuke.stapler.DataBoundSetter;
  */
 public class PerformanceTestActivityReporter extends AbstractActivityReporter<PerformanceTestActivity> {
 
-    private long requestCount;
-    private float averageResponseTime;
-    private boolean qualityGatePassed;
+    private long testCount;
+    private long sampleCount;
+    private long errorCount;
 
     @DataBoundConstructor
     public PerformanceTestActivityReporter(String applicationName, String applicationVersion, String applicationComponent) {
         super(applicationName, applicationVersion, applicationComponent);
     }
 
-    public long getRequestCount() {
-        return requestCount;
+    public long getTestCount() {
+        return testCount;
     }
 
     @DataBoundSetter
-    public void setRequestCount(long requestCount) {
-        this.requestCount = requestCount;
+    public void setTestCount(long testCount) {
+        this.testCount = testCount;
     }
 
-    public float getAverageResponseTime() {
-        return averageResponseTime;
+    public long getSampleCount() {
+        return sampleCount;
     }
 
     @DataBoundSetter
-    public void setAverageResponseTime(float averageResponseTime) {
-        this.averageResponseTime = averageResponseTime;
+    public void setSampleCount(long sampleCount) {
+        this.sampleCount = sampleCount;
+    }
+
+    public long getErrorCount() {
+        return errorCount;
+    }
+
+    @DataBoundSetter
+    public void setErrorCount(long errorCount) {
+        this.errorCount = errorCount;
     }
 
     public boolean isQualityGatePassed() {
-        return qualityGatePassed;
-    }
-
-    @DataBoundSetter
-    public void setQualityGatePassed(boolean qualityGatePassed) {
-        this.qualityGatePassed = qualityGatePassed;
+        return sampleCount > 0 && errorCount == 0;
     }
 
     @Override
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull PerformanceTestActivity activity,
                                  @NonNull TaskListener listener, @NonNull EnvVars env) {
-        activity.setRequestCount(requestCount);
-        activity.setAverageResponseTime(averageResponseTime);
-        activity.setQualityGatePassed(qualityGatePassed);
-        if (!qualityGatePassed) {
+        activity.setTestCount(testCount);
+        activity.setSampleCount(sampleCount);
+        activity.setErrorCount(errorCount);
+        if (!isQualityGatePassed()) {
             activity.setScore(ActivityScore.E);
             return Result.UNSTABLE;
         }
@@ -85,15 +88,6 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
 
         public DescriptorImpl() {
             super(Messages.PerformanceTestActivityReporter_DisplayName());
-        }
-
-        @SuppressWarnings("unused")
-        public ListBoxModel doFillBugScoreItems() {
-            ListBoxModel list = new ListBoxModel();
-            for (ActivityScore status : ActivityScore.values()) {
-                list.add(status.name(), status.name());
-            }
-            return list;
         }
 
     }

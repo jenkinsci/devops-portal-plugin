@@ -11,14 +11,14 @@
         <f:textbox />
     </f:entry>
 
-    <f:entry title="${%RequestCount_Label}" field="requestCount">
+    <f:entry title="${%RequestCount_Label}" field="testCount">
         <f:number />
     </f:entry>
-    <f:entry title="${%AverageResponseTime_Label}" field="averageResponseTime">
+    <f:entry title="${%AverageResponseTime_Label}" field="sampleCount">
         <f:number />
     </f:entry>
-    <f:entry title="${%QualityGatePassed_Label}" field="qualityGatePassed">
-        <f:checkbox />
+    <f:entry title="${%QualityGatePassed_Label}" field="errorCount">
+        <f:number />
     </f:entry>
 
 </j:jelly>

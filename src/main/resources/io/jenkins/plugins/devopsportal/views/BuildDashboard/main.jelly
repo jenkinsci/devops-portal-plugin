@@ -259,7 +259,7 @@
                             </td>
                             <td style="text-align:right">
                                 <j:if test="${activity.hasIssues()}">
-                                    <a class="jenkins-button" href="javascript:toggleModal('perf_${build.getUUID()}_${activity.getUUID()}')">
+                                    <a class="jenkins-button" href="javascript:toggleModal('dep_${build.getUUID()}_${activity.getUUID()}')">
                                         <l:icon class="symbol-eye-outline plugin-ionicons-api icon-sm" />
                                     </a>
                                 </j:if>
@@ -307,24 +307,25 @@
                                 <strong>${activity.applicationComponent}</strong>
                             </td>
                             <td>
-                                <span class="activity-score score-${activity.score}">
-                                    ${activity.score}
-                                </span>
-                                <j:if test="${activity.requestCount > 0}">
-                                    ${%quality_item_requests}
-                                    <strong>${activity.requestCount}</strong>
-                                </j:if>
-                                <j:if test="${activity.averageResponseTime > 0}">
-                                    ${%quality_item_averageResponseTime}
-                                    <strong>${activity.averageResponseTime}ms</strong>
-                                </j:if>
-                            </td>
-                            <td colspan="2">
                                 <j:if test="${activity.qualityGatePassed}">
                                     <span class="activity-quality-gate passed">${%quality_gate_passed}</span>
                                 </j:if>
                                 <j:if test="${!activity.qualityGatePassed}">
                                     <span class="activity-quality-gate failed">${%quality_gate_failed}</span>
+                                </j:if>
+                                <j:if test="${activity.errorCount >= 0}">
+                                    ${%quality_item_errorCount}
+                                    <strong>${activity.errorCount}</strong>
+                                </j:if>
+                            </td>
+                            <td colspan="2">
+                                <j:if test="${activity.testCount > 0}">
+                                    ${%quality_item_tests}
+                                    <strong>${activity.testCount}</strong>
+                                </j:if>
+                                <j:if test="${activity.sampleCount > 0}">
+                                    ${%quality_item_samples}
+                                    <strong>${activity.sampleCount}</strong>
                                 </j:if>
                             </td>
                         </tr>
@@ -473,7 +474,7 @@
             <j:set var="build" value="${it.descriptor.getApplicationBuild(application, version)}"/>
             <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'DEPENDENCIES_ANALYSIS')}">
                 <j:if test="${activity.hasIssues()}">
-                    <div id="modal_perf_${build.getUUID()}_${activity.getUUID()}" class="modal">
+                    <div id="modal_dep_${build.getUUID()}_${activity.getUUID()}" class="modal">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <span class="close" />
@@ -487,9 +488,9 @@
                                     <j:if test="${k == 0}">
                                         <thead class="group-headers">
                                             <tr>
-                                                <th>${%popup_activity_perf_title_package}</th>
-                                                <th>${%popup_activity_perf_title_dependencies}</th>
-                                                <th>${%popup_activity_perf_title_information}</th>
+                                                <th>${%popup_activity_dep_title_package}</th>
+                                                <th>${%popup_activity_dep_title_dependencies}</th>
+                                                <th>${%popup_activity_dep_title_information}</th>
                                             </tr>
                                         </thead>
                                     </j:if>
@@ -499,7 +500,7 @@
                                                 <tr>
                                                     <td colspan="3">
                                                         <l:icon class="symbol-lock-open-outline plugin-ionicons-api icon-sm"/>
-                                                        <strong style="margin: 0 .25rem; text-transform: uppercase;">${%popup_activity_perf_label_vulnerabilities}</strong>
+                                                        <strong style="margin: 0 .25rem; text-transform: uppercase;">${%popup_activity_dep_label_vulnerabilities}</strong>
                                                     </td>
                                                 </tr>
                                             </j:if>
@@ -520,7 +521,7 @@
                                                 <tr>
                                                     <td colspan="3">
                                                         <l:icon class="symbol-hourglass-outline plugin-ionicons-api icon-sm"/>
-                                                        <strong style="margin: 0 .25rem; text-transform: uppercase;">${%popup_activity_perf_label_outdated}</strong>
+                                                        <strong style="margin: 0 .25rem; text-transform: uppercase;">${%popup_activity_dep_label_outdated}</strong>
                                                     </td>
                                                 </tr>
                                             </j:if>

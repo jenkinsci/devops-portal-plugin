@@ -345,11 +345,27 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 
 Run with pipeline script (DSL):
 
-⛔ TODO
+```groovy
+reportPerformanceTest(
+    applicationName: String,       // Name of application built
+    applicationVersion: String,    // Version of application built
+    applicationComponent: String,  // Name of application component built
+    testCount: int,                // Number of tests executed
+    sampleCount: int,              // Number of samples (API calls) for all tests
+    errorCount: int                // Number of error encountered
+)
+```
 
-#### Report a JMeter performance result
+#### Using with JMeter
 
-⛔ TODO
+```groovy
+reportJmeterPerformanceTest(
+    applicationName: String,       // Name of application built
+    applicationVersion: String,    // Version of application built
+    applicationComponent: String,  // Name of application component built
+    reportFilePath: String         // Path to JMeter XML result file
+)
+```
 
 Dashboard preview:
 

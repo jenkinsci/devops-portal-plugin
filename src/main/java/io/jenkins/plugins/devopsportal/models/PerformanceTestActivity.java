@@ -10,40 +10,44 @@ import org.kohsuke.stapler.DataBoundSetter;
  */
 public class PerformanceTestActivity extends AbstractActivity {
 
-    private long requestCount;
-    private float averageResponseTime;
-    private boolean qualityGatePassed;
+    private long testCount;
+    private long sampleCount;
+    private long errorCount;
 
     @DataBoundConstructor
     public PerformanceTestActivity(String applicationComponent) {
         super(ActivityCategory.PERFORMANCE_TEST, applicationComponent);
     }
 
-    public long getRequestCount() {
-        return requestCount;
+    public long getTestCount() {
+        return testCount;
     }
 
     @DataBoundSetter
-    public void setRequestCount(long requestCount) {
-        this.requestCount = requestCount;
+    public void setTestCount(long testCount) {
+        this.testCount = testCount;
     }
 
-    public float getAverageResponseTime() {
-        return averageResponseTime;
+    public long getSampleCount() {
+        return sampleCount;
     }
 
     @DataBoundSetter
-    public void setAverageResponseTime(float averageResponseTime) {
-        this.averageResponseTime = averageResponseTime;
+    public void setSampleCount(long sampleCount) {
+        this.sampleCount = sampleCount;
+    }
+
+    public long getErrorCount() {
+        return errorCount;
+    }
+
+    @DataBoundSetter
+    public void setErrorCount(long errorCount) {
+        this.errorCount = errorCount;
     }
 
     public boolean isQualityGatePassed() {
-        return qualityGatePassed;
-    }
-
-    @DataBoundSetter
-    public void setQualityGatePassed(boolean qualityGatePassed) {
-        this.qualityGatePassed = qualityGatePassed;
+        return sampleCount > 0 && errorCount == 0;
     }
 
 }
