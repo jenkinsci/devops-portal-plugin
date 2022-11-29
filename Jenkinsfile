@@ -136,6 +136,21 @@ pipeline {
             }
         }
 
+        stage('Performance') {
+            steps {
+                script {
+                    reportPerformanceTest(
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION,
+                        applicationComponent: "plugin-devops-portal",
+                        testCount: 10,
+                        sampleCount: 50,
+                        errorCount: 0
+                    )
+                }
+            }
+        }
+
     }
 
 }
