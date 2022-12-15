@@ -70,16 +70,20 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
                 try {
                     activity.setArtifactFileSize(file.length());
                     activity.setArtifactFileSizeDelta(activity.getArtifactFileSize() - previousSize);
-                    listener.getLogger().println("Current file size: " + activity.getArtifactFileSize());
-                    listener.getLogger().println("Previous file size: " + previousSize);
+                    listener.getLogger().println("Current artifact file size: " + activity.getArtifactFileSize());
+                    listener.getLogger().println("Previous artifact file size: " + previousSize);
                     listener.getLogger().println("Delta: " + activity.getArtifactFileSizeDelta());
                 }
                 catch (Exception ignored) { }
             }
+            else {
+                listener.getLogger().println("Warning, artifact file not found: " + artifactFileName);
+            }
         }
-        final boolean failure = artifactFileSizeLimit > 0 && activity.getArtifactFileSizeDelta() > 0;
+        final boolean failure = artifactFileSizeLimit > 0 && activity.getArtifactFileSize() > 0
+                && activity.getArtifactFileSize() > artifactFileSizeLimit;
         if (failure) {
-            listener.getLogger().println("Current file size exceed limit: " + artifactFileSizeLimit);
+            listener.getLogger().println("Current artifact file size exceed limit: " + artifactFileSizeLimit);
         }
         return failure ? Result.FAILURE : null;
     }
