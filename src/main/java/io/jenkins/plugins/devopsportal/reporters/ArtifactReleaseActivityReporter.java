@@ -14,7 +14,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 /**
- * Build step of a project used to record an IMAGE_RELEASE activity.
+ * Build step of a project used to record an ARTIFACT_RELEASE activity.
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */

@@ -57,24 +57,25 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
         this.errorCount = errorCount;
     }
 
-    public boolean isQualityGatePassed() {
-        return sampleCount > 0 && errorCount == 0;
-    }
-
     @Override
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull PerformanceTestActivity activity,
                                  @NonNull TaskListener listener, @NonNull EnvVars env) {
         activity.setTestCount(testCount);
         activity.setSampleCount(sampleCount);
         activity.setErrorCount(errorCount);
-        if (!isQualityGatePassed()) {
-            activity.setScore(ActivityScore.E);
+        // Errors presents
+        if (errorCount > 0) {
+            // Total failure
+            if (errorCount >= sampleCount) {
+                activity.setScore(ActivityScore.E);
+                return Result.FAILURE;
+            }
+            // Partial failure
+            activity.setScore(ActivityScore.D);
             return Result.UNSTABLE;
         }
-        else {
-            activity.setScore(ActivityScore.A);
-            return null;
-        }
+        activity.setScore(sampleCount > 0 ? ActivityScore.A : null);
+        return null;
     }
 
     @Override

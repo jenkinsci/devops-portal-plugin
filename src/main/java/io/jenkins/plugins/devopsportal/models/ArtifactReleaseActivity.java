@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A persistent record of a IMAGE_RELEASE activity.
+ * A persistent record of a ARTIFACT_RELEASE activity.
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */

@@ -100,7 +100,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
         File manifest = checkManifestFile(env, manifestFile, listener);
         AbstractBuildManager buildManager = checkBuildManager(manager, listener);
         if (manifest == null || buildManager == null) {
-            return null;
+            return Result.UNSTABLE;
         }
 
         // Log
@@ -149,8 +149,7 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
             activity.setVulnerabilities(0);
         }
 
-        // TODO According to results
-        return null;
+        return activity.getVulnerabilities() > 0 ? Result.UNSTABLE : null;
     }
 
     public File checkManifestFile(@NonNull EnvVars env, String manifestFile, @NonNull TaskListener listener) {
