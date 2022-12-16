@@ -7,7 +7,6 @@ import io.jenkins.plugins.devopsportal.reporters.DependenciesAnalysisActivityRep
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -22,7 +21,6 @@ public class DependenciesAnalysisActivityReporterTest {
     final String applicationComponent = "backend";
 
     @Test
-    @Ignore
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         DependenciesAnalysisActivityReporter reporter = new DependenciesAnalysisActivityReporter(applicationName, applicationVersion, applicationComponent);

@@ -22,7 +22,6 @@ public class UnitTestActivityReporterTest {
     final String applicationComponent = "backend";
 
     @Test
-    @Ignore
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         UnitTestActivityReporter reporter = new UnitTestActivityReporter(applicationName, applicationVersion, applicationComponent);
