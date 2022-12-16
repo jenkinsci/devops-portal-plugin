@@ -487,6 +487,7 @@ Version 3, 29 June 2007
 - [ ] Check comment-block is present on each class
 - [ ] Check behavior with slaves workers (accessing local files)
 - [ ] UT
+- [ ] TODOs
 - [x] ~~Dark theme compatibility~~
 - [x] ~~Synchronize I/O methods~~
 - [ ] Permissions?
