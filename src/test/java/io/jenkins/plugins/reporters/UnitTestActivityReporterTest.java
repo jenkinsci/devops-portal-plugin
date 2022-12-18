@@ -3,14 +3,20 @@ package io.jenkins.plugins.reporters;
 import hudson.model.FreeStyleProject;
 import hudson.model.Label;
 import hudson.model.Result;
+import io.jenkins.plugins.devopsportal.models.AbstractActivity;
+import io.jenkins.plugins.devopsportal.models.ActivityCategory;
+import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
+import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
 import io.jenkins.plugins.devopsportal.reporters.UnitTestActivityReporter;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class UnitTestActivityReporterTest {
 
@@ -18,7 +24,7 @@ public class UnitTestActivityReporterTest {
     public JenkinsRule jenkins = new JenkinsRule();
 
     final String applicationName = "My Application";
-    final String applicationVersion = "1.0.3";
+    final String applicationVersion = "1.0.1";
     final String applicationComponent = "backend";
 
     @Test
@@ -60,6 +66,27 @@ public class UnitTestActivityReporterTest {
                         + applicationVersion + " component '" + applicationComponent + "'",
                 completedBuild
         );
+
+        ApplicationBuildStatus status = jenkins
+                .getInstance()
+                .getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class)
+                .getBuildStatusByApplication(applicationName, applicationVersion)
+                .orElse(null);
+
+        assertNotNull(status);
+
+        AbstractActivity activity = status.getComponentActivityByCategory(ActivityCategory.UNIT_TEST, applicationComponent)
+                .orElse(null);
+
+        assertNotNull(activity);
+        assertTrue(activity instanceof UnitTestActivity);
+
+        UnitTestActivity tests = (UnitTestActivity) activity;
+
+        assertEquals(2, tests.getTestsFailed());
+        assertEquals(6, tests.getTestsIgnored());
+        assertEquals(86, tests.getTestsPassed());
+        assertEquals(0.45, tests.getTestCoverage(), 0.1);
     }
 
 }

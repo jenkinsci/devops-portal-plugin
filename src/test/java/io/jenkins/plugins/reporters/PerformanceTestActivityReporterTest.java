@@ -4,6 +4,7 @@ import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Label;
 import hudson.model.Result;
+import io.jenkins.plugins.devopsportal.models.*;
 import io.jenkins.plugins.devopsportal.reporters.PerformanceTestActivityReporter;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -12,13 +13,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import static org.junit.Assert.*;
+
 public class PerformanceTestActivityReporterTest {
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
 
     final String applicationName = "My Application";
-    final String applicationVersion = "1.0.3";
+    final String applicationVersion = "1.0.4";
     final String applicationComponent = "backend";
 
     @Test
@@ -50,6 +53,28 @@ public class PerformanceTestActivityReporterTest {
                         + applicationVersion + " component '" + applicationComponent + "'",
                 build
         );
+
+        ApplicationBuildStatus status = jenkins
+                .getInstance()
+                .getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class)
+                .getBuildStatusByApplication(applicationName, applicationVersion)
+                .orElse(null);
+
+        assertNotNull(status);
+
+        AbstractActivity activity = status.getComponentActivityByCategory(ActivityCategory.PERFORMANCE_TEST, applicationComponent)
+                .orElse(null);
+
+        assertNotNull(activity);
+        assertTrue(activity instanceof PerformanceTestActivity);
+
+        PerformanceTestActivity perf = (PerformanceTestActivity) activity;
+
+        assertEquals(10, perf.getTestCount());
+        assertEquals(450, perf.getSampleCount());
+        assertEquals(0, perf.getErrorCount());
+        assertTrue(perf.isQualityGatePassed());
+
     }
 
     @Test

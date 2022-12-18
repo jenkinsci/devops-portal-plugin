@@ -3,6 +3,7 @@ package io.jenkins.plugins.reporters;
 import hudson.model.FreeStyleProject;
 import hudson.model.Label;
 import hudson.model.Result;
+import io.jenkins.plugins.devopsportal.models.*;
 import io.jenkins.plugins.devopsportal.reporters.QualityAuditActivityReporter;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -10,6 +11,8 @@ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+
+import static org.junit.Assert.*;
 
 public class QualityAuditActivityReporterTest {
 
@@ -71,6 +74,35 @@ public class QualityAuditActivityReporterTest {
                         + applicationVersion + " component '" + applicationComponent + "'",
                 completedBuild
         );
+
+        ApplicationBuildStatus status = jenkins
+                .getInstance()
+                .getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class)
+                .getBuildStatusByApplication(applicationName, applicationVersion)
+                .orElse(null);
+
+        assertNotNull(status);
+
+        AbstractActivity activity = status.getComponentActivityByCategory(ActivityCategory.QUALITY_AUDIT, applicationComponent)
+                .orElse(null);
+
+        assertNotNull(activity);
+        assertTrue(activity instanceof QualityAuditActivity);
+
+        QualityAuditActivity qa = (QualityAuditActivity) activity;
+
+        assertEquals(4, qa.getBugCount());
+        assertEquals(ActivityScore.B, qa.getBugScore());
+        assertEquals(6, qa.getVulnerabilityCount());
+        assertEquals(ActivityScore.C, qa.getVulnerabilityScore());
+        assertEquals(2, qa.getHotspotCount());
+        assertEquals(ActivityScore.D, qa.getHotspotScore());
+        assertEquals(0.12, qa.getDuplicationRate(), 0.01);
+        assertEquals(0.65, qa.getTestCoverage(), 0.01);
+        assertEquals(23000, qa.getLinesCount());
+        assertFalse(qa.isQualityGatePassed());
+        assertTrue(qa.isComplete());
+
     }
 
 }
