@@ -63,10 +63,14 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
         activity.setTestCount(testCount);
         activity.setSampleCount(sampleCount);
         activity.setErrorCount(errorCount);
+        return handleActivityResult(activity);
+    }
+
+    public static Result handleActivityResult(@NonNull PerformanceTestActivity activity) {
         // Errors presents
-        if (errorCount > 0) {
+        if (activity.getErrorCount() > 0) {
             // Total failure
-            if (errorCount >= sampleCount) {
+            if (activity.getErrorCount() >= activity.getSampleCount()) {
                 activity.setScore(ActivityScore.E);
                 return Result.FAILURE;
             }
@@ -74,7 +78,7 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
             activity.setScore(ActivityScore.D);
             return Result.UNSTABLE;
         }
-        activity.setScore(sampleCount > 0 ? ActivityScore.A : null);
+        activity.setScore(activity.getSampleCount() > 0 ? ActivityScore.A : null);
         return null;
     }
 

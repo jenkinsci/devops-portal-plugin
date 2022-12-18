@@ -510,13 +510,13 @@ Version 3, 29 June 2007
   - [ ] NPM
       - [ ] Dependencies
       - [ ] Vulnerabilities
-- [ ] reportPerformanceTest()
-  - [ ] Field: Tests -> count(<api>)
-  - [ ] Field: Samples -> sum(<api><samples>)
-  - [ ] Field: Errors -> sum(<api><errors>)
-  - [ ] Field: QualityGate -> (Errors == 0)
-- [ ] reportJmeterPerformanceTest()
-  - [ ] Field: Report file path
+- [x] ~~reportPerformanceTest()~~
+  - [x] ~~Field: Tests -> count(<api>)~~
+  - [x] ~~Field: Samples -> sum(<api><samples>)~~
+  - [x] ~~Field: Errors -> sum(<api><errors>)~~
+  - [x] ~~Field: QualityGate -> (Errors == 0)~~
+- [x] ~~reportJMeterPerformanceTest()~~
+  - [x] ~~Field: Report file path~~
 - [x] ~~reportImageRelease()~~
   - [x] ~~Rename to "reportImageRelease()" and "ArtifactReleaseActivityReporter" and "ArtifactReleaseActivity"~~
   - [x] ~~Rename label of build step : "Record a release"~~
