@@ -14,7 +14,10 @@
     <f:entry title="${%Manager_Label}" field="manager">
         <f:select />
     </f:entry>
-    <f:entry title="${%BaseDirectory_Label}" field="baseDirectory" description="${%BaseDirectory_Desc}">
+    <f:entry title="${%ManifestFile_Label}" field="manifestFile">
+        <f:textbox />
+    </f:entry>
+    <f:entry title="${%ManagerCommand_Label}" field="managerCommand">
         <f:textbox />
     </f:entry>
 

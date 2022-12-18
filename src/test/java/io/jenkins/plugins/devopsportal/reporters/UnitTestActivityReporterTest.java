@@ -1,10 +1,12 @@
-package io.jenkins.plugins.reporters;
+package io.jenkins.plugins.devopsportal.reporters;
 
 import hudson.model.FreeStyleProject;
 import hudson.model.Label;
 import hudson.model.Result;
-import io.jenkins.plugins.devopsportal.models.*;
-import io.jenkins.plugins.devopsportal.reporters.ArtifactReleaseActivityReporter;
+import io.jenkins.plugins.devopsportal.models.AbstractActivity;
+import io.jenkins.plugins.devopsportal.models.ActivityCategory;
+import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
+import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -13,24 +15,25 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class ArtifactReleaseActivityReporterTest {
+public class UnitTestActivityReporterTest {
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
 
     final String applicationName = "My Application";
-    final String applicationVersion = "1.0.7";
+    final String applicationVersion = "1.0.1";
     final String applicationComponent = "backend";
 
     @Test
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        ArtifactReleaseActivityReporter reporter = new ArtifactReleaseActivityReporter(applicationName, applicationVersion, applicationComponent);
-        reporter.setRepositoryName("registry.myserver.com");
-        reporter.setArtifactName("my-application/1.0.3");
-        reporter.setArtifactURL("https://registry.myserver.com/projects/my-application/tags?1.0.3");
-        reporter.setTags("docker,harbor");
+        UnitTestActivityReporter reporter = new UnitTestActivityReporter(applicationName, applicationVersion, applicationComponent);
+        reporter.setTestCoverage(0.65F);
+        reporter.setTestsPassed(25);
+        reporter.setTestsPassed(2);
+        reporter.setTestsIgnored(9);
         project.getBuildersList().add(reporter);
         project = jenkins.configRoundtrip(project);
         jenkins.assertEqualDataBoundBeans(
@@ -45,20 +48,20 @@ public class ArtifactReleaseActivityReporterTest {
         jenkins.createOnlineSlave(Label.get(agentLabel));
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
         String pipelineScript = "node {\n" +
-                "  reportArtifactRelease(\n" +
+                "  reportUnitTest(\n" +
                 "       applicationName: '" + applicationName + "',\n" +
                 "       applicationVersion: '" + applicationVersion + "',\n" +
                 "       applicationComponent: '" + applicationComponent + "',\n" +
-                "       repositoryName: 'registry.myserver.com',\n" +
-                "       artifactName: 'my-application/1.0.3',\n" +
-                "       artifactURL: 'https://registry.myserver.com/projects/my-application/tags?1.0.3',\n" +
-                "       tags: 'docker,harbor'\n" +
+                "       testCoverage: 0.45,\n" +
+                "       testsPassed: 86,\n" +
+                "       testsFailed: 2,\n" +
+                "       testsIgnored: 6\n" +
                 "  )\n" +
                 "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
-        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.SUCCESS, job.scheduleBuild2(0));
+        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.UNSTABLE, job.scheduleBuild2(0));
         jenkins.assertLogContains(
-                "Report build activity 'ARTIFACT_RELEASE' for application '" + applicationName + "' version "
+                "Report build activity 'UNIT_TEST' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
                 completedBuild
         );
@@ -71,21 +74,18 @@ public class ArtifactReleaseActivityReporterTest {
 
         assertNotNull(status);
 
-        AbstractActivity activity = status.getComponentActivityByCategory(ActivityCategory.ARTIFACT_RELEASE, applicationComponent)
+        AbstractActivity activity = status.getComponentActivityByCategory(ActivityCategory.UNIT_TEST, applicationComponent)
                 .orElse(null);
 
         assertNotNull(activity);
-        assertTrue(activity instanceof ArtifactReleaseActivity);
+        assertTrue(activity instanceof UnitTestActivity);
 
-        ArtifactReleaseActivity release = (ArtifactReleaseActivity) activity;
+        UnitTestActivity tests = (UnitTestActivity) activity;
 
-        assertEquals("registry.myserver.com", release.getRepositoryName());
-        assertEquals("my-application/1.0.3", release.getArtifactName());
-        assertTrue(release.isUrlPresent());
-        assertEquals("https://registry.myserver.com/projects/my-application/tags?1.0.3", release.getArtifactURL());
-        assertNotNull(release.getTags());
-        assertEquals(2, release.getTags().size());
-
+        assertEquals(2, tests.getTestsFailed());
+        assertEquals(6, tests.getTestsIgnored());
+        assertEquals(86, tests.getTestsPassed());
+        assertEquals(0.45, tests.getTestCoverage(), 0.1);
     }
 
 }

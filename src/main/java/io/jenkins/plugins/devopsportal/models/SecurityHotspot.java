@@ -7,6 +7,11 @@ import org.sonarqube.ws.Hotspots;
 
 import java.io.Serializable;
 
+/**
+ * Model for a security hotspot in a quality audit activity
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class SecurityHotspot implements Serializable {
 
     private String category;

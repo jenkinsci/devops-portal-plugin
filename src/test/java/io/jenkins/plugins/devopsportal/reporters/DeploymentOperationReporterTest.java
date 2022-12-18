@@ -1,9 +1,13 @@
-package io.jenkins.plugins.reporters;
+package io.jenkins.plugins.devopsportal.reporters;
 
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
+import hudson.model.Label;
+import hudson.model.Result;
 import io.jenkins.plugins.devopsportal.models.*;
-import io.jenkins.plugins.devopsportal.reporters.DeploymentOperationReporter;
+import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -118,8 +122,59 @@ public class DeploymentOperationReporterTest {
 
     }
 
-    // TODO Test target not exists
+    @Test
+    public void testReporterFailure() throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        DeploymentOperationReporter reporter = new DeploymentOperationReporter(
+                "Unknown service",
+                applicationName,
+                applicationVersion
+        );
+        project.getBuildersList().add(reporter);
+        FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
+        jenkins.assertLogContains(
+                "Unable to report a run operation: environment not declared",
+                build
+        );
+    }
 
-    // TODO Test DSL script
+    @Test
+    public void testScriptedPipeline() throws Exception {
+        String agentLabel = "my-agent";
+        jenkins.createOnlineSlave(Label.get(agentLabel));
+        WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
+        String pipelineScript = "node {\n" +
+                "  reportDeployOperation(\n" +
+                "       targetService: '" + targetService + "',\n" +
+                "       applicationName: '" + applicationName + "',\n" +
+                "       applicationVersion: '" + applicationVersion + "',\n" +
+                "       tags: 'tag1, tag2'\n" +
+                "  )\n" +
+                "}";
+        job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
+        WorkflowRun build = jenkins.assertBuildStatus(Result.SUCCESS, job.scheduleBuild2(0));
+        jenkins.assertLogContains(
+                "Report run operation 'DEPLOYMENT' on application '" + applicationName +
+                        "' to environment 'production' (bar.mydomain.com)",
+                build
+        );
+
+        assertNotNull(jenkins.getInstance()
+                .getDescriptorByType(DeploymentOperation.DescriptorImpl.class)
+                .getLastDeploymentByApplication(applicationName, applicationVersion)
+                .orElse(null));
+
+        ServiceConfiguration service = jenkins.getInstance()
+                .getDescriptorByType(ServiceConfiguration.DescriptorImpl.class)
+                .getService(targetService)
+                .orElse(null);
+        assertNotNull(service);
+
+        assertNotNull(jenkins.getInstance()
+                .getDescriptorByType(DeploymentOperation.DescriptorImpl.class)
+                .getDeploymentByRun(service.getId(), "test-scripted-pipeline", "1")
+                .orElse(null));
+
+    }
 
 }

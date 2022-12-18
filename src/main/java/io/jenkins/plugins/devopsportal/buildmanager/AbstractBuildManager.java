@@ -10,6 +10,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An abstract class for build managers
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public abstract class AbstractBuildManager {
 
     public BuildManager getConfiguration() {

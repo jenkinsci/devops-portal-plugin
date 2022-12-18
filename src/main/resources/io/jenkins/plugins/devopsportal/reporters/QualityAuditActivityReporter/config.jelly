@@ -32,6 +32,9 @@
     <f:entry title="${%DuplicationRate_Label}" field="duplicationRate">
         <f:number />
     </f:entry>
+    <f:entry title="${%TestCoverage_Label}" field="testCoverage">
+        <f:number />
+    </f:entry>
     <f:entry title="${%LinesCount_Label}" field="linesCount">
         <f:number />
     </f:entry>

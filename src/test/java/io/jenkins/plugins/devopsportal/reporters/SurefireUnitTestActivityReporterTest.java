@@ -1,4 +1,4 @@
-package io.jenkins.plugins.reporters;
+package io.jenkins.plugins.devopsportal.reporters;
 
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
@@ -8,7 +8,6 @@ import io.jenkins.plugins.devopsportal.models.AbstractActivity;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
-import io.jenkins.plugins.devopsportal.reporters.SurefireUnitTestActivityReporter;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;

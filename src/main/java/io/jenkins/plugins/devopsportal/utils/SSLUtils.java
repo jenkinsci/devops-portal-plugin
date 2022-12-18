@@ -6,6 +6,11 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+/**
+ * Utility class for HTTPS certificates
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class SSLUtils {
 
     public static SSLContext getSSLContext(X509TrustManager manager) {

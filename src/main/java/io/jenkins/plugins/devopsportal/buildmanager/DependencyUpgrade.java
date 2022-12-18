@@ -2,6 +2,11 @@ package io.jenkins.plugins.devopsportal.buildmanager;
 
 import java.io.Serializable;
 
+/**
+ * A record for a dependency to upgrade
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class DependencyUpgrade implements Serializable {
 
     public final String component;

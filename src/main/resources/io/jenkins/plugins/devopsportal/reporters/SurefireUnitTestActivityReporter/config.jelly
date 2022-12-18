@@ -11,17 +11,8 @@
         <f:textbox />
     </f:entry>
 
-    <f:entry title="${%TestCoverage_Label}" field="testCoverage">
-        <f:number />
-    </f:entry>
-    <f:entry title="${%TestsPassed_Label}" field="testsPassed">
-        <f:number />
-    </f:entry>
-    <f:entry title="${%TestsFailed_Label}" field="testsFailed">
-        <f:number />
-    </f:entry>
-    <f:entry title="${%TestsIgnored_Label}" field="testsIgnored">
-        <f:number />
+    <f:entry title="${%SurefireReportPath_Label}" field="surefireReportPath">
+        <f:textbox />
     </f:entry>
 
 </j:jelly>

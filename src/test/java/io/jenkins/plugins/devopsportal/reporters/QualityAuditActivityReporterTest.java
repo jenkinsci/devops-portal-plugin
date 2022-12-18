@@ -1,10 +1,9 @@
-package io.jenkins.plugins.reporters;
+package io.jenkins.plugins.devopsportal.reporters;
 
 import hudson.model.FreeStyleProject;
 import hudson.model.Label;
 import hudson.model.Result;
 import io.jenkins.plugins.devopsportal.models.*;
-import io.jenkins.plugins.devopsportal.reporters.QualityAuditActivityReporter;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -33,7 +32,7 @@ public class QualityAuditActivityReporterTest {
         reporter.setVulnerabilityScore("A");
         reporter.setHotspotCount(2);
         reporter.setHotspotScore("D");
-        reporter.setDuplicationRate(.324f);
+        reporter.setDuplicationRate(.32f);
         reporter.setTestCoverage(.78f);
         reporter.setLinesCount(16500);
         reporter.setQualityGatePassed(true);

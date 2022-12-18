@@ -481,12 +481,12 @@ Version 3, 29 June 2007
 
 - [x] ~~Encode FR translations characters~~
 - [ ] Ensure JenkinsUtils.getBuild() works with:
-  - [ ] Folders
+  - [x] ~~Folders~~
   - [ ] Multibranch Pipelines
-  - [ ] Maven project
-- [ ] Check comment-block is present on each class
+  - [x] ~~Maven project~~
+- [x] ~~Check comment-block is present on each class~~
 - [ ] Check behavior with slaves workers (accessing local files)
-- [ ] UT
+- [x] ~~UT~~
 - [ ] TODOs
 - [x] ~~Dark theme compatibility~~
 - [x] ~~Synchronize I/O methods~~
@@ -532,4 +532,4 @@ Version 3, 29 June 2007
   - [X] Build: ~~TU results~~
   - [x] Build: ~~Dependencies Analysis results~~
   - [x] Build: ~~Quality Audit issues~~
-- [ ] Monitoring : rename ServiceMonitoring to EnvironmentMonitoring
+

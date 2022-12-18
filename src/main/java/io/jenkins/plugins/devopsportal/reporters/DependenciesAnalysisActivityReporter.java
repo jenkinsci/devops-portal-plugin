@@ -36,8 +36,6 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
 
     private String manager;
     private String manifestFile;
-    private int outdatedDependencies;
-    private int vulnerabilities;
     private String managerCommand;
 
     @DataBoundConstructor
@@ -61,24 +59,6 @@ public class DependenciesAnalysisActivityReporter extends AbstractActivityReport
     @DataBoundSetter
     public void setManifestFile(String manifestFile) {
         this.manifestFile = manifestFile;
-    }
-
-    public int getOutdatedDependencies() {
-        return outdatedDependencies;
-    }
-
-    @DataBoundSetter
-    public void setOutdatedDependencies(int outdatedDependencies) {
-        this.outdatedDependencies = outdatedDependencies;
-    }
-
-    public int getVulnerabilities() {
-        return vulnerabilities;
-    }
-
-    @DataBoundSetter
-    public void setVulnerabilities(int vulnerabilities) {
-        this.vulnerabilities = vulnerabilities;
     }
 
     @SuppressWarnings("unused")

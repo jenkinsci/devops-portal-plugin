@@ -13,6 +13,11 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.WebMethod;
 import org.kohsuke.stapler.verb.GET;
 
+/**
+ * The API controller for all operations about BUILD features
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 @Extension
 public class BuildApi implements RootAction {
 

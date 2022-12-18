@@ -11,6 +11,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The configuration for Maven build manager
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 @BuildManager(code = "MAVEN", label = "Maven")
 public class MavenBuildManager extends AbstractBuildManager {
 

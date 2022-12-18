@@ -7,6 +7,11 @@ import org.sonarqube.ws.Issues;
 
 import java.io.Serializable;
 
+/**
+ * Model for an issue in a quality audit activity
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class QualityIssue implements Serializable {
 
     private String severity;

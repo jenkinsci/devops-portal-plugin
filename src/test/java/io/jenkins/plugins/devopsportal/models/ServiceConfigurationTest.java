@@ -1,6 +1,5 @@
-package io.jenkins.plugins.models;
+package io.jenkins.plugins.devopsportal.models;
 
-import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

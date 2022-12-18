@@ -1,11 +1,10 @@
-package io.jenkins.plugins.reporters;
+package io.jenkins.plugins.devopsportal.reporters;
 
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Label;
 import hudson.model.Result;
 import io.jenkins.plugins.devopsportal.models.*;
-import io.jenkins.plugins.devopsportal.reporters.PerformanceTestActivityReporter;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
