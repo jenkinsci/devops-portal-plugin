@@ -12,6 +12,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -57,17 +58,36 @@ public class PluginManagementLink extends ManagementLink {
 
     @SuppressWarnings("unused")
     public void doSaveSettings(final StaplerRequest req, final StaplerResponse rsp) throws IOException {
-        // TODO Check unicity of service name
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
             return;
         }
         jenkins.checkPermission(Jenkins.ADMINISTER);
         LOGGER.info("Plugin settings saved");
+
+        // Extract list of services from request
         JSONObject request = JSONObject.fromObject(req.getParameter("json"));
         List<ServiceConfiguration> services = req.bindJSONToList(ServiceConfiguration.class, request.get("services"));
+
+        // Sanity and uniqueness check
+        List<String> distinctLabels = new ArrayList<>();
+        for (ServiceConfiguration service : services) {
+            service.setLabel(service.getLabel().trim());
+            if (distinctLabels.contains(service.getLabel())) {
+                rsp.sendError(400);
+                return;
+            }
+            distinctLabels.add(service.getLabel());
+            service.setCategory(service.getCategory().trim());
+            service.setUrl(service.getUrl().trim());
+        }
+
+        // Store services
         ((ServiceConfiguration.DescriptorImpl) getServiceConfigurationDescriptor()).setServiceConfigurations(services);
+
+        // Redirect to same page
         rsp.sendRedirect(req.getContextPath() + "/" + getUrlName());
+
     }
 
 }

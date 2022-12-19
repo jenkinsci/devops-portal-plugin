@@ -1,41 +1,40 @@
 # DevOps Portal Jenkins Plugin
+--- *Brings some DevOps to your Jenkins !*
 
-A Jenkins Dashboard Plugin with many features :
+![DevOps Cycle](.doc/DevopsCycle.png)
 
-1. Offer a specific **dashboard** to track 🚀 **[RUN operations](#section-run)**
-    - Environments **monitoring** (service availability)
-    - HTTPS certificate validity and expiration monitoring
-    - **Operations** tracking, like Deployments or Rollback (target environment, application and version, related run)
-2. Offer a specific **dashboard** to bring together all applications 📦 **[BUILD activities](#section-build)**
-    - Display all built **applications with versions**
-    - Link to the last build run
-    - Last application **deployment** information are also displayed
-    - Gather useful information in the same place: **artifacts** built and size of them, **unit tests** performed,
-      **code quality** metrics, application **performance** metrics and published containers **images**
+This plugin allows you to centralize in Jenkins several functionalities necessary for a good DevOps approach:
+
+|  Step   | Feature                                                                                                                                              |
+|:-------:|------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  CODE   | As the development progresses, the plugin offers a synthetic view to track the progress of the build of the different versions of your applications. |
+|  BUILD  | It shows the status of each build and monitors that artifacts do not exceed a critical size.                                                         |
+|  TEST   | It gathers results from unit tests and code quality audits into a single view (shows Sonar metrics in Jenkins)                                       |
+| RELEASE | It keeps track of releases made and that artifacts are properly published and tagged on repositories.                                                |
+| DEPLOY  | It also keep track of all deployments performed on different environments directly into Jenkins.                                                     |
+| OPERATE | Furthermore, it centralizes application performance testing (especially with JMeter)                                                                 |
+| MONITOR | Finally, a dashboard allows to monitor uptime for HTTP(S) services and certificate information.                                                      |
 
 ## <a name="table-of-contents"></a> Table of Contents
 
 1. [Installing Prerequisites](#section-setup)
-2. [Configure RUN environments](#section-manage)
-3. [Manage RUN operations](#section-run)
-4. [Manage BUILD activities](#section-build)
+2. [Configure services environments](#section-manage)
+3. [Manage 📦 **BUILD activities**](#section-build)
    1. [Build artifacts](#activity-build)
    2. [Unit testing](#activity-ut)
    3. [Code Quality & Security Audit](#activity-quality)
    4. [Dependencies Analysis](#activity-dependencies)
    5. [Performance/load testing](#activity-performance)
    6. [Release container image](#activity-release)
+4. [Manage 🚀 **RUN operations**](#section-run)
 5. [Pipeline Example](#section-sample)
 6. [Setup as developer](#section-dev)
 7. [Application architecture](#section-archi)
 
 ## <a name="section-setup"></a> Installing Prerequisites
 
-⛔ TODO
-
-- Jenkins version
-- Current supported translations: 🇫🇷 🇬🇧
-- Required plugins : maven, sonar
+- Jenkins version: >= 2.346.1
+- Supported translations: 🇫🇷 🇬🇧
 - Install and enable plugin from Jenkins Administration
 
 ## <a name="section-manage"></a> ⚡ Manage Environments
@@ -54,75 +53,6 @@ You have to provide:
 - An optional monitoring URL
 - A time interval (in minutes) between two monitoring checks
 - A flag to accept invalid certificates (for monitoring URL)
-
-## <a name="section-run"></a> 🚀 Manage Run Operations
-
-### Dashboard
-
-Since you configured your environments, you can create a dashboard.
-
-Create new dashboard using: `View` > `+ button` > View type: `Run Dashboard`
-
-Example dashboard :
-
-![Run Dashboard](.doc/RunDashboard.png)
-
-The dashboard provides some information:
-
-- Display all environments grouped by categories
-- Display a status icon according to monitoring result:
-
-|                        Icon                         | Meaning                                                        |
-|:---------------------------------------------------:|----------------------------------------------------------------|
-| ![Icon Success](.doc/MonitoringStatusAvailable.png) | Successful connection                                          |
-|  ![Icon Failure](.doc/MonitoringStatusFailure.png)  | Connection failure                                             |
-|    ![Icon Alert](.doc/MonitoringStatusAlert.png)    | HTTPS configuration issue (expired or self signed certificate) |
-| ![Icon Disabled](.doc/MonitoringStatusDisabled.png) | Monitoring is disabled                                         |
-
-- Show the certificate expiration date (if the given monitoring URL is HTTPS) and status:
-
-|                        Icon                        | Meaning                          |
-|:--------------------------------------------------:|----------------------------------|
-|   ![Icon Valid](.doc/CertificateStatusValid.png)   | Certificate valid and up to date |
-| ![Icon Expired](.doc/CertificateStatusExpired.png) | Expired certificate              |
-| ![Icon Invalid](.doc/CertificateStatusInvalid.png) | Unchecked certificate            |
-
-
-- Display the last deployment information: application, version and jenkins run
-- Also display the deployment tags, which allows to describe the deployment process
-  (Eg. `ansible`, `ssh`, `ftp` ...)
-
-**Note**: you can filter environment categories to display on the dashboard using `Edit View`. Regular expressions are supported.
-
-Once the dashboard is created, you can feed it using an **Operation Reporter**.
-
-#### Report a Deployment operation using the Jenkins interfaces (GUI)
-
-You can report Deployment operations, using a special build task.
-In the `Configure` screen of a job, click on `Add Build Step` button and choose
-`Record a Deployment operation`.
-
-![Deployment Operation Reporter](.doc/DeploymentOperationReporter.png)
-
-You have to fill in:
-
-- The target environment name (declared previously in `Manage Environments`)
-- The name of concerned application
-- The version of concerned application
-- Optionally, you can add tags to describe the operation (comma-separated)
-
-#### Run with pipeline script (DSL):
-
-The report can also be made using a Groovy Pipeline script using this command:
-
-```groovy
-reportDeployOperation(
-    targetService: String,        // Name for target environment to deploy to
-    applicationName: String,      // Name of application deployed
-    applicationVersion: String,   // Version of application deployed
-    tags: String = null           // Optional: comma-separated list
-)
-```
 
 ## <a name="section-build"></a> 📦 Manage Build Activities
 
@@ -399,6 +329,75 @@ Dashboard preview:
 
 ![ActivityImageRelease](.doc/ActivityImageRelease.png)
 
+## <a name="section-run"></a> 🚀 Manage Run Operations
+
+### Dashboard
+
+Since you configured your environments, you can create a dashboard.
+
+Create new dashboard using: `View` > `+ button` > View type: `Run Dashboard`
+
+Example dashboard :
+
+![Run Dashboard](.doc/RunDashboard.png)
+
+The dashboard provides some information:
+
+- Display all environments grouped by categories
+- Display a status icon according to monitoring result:
+
+|                        Icon                         | Meaning                                                        |
+|:---------------------------------------------------:|----------------------------------------------------------------|
+| ![Icon Success](.doc/MonitoringStatusAvailable.png) | Successful connection                                          |
+|  ![Icon Failure](.doc/MonitoringStatusFailure.png)  | Connection failure                                             |
+|    ![Icon Alert](.doc/MonitoringStatusAlert.png)    | HTTPS configuration issue (expired or self signed certificate) |
+| ![Icon Disabled](.doc/MonitoringStatusDisabled.png) | Monitoring is disabled                                         |
+
+- Show the certificate expiration date (if the given monitoring URL is HTTPS) and status:
+
+|                        Icon                        | Meaning                          |
+|:--------------------------------------------------:|----------------------------------|
+|   ![Icon Valid](.doc/CertificateStatusValid.png)   | Certificate valid and up to date |
+| ![Icon Expired](.doc/CertificateStatusExpired.png) | Expired certificate              |
+| ![Icon Invalid](.doc/CertificateStatusInvalid.png) | Unchecked certificate            |
+
+
+- Display the last deployment information: application, version and jenkins run
+- Also display the deployment tags, which allows to describe the deployment process
+  (Eg. `ansible`, `ssh`, `ftp` ...)
+
+**Note**: you can filter environment categories to display on the dashboard using `Edit View`. Regular expressions are supported.
+
+Once the dashboard is created, you can feed it using an **Operation Reporter**.
+
+#### Report a Deployment operation using the Jenkins interfaces (GUI)
+
+You can report Deployment operations, using a special build task.
+In the `Configure` screen of a job, click on `Add Build Step` button and choose
+`Record a Deployment operation`.
+
+![Deployment Operation Reporter](.doc/DeploymentOperationReporter.png)
+
+You have to fill in:
+
+- The target environment name (declared previously in `Manage Environments`)
+- The name of concerned application
+- The version of concerned application
+- Optionally, you can add tags to describe the operation (comma-separated)
+
+#### Run with pipeline script (DSL):
+
+The report can also be made using a Groovy Pipeline script using this command:
+
+```groovy
+reportDeployOperation(
+    targetService: String,        // Name for target environment to deploy to
+    applicationName: String,      // Name of application deployed
+    applicationVersion: String,   // Version of application deployed
+    tags: String = null           // Optional: comma-separated list
+)
+```
+
 ## <a name="section-sample"></a> Samples
 
 | Sample                               | Content                                                         |
@@ -483,9 +482,9 @@ Version 3, 29 June 2007
 Release candidate:
 
 - [ ] TODO
-  - [ ] ApplicationBuildStatus.java (1) (268, 28) // TODO If category doesn't exists ?
+  - [x] ApplicationBuildStatus.java (1) (268, 28) // TODO If category doesn't exists ?
   - [ ] DependenciesAnalysisActivityReporter.java (169, 16) // TODO Automatic population with Annotation detection
-  - [ ] PluginManagementLink.java (60, 12) // TODO Check unicity of service name 
+  - [x] PluginManagementLink.java (60, 12) // TODO Check unicity of service name 
   - [ ] SonarQubeCheckPeriodicWork.java (211, 12) // TODO Check arguments
   - [ ] SonarQubeCheckPeriodicWork.java (212, 12) // TODO Remove older actions for same applicationName/applicationVersion/applicationComponent
 - [ ] Fix Format Duplication rate: 11.1999996%
