@@ -23,6 +23,10 @@ This plugin allows you to centralize in Jenkins several functionalities necessar
 | OPERATE | Furthermore, it centralizes application performance testing (especially with JMeter)                                                                 |
 | MONITOR | Finally, a dashboard allows to monitor uptime for HTTP(S) services and certificate information.                                                      |
 
+Bring together in a single Jenkins dashboard all the development activities around the project:
+
+![Build Dashboard](.doc/BuildDashboard.png)
+
 ## <a name="table-of-contents"></a> Table of Contents
 
 1. [Installing Prerequisites](#section-setup)
