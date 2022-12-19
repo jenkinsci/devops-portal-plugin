@@ -35,14 +35,14 @@ This plugin allows you to centralize in Jenkins several functionalities necessar
 ## <a name="table-of-contents"></a> Table of Contents
 
 1. [Installing Prerequisites](#section-setup)
-2. [Configure services environments](#section-manage)
-3. [Manage 📦 **BUILD activities**](#section-build)
+2. [Manage 📦 **BUILD activities**](#section-build)
    1. [Build artifacts](#activity-build)
    2. [Unit testing](#activity-ut)
    3. [Code Quality & Security Audit](#activity-quality)
    4. [Dependencies Analysis](#activity-dependencies)
    5. [Performance/load testing](#activity-performance)
    6. [Release container image](#activity-release)
+3. [Configure services environments](#section-manage)
 4. [Manage 🚀 **RUN operations**](#section-run)
 5. [Pipeline Example](#section-sample)
 6. [Setup as developer](#section-dev)
@@ -53,23 +53,6 @@ This plugin allows you to centralize in Jenkins several functionalities necessar
 - Jenkins version: >= 2.346.1
 - Supported translations: 🇫🇷 🇬🇧
 - Install and enable plugin from Jenkins Administration
-
-## <a name="section-manage"></a> ⚡ Manage Environments
-
-After the installation, a link allows to configure managed environments in **Jenkins Administration**:
-
-![PluginManagementLink](.doc/PluginManagementLink.png)
-
-Then you can configure each environment to manage:
-
-![ServiceConfiguration](.doc/ServiceConfiguration.png)
-
-You have to provide:
-- An unique label
-- A category (like production, staging, ...)
-- An optional monitoring URL
-- A time interval (in minutes) between two monitoring checks
-- A flag to accept invalid certificates (for monitoring URL)
 
 ## <a name="section-build"></a> 📦 Manage Build Activities
 
@@ -123,10 +106,6 @@ reportBuild(
 )
 ```
 
-Dashboard preview:
-
-![ActivityBuild](.doc/ActivityBuild.png)
-
 ### <a name="activity-ut"></a> 🔹 Activity: Unit Test
 
 You can report build activities using a special build step.
@@ -170,10 +149,6 @@ reportSurefireTest(
     surefireReportPath: String     // Path to the Surefire report file
 )
 ```
-
-Dashboard preview:
-
-![ActivityUnitTest](.doc/ActivityUnitTest.png)
 
 ###  <a name="activity-quality"></a> 🔹 Activity: Code Quality audit
 
@@ -230,10 +205,6 @@ withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server'
 }
 ```
 
-Dashboard preview:
-
-⛔ TODO
-
 ###  <a name="activity-dependencies"></a> 🔹 Activity: Dependency analysis
 
 You can report build activities using a special build step.
@@ -276,19 +247,15 @@ reportDependenciesAnalysis(
 )
 ```
 
-Dashboard preview:
-
-![ActivityDependenciesAnalysis](.doc/ActivityDependenciesAnalysis.png)
-
 ###  <a name="activity-performance"></a> 🔹 Activity: Performance test
 
 You can report build activities using a special build step.
 In the `Configure` screen of a job, click on `Add Build Step` button and choose one among:
 
-| Build step                         |
-|------------------------------------|
-| `Record a performance test`        |
-| `Record a JMeter performance test` |
+| Build step                              |
+|-----------------------------------------|
+| `Record a performance test`             |
+| `Record a performance test with JMeter` |
 
 Run with pipeline script (DSL):
 
@@ -314,10 +281,6 @@ reportJMeterPerformanceTest(
 )
 ```
 
-Dashboard preview:
-
-⛔ TODO
-
 ###  <a name="activity-release"></a> 🔹 Activity: Application release
 
 You can report build activities using a special build step.
@@ -342,9 +305,22 @@ reportRelease(
 )
 ```
 
-Dashboard preview:
+## <a name="section-manage"></a> Configure Environments
 
-![ActivityImageRelease](.doc/ActivityImageRelease.png)
+After the installation, a link allows to configure managed environments in **Jenkins Administration**:
+
+![PluginManagementLink](.doc/PluginManagementLink.png)
+
+Then you can configure each environment to manage:
+
+![ServiceConfiguration](.doc/ServiceConfiguration.png)
+
+You have to provide:
+- An unique label
+- A category (like production, staging, ...)
+- An optional monitoring URL
+- A time interval (in minutes) between two monitoring checks
+- A flag to accept invalid certificates (for monitoring URL)
 
 ## <a name="section-run"></a> 🚀 Manage Run Operations
 
@@ -505,7 +481,7 @@ Release candidate:
   - [ ] SonarQubeCheckPeriodicWork.java (211, 12) // TODO Check arguments
   - [ ] SonarQubeCheckPeriodicWork.java (212, 12) // TODO Remove older actions for same applicationName/applicationVersion/applicationComponent
 - [x] Fix Format Duplication rate: 11.1999996%
-- [ ] README : TODO and screenshots
+- [x] README : TODO and screenshots
 - [ ] Unstable Maven dependency analysis : stucked with vulnerabilities
 
 Integration testing:
