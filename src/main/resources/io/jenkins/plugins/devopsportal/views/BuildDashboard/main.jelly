@@ -195,13 +195,13 @@
                                         <span class="activity-quality-gate failed">${%quality_gate_failed}</span>
                                     </j:if>
                                     ${%quality_item_duplications}
-                                    <strong>${activity.duplicationRate*100}%</strong>
+                                    <strong>${activity.duplicationRateStr}</strong>
                                     <j:if test="${activity.linesCount > 0}">
                                         ${%quality_item_lines}
-                                        <strong>${activity.linesCount/1000}k</strong>
+                                        <strong>${activity.linesCountStr}</strong>
                                     </j:if>
                                     <j:if test="${activity.testCoverage > 0}">
-                                        ${%quality_item_coverage} <strong>${activity.testCoverage*100}%</strong>
+                                        ${%quality_item_coverage} <strong>${activity.testCoverageStr}</strong>
                                     </j:if>
                                 </j:if>
                             </td>

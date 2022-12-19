@@ -498,8 +498,9 @@ Release candidate:
   - [x] PluginManagementLink.java (60, 12) // TODO Check unicity of service name 
   - [ ] SonarQubeCheckPeriodicWork.java (211, 12) // TODO Check arguments
   - [ ] SonarQubeCheckPeriodicWork.java (212, 12) // TODO Remove older actions for same applicationName/applicationVersion/applicationComponent
-- [ ] Fix Format Duplication rate: 11.1999996%
+- [x] Fix Format Duplication rate: 11.1999996%
 - [ ] README : TODO and screenshots
+- [ ] Unstable Maven dependency analysis : stucked with vulnerabilities
 
 Integration testing:
 

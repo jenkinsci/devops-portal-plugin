@@ -106,6 +106,10 @@ public class QualityAuditActivity extends AbstractActivity {
         return duplicationRate;
     }
 
+    public String getDuplicationRateStr() {
+        return String.format("%.2f", duplicationRate * 100) + "%";
+    }
+
     @DataBoundSetter
     public void setDuplicationRate(float duplicationRate) {
         this.duplicationRate = duplicationRate;
@@ -115,6 +119,10 @@ public class QualityAuditActivity extends AbstractActivity {
         return testCoverage;
     }
 
+    public String getTestCoverageStr() {
+        return String.format("%.2f", testCoverage * 100) + "%";
+    }
+
     @DataBoundSetter
     public void setTestCoverage(float testCoverage) {
         this.testCoverage = testCoverage;
@@ -122,6 +130,13 @@ public class QualityAuditActivity extends AbstractActivity {
 
     public long getLinesCount() {
         return linesCount;
+    }
+
+    public String getLinesCountStr() {
+        if (linesCount < 1000) {
+            return "" + linesCount;
+        }
+        return String.format("%.3f", linesCount / 100f) + "k";
     }
 
     @DataBoundSetter

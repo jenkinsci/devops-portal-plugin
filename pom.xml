@@ -47,6 +47,18 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven.compiler.testRelease>${java.version}</maven.compiler.testRelease>
         <enforcer.skip>true</enforcer.skip>
+
+        <!-- SonarQube configuration -->
+        <sonar.projectName>SIFI v${version}</sonar.projectName>
+        <sonar.projectKey>${project.groupId}.${project.artifactId}:${version}</sonar.projectKey>
+        <sonar.moduleKey>${project.groupId}.${project.artifactId}:${version}</sonar.moduleKey>
+        <sonar.projectVersion>${version}</sonar.projectVersion>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.coverage.jacoco.reportPath>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.reportPath>
+        <sonar.dependencyCheck.reportPath>target/dependency-check-report.xml</sonar.dependencyCheck.reportPath>
+        <sonar.dependencyCheck.htmlReportPath>target/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
+        <sonar.dependencyCheck.jsonReportPath>target/dependency-check-report.json</sonar.dependencyCheck.jsonReportPath>
     </properties>
 
     <dependencyManagement>
@@ -154,6 +166,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <format>ALL</format>
+                    <outputDirectory>${project.basedir}/target</outputDirectory>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
