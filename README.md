@@ -359,11 +359,11 @@ reportPerformanceTest(
 #### Using with JMeter
 
 ```groovy
-reportJmeterPerformanceTest(
+reportJMeterPerformanceTest(
     applicationName: String,       // Name of application built
     applicationVersion: String,    // Version of application built
     applicationComponent: String,  // Name of application component built
-    reportFilePath: String         // Path to JMeter XML result file
+    jmeterReportPath: String       // Path to JMeter XML result file
 )
 ```
 
