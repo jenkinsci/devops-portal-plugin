@@ -10,6 +10,14 @@
 
 ![DevOps Cycle](.doc/DevopsCycle.png)
 
+Bring together all the information about the **build** of your applications on a single dashboard:
+
+![Build Dashboard](.doc/BuildDashboard.png)
+
+And allows you to check the deployment of your applications on your environments and to monitor the availability of services:
+
+![Build Dashboard](.doc/RunDashboard.png)
+
 This plugin allows you to centralize in Jenkins several functionalities necessary for a good DevOps approach:
 
 |  Step   | Feature                                                                                                                                              |
@@ -22,9 +30,7 @@ This plugin allows you to centralize in Jenkins several functionalities necessar
 | OPERATE | Furthermore, it centralizes application performance testing (especially with JMeter)                                                                 |
 | MONITOR | Finally, a dashboard allows to monitor uptime for HTTP(S) services and certificate information.                                                      |
 
-Bring together in a single Jenkins dashboard all the development activities around the project:
 
-![Build Dashboard](.doc/BuildDashboard.png)
 
 ## <a name="table-of-contents"></a> Table of Contents
 
