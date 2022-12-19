@@ -479,57 +479,25 @@ Version 3, 29 June 2007
 
 ## TODO
 
-- [x] ~~Encode FR translations characters~~
-- [ ] Ensure JenkinsUtils.getBuild() works with:
-  - [x] ~~Folders~~
-  - [ ] Multibranch Pipelines
-  - [x] ~~Maven project~~
-- [x] ~~Check comment-block is present on each class~~
+Release candidate:
+
+- [ ] TODO
+  - [ ] ApplicationBuildStatus.java (1) (268, 28) // TODO If category doesn't exists ?
+  - [ ] DependenciesAnalysisActivityReporter.java (169, 16) // TODO Automatic population with Annotation detection
+  - [ ] PluginManagementLink.java (60, 12) // TODO Check unicity of service name 
+  - [ ] SonarQubeCheckPeriodicWork.java (211, 12) // TODO Check arguments
+  - [ ] SonarQubeCheckPeriodicWork.java (212, 12) // TODO Remove older actions for same applicationName/applicationVersion/applicationComponent
+- [ ] Fix Format Duplication rate: 11.1999996%
+- [ ] README : TODO and screenshots
+
+Integration testing:
+
+- [ ] Ensure JenkinsUtils.getBuild() works with Multibranch Pipelines
 - [ ] Check behavior with slaves workers (accessing local files)
-- [x] ~~UT~~
-- [ ] TODOs
-- [x] ~~Dark theme compatibility~~
-- [x] ~~Synchronize I/O methods~~
-- [ ] Permissions?
-- [x] ~~Build dashboard: delete entry~~
-- [x] ~~Build dashboard: display a "Deployment Activity" (using last DeploymentOperation) before "reportRelease"~~
-- [x] ~~reportBuild()~~
-  - [x] ~~Display file size increase/decrease with previous build~~
-  - [x] ~~File size limit~~
-- [x] ~~reportUnitTest()~~
-- [x] ~~reportSurefireTest()~~
-- [x] ~~reportQualityAudit()~~
-  - [ ] Format Duplication rate: 11.1999996%
-- [x] ~~reportSonarQubeAudit()~~
+- [ ] SonarQubeAudit
   - [ ] Test with invalid projectKey
   - [ ] Test with invalid server
-- [ ] reportDependenciesAnalysis()
-  - [x] ~~Maven~~
-    - [x] ~~Dependencies~~
-    - [x] ~~Vulnerabilities~~
-  - [ ] NPM
-      - [ ] Dependencies
-      - [ ] Vulnerabilities
-- [x] ~~reportPerformanceTest()~~
-  - [x] ~~Field: Tests -> count(<api>)~~
-  - [x] ~~Field: Samples -> sum(<api><samples>)~~
-  - [x] ~~Field: Errors -> sum(<api><errors>)~~
-  - [x] ~~Field: QualityGate -> (Errors == 0)~~
-- [x] ~~reportJMeterPerformanceTest()~~
-  - [x] ~~Field: Report file path~~
-- [x] ~~reportImageRelease()~~
-  - [x] ~~Rename to "reportImageRelease()" and "ArtifactReleaseActivityReporter" and "ArtifactReleaseActivity"~~
-  - [x] ~~Rename label of build step : "Record a release"~~
-  - [x] ~~Rename "registryName" to "repositoryName"~~
-  - [x] ~~Rename "imageName" to "releaseName"~~
-  - [x] ~~Add optional property: "releaseURL"~~
-- [x] ~~reportRunOperation()~~
-  - [x] ~~Delete (from popup)~~
-  - [x] ~~Rename to DeploymentOperation~~
-  - [x] ~~Remove boolean status flag~~
-- [X] ~~Popups with history~~
-  - [x] Run: ~~deployment history~~
-  - [X] Build: ~~TU results~~
-  - [x] Build: ~~Dependencies Analysis results~~
-  - [x] Build: ~~Quality Audit issues~~
 
+Next features:
+
+- [ ] Report dependencies analysis : implements with NPM
