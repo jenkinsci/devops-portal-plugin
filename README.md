@@ -14,7 +14,7 @@ Bring together all the information about the **build** of your applications on a
 
 ![Build Dashboard](.doc/BuildDashboard.png)
 
-And allows you to check the deployment of your applications on your environments and to monitor the availability of services:
+And allows you to check the deployment of your applications on your **run** environments and monitor the availability of services:
 
 ![Build Dashboard](.doc/RunDashboard.png)
 
