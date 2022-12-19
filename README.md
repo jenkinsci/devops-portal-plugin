@@ -437,9 +437,10 @@ flowchart TD
         UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
         SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
         DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
+        PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
+        JMeterPerformanceTestActivity:::reporter -.-> PerformanceTestActivity:::reporter
         QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
         SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
-        PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
         ArtifactReleaseActivityReporter:::reporter -.-> AbstractActivity:::entity
         AbstractActivity:::entity --o ApplicationBuildStatus:::entity
         SonarQualityAuditReporter:::reporter --> SonarQubeCheckPeriodicWork:::worker
