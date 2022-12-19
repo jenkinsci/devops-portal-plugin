@@ -4,7 +4,6 @@
 ![Issues](https://img.shields.io/github/issues-raw/rbello/jenkins-plugin-devops-portal)
 ![Activity](https://img.shields.io/github/last-commit/rbello/jenkins-plugin-devops-portal)
 ![Release](https://img.shields.io/github/v/release/rbello/jenkins-plugin-devops-portal?display_name=tag)
-![Downloads](https://img.shields.io/github/downloads/rbello/jenkins-plugin-devops-portal/total)
 
 # DevOps Portal Jenkins Plugin
 --- *Brings some DevOps to your Jenkins !*

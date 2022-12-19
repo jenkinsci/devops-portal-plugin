@@ -10,7 +10,6 @@ pipeline {
         APPLICATION_NAME = "jenkins-plugin-devops-portal"
         APPLICATION_VERSION = "1.0.0"
         MAVEN_PATH = 'C:\\Program Files\\JetBrains\\IntelliJ IDEA Community Edition 2022.2.3\\plugins\\maven\\lib\\maven3\\bin\\mvn'
-        //SONAR_SCANNER_OPTS = "-Djavax.net.ssl.trustStore=${WORKSPACE}\\src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789"
     }
 
     stages {
@@ -18,12 +17,12 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    /*if (isUnix()) {
+                    if (isUnix()) {
                         sh 'mvn -B -V -U -e -DskipTests package'
                     }
                     else {
                         bat "\"${env.MAVEN_PATH}\" -B -V -U -e -DskipTests package"
-                    }*/
+                    }
                     reportBuild(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
@@ -38,7 +37,7 @@ pipeline {
             steps {
                 script {
 
-                    /*reportUnitTest(
+                    reportUnitTest(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "other-component",
@@ -46,16 +45,15 @@ pipeline {
                         testsFailed: 6,
                         testsIgnored: 2,
                         testCoverage: 0.51
-                    )*/
-
+                    )
 
                     withMaven() {
-                        /*if (isUnix()) {
+                        if (isUnix()) {
                             sh 'mvn -B test'
                         }
                         else {
                             bat "mvn -B test"
-                        }*/
+                        }
                         reportSurefireTest(
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
@@ -90,31 +88,31 @@ pipeline {
 
                     // Quality audit reported from Sonar Qube
                     withSonarQubeEnv(credentialsId: 'c191d43f-0199-4f04-95a1-3afe1cd9803e', installationName: 'SonarQube Scanner') {
-                        /*withMaven() {
+                        withMaven() {
                             if (isUnix()) {
                                 sh 'mvn -Djavax.net.ssl.trustStore=src/test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
                             }
                             else {
                                 bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
                             }
-                        }*/
+                        }
                         //bat "\"${env.MAVEN_PATH}\" -Djavax.net.ssl.trustStore=\"${WORKSPACE}\\src\\test\\jobs\\test.jks\" -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
-                        /*reportSonarQubeAudit(
+                        reportSonarQubeAudit(
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
                             applicationComponent: "plugin-devops-portal",
                             projectKey: "io.jenkins.plugins:plugin-devops-portal"
-                        )*/
+                        )
                     }
 
                     // Dependencies analysis
-                    /*reportDependenciesAnalysis(
+                    reportDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
                         manifestFile: "pom.xml",
                         manager: "MAVEN"
-                    )*/
+                    )
 
                 }
             }

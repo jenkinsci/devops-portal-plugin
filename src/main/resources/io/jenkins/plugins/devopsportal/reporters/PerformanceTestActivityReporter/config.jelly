@@ -11,13 +11,13 @@
         <f:textbox />
     </f:entry>
 
-    <f:entry title="${%RequestCount_Label}" field="testCount">
+    <f:entry title="${%TestCount_Label}" field="testCount">
         <f:number />
     </f:entry>
-    <f:entry title="${%AverageResponseTime_Label}" field="sampleCount">
+    <f:entry title="${%SampleCount_Label}" field="sampleCount">
         <f:number />
     </f:entry>
-    <f:entry title="${%QualityGatePassed_Label}" field="errorCount">
+    <f:entry title="${%ErrorCount_Label}" field="errorCount">
         <f:number />
     </f:entry>
 
