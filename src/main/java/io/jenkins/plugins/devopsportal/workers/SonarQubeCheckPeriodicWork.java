@@ -25,7 +25,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import static io.jenkins.plugins.devopsportal.utils.MiscUtils.checkNotEmpty;
 import static org.sonarqube.ws.Common.RuleType.*;
 
 /**
@@ -37,6 +39,7 @@ import static org.sonarqube.ws.Common.RuleType.*;
 public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
 
     private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
+    private static final int MAX_FAILURE = 3;
     private static final List<WorkItem> ACTIONS = new ArrayList<>();
 
     public SonarQubeCheckPeriodicWork() {
@@ -68,6 +71,10 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             actions = new ArrayList<>(ACTIONS);
         }
         for (WorkItem item : actions) {
+            if (item.activity.isComplete()) {
+                // In case of parallel treatments
+                continue;
+            }
             boolean completed = false;
             try {
                 completed = execute(item);
@@ -78,6 +85,15 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
                         + "' project='" + item.applicationName + ":" + item.applicationVersion + "/" + item.projectKey + "' => "
                         + ex.getClass().getSimpleName() + " : " + ex.getMessage()
                 );
+                item.failure++;
+                if (item.failure >= MAX_FAILURE) {
+                    item.activity.setComplete(true);
+                    LOGGER.info("Canceled SonarQube async task: job='" + item.jobName + "' build='" + item.buildNumber
+                            + "' project='" + item.applicationName + ":" + item.applicationVersion + "/" + item.projectKey + "'");
+                    synchronized (ACTIONS) {
+                        ACTIONS.remove(item.close());
+                    }
+                }
             }
             if (completed) {
                 item.activity.setComplete(true);
@@ -205,20 +221,43 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
     }
 
     public static void push(@NonNull String jobName, @NonNull String buildNumber, @NonNull String projectKey,
-                            @NonNull QualityAuditActivity activity,
-                            @NonNull String sonarUrl, @NonNull String sonarToken, @NonNull String applicationName,
+                            @NonNull QualityAuditActivity activity, @NonNull String sonarUrl,
+                            @NonNull String sonarToken, @NonNull String applicationName,
                             @NonNull String applicationVersion, @NonNull String applicationComponent) {
-        // TODO Check arguments
-        // TODO Remove older actions for same applicationName/applicationVersion/applicationComponent
+
+        // Check arguments
+        checkNotEmpty(jobName, buildNumber, projectKey, sonarUrl, sonarToken, applicationName,
+                applicationVersion, applicationComponent);
+
+
+
         synchronized (ACTIONS) {
+
+            // Remove older actions for same applicationName/applicationVersion/applicationComponent
+            List<WorkItem> existing = ACTIONS.stream()
+                    .filter(item -> item.applicationName.equals(applicationName))
+                    .filter(item -> item.applicationVersion.equals(applicationVersion))
+                    .filter(item -> item.applicationComponent.equals(applicationComponent))
+                    .collect(Collectors.toList());
+            if (!existing.isEmpty()) {
+                for (WorkItem item : existing) {
+                    item.activity.setComplete(true);
+                    ACTIONS.remove(item);
+                }
+            }
+
+            // Push new action to do
             ACTIONS.add(new WorkItem(
                     jobName, buildNumber, projectKey, activity, sonarUrl,
                     sonarToken, applicationName, applicationVersion, applicationComponent
             ));
             LOGGER.info("New SonarQube async task: job='" + jobName + "' build='" + buildNumber + "' project='"
                     + applicationName + ":" + applicationVersion + "/" + applicationComponent + "'");
+
         }
     }
+
+
 
     static class WorkItem {
 
@@ -230,6 +269,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         private final String applicationName;
         private final String applicationVersion;
         private final String applicationComponent;
+        public int failure = 0;
 
         public WorkItem(@NonNull String jobName, @NonNull String buildNumber, @NonNull String projectKey,
                         @NonNull QualityAuditActivity activity, @NonNull String sonarUrl, @NonNull String sonarToken,

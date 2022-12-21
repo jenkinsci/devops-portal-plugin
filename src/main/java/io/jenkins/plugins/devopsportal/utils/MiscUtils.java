@@ -145,4 +145,12 @@ public final class MiscUtils {
         return childFile;
     }
 
+    public static void checkNotEmpty(String... values) {
+        for (String value : values) {
+            if (value == null || value.trim().isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
 }
