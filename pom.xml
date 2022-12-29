@@ -49,10 +49,10 @@
         <enforcer.skip>true</enforcer.skip>
 
         <!-- SonarQube configuration -->
-        <sonar.projectName>DevOpsPortal v${version}</sonar.projectName>
-        <sonar.projectKey>${project.groupId}.${project.artifactId}:${version}</sonar.projectKey>
-        <sonar.moduleKey>${project.groupId}.${project.artifactId}:${version}</sonar.moduleKey>
-        <sonar.projectVersion>${version}</sonar.projectVersion>
+        <sonar.projectName>DevOpsPortal v${project.version}</sonar.projectName>
+        <sonar.projectKey>${project.groupId}.${project.artifactId}:${project.version}</sonar.projectKey>
+        <sonar.moduleKey>${project.groupId}.${project.artifactId}:${project.version}</sonar.moduleKey>
+        <sonar.projectVersion>${project.version}</sonar.projectVersion>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.coverage.jacoco.reportPath>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.reportPath>
