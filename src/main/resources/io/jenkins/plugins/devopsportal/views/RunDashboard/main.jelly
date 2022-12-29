@@ -1,13 +1,8 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
 
-    <!--
-    <link href="/jenkins/plugin/plugin-devops-portal/css/run-dashboard.css" type="text/css" rel="stylesheet"/>
-    <link href="/jenkins/plugin/plugin-devops-portal/css/modal.css" type="text/css" rel="stylesheet"/>
-    -->
-
-    <link href="${rootURL}/plugin/${it.getClass().getPackage().getImplementationTitle()}/css/run-dashboard.css" type="text/css" rel="stylesheet"/>
-    <link href="${rootURL}/plugin/${it.getClass().getPackage().getImplementationTitle()}/css/modal.css" type="text/css" rel="stylesheet"/>
+    <link href="${rootURL}/plugin/devops-portal/css/run-dashboard.css" type="text/css" rel="stylesheet"/>
+    <link href="${rootURL}/plugin/devops-portal/css/modal.css" type="text/css" rel="stylesheet"/>
 
     <h1>
         ${it.displayName}
