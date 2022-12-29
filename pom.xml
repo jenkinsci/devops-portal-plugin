@@ -49,7 +49,7 @@
         <enforcer.skip>true</enforcer.skip>
 
         <!-- SonarQube configuration -->
-        <sonar.projectName>SIFI v${version}</sonar.projectName>
+        <sonar.projectName>DevOpsPortal v${version}</sonar.projectName>
         <sonar.projectKey>${project.groupId}.${project.artifactId}:${version}</sonar.projectKey>
         <sonar.moduleKey>${project.groupId}.${project.artifactId}:${version}</sonar.moduleKey>
         <sonar.projectVersion>${version}</sonar.projectVersion>
