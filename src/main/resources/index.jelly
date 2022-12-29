@@ -4,5 +4,5 @@
 -->
 <?jelly escape-by-default='true'?>
 <div>
-    A Jenkins Dashboard Plugin with many features
+    Brings some DevOps to your Jenkins !
 </div>

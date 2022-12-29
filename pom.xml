@@ -8,8 +8,8 @@
         <relativePath />
     </parent>
     <groupId>io.jenkins.plugins</groupId>
-    <artifactId>plugin-devops-portal</artifactId>
-    <version>1.0</version>
+    <artifactId>devops-portal</artifactId>
+    <version>1.0.0</version>
     <packaging>hpi</packaging>
     <name>DevOps Portal</name>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
