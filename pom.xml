@@ -9,14 +9,14 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>devops-portal</artifactId>
-    <version>1.0.0</version>
+    <version>1.0</version>
     <packaging>hpi</packaging>
     <name>DevOps Portal</name>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
     <licenses>
         <license>
-            <name>MIT License</name>
-            <url>https://opensource.org/licenses/MIT</url>
+            <name>GNU GENERAL PUBLIC LICENSE</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
         </license>
     </licenses>
     <developers>
