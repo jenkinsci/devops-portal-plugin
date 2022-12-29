@@ -472,18 +472,6 @@ Version 3, 29 June 2007
 
 ## TODO
 
-Release candidate:
-
-- [ ] TODO
-  - [x] ApplicationBuildStatus.java (1) (268, 28) // TODO If category doesn't exists ?
-  - [ ] DependenciesAnalysisActivityReporter.java (169, 16) // TODO Automatic population with Annotation detection
-  - [x] PluginManagementLink.java (60, 12) // TODO Check unicity of service name 
-  - [ ] SonarQubeCheckPeriodicWork.java (211, 12) // TODO Check arguments
-  - [ ] SonarQubeCheckPeriodicWork.java (212, 12) // TODO Remove older actions for same applicationName/applicationVersion/applicationComponent
-- [x] Fix Format Duplication rate: 11.1999996%
-- [x] README : TODO and screenshots
-- [ ] Unstable Maven dependency analysis : stucked with vulnerabilities
-
 Integration testing:
 
 - [ ] Ensure JenkinsUtils.getBuild() works with Multibranch Pipelines
@@ -491,7 +479,9 @@ Integration testing:
 - [ ] SonarQubeAudit
   - [ ] Test with invalid projectKey
   - [ ] Test with invalid server
+- [ ] Unstable Maven dependency analysis : stucked with vulnerabilities
 
 Next features:
 
-- [ ] Report dependencies analysis : implements with NPM
+- [ ] Report dependencies analysis: implements with NPM
+- [ ] DependenciesAnalysisActivityReporter: automatic population with Annotation detection
