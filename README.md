@@ -474,12 +474,17 @@ Version 3, 29 June 2007
 
 Integration testing:
 
-- [ ] Ensure JenkinsUtils.getBuild() works with Multibranch Pipelines
+- [ ] Ensure JenkinsUtils.getBuild() works with Multibranch Pipelines (!!! FAILED)
 - [ ] Check behavior with slaves workers (accessing local files)
+      (!!! FAILED)
+      See: https://github.com/jenkinsci/junit-plugin/blob/master/src/main/java/hudson/tasks/test/DefaultTestResultParserImpl.java
+      See: https://javadoc.jenkins.io/jenkins/MasterToSlaveFileCallable.html
 - [ ] SonarQubeAudit
   - [ ] Test with invalid projectKey
   - [ ] Test with invalid server
 - [ ] Unstable Maven dependency analysis : stucked with vulnerabilities
+- [ ] SonarQube audit : 3 vulnerabitilies, 4 bugs
+- [ ] Build dashboad, Unit tests, change icon with detail to "open-outline"
 
 Next features:
 
