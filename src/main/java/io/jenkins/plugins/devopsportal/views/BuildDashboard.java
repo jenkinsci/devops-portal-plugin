@@ -12,10 +12,7 @@ import org.kohsuke.stapler.*;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
@@ -69,6 +66,10 @@ public class BuildDashboard extends View {
 
     public String formatDatetimeSeconds(long timestamp) {
         return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
+    }
+
+    public String getRootURL() {
+        return Objects.requireNonNull(Jenkins.getInstanceOrNull()).getRootUrl();
     }
 
     @Extension

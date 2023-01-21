@@ -556,7 +556,7 @@
         }
         function deleteApplicationVersion(application, version) {
             if (confirm('${%confirm_delete_version}')) {
-                javascript:document.location.href = '/jenkins/build-api/delete-build-status?application='
+                javascript:document.location.href = '${it.rootURL}/build-api/delete-build-status?application='
                     + escape(application) + '&amp;version=' + escape(version) + '&amp;origin=' + escape(window.location.href);
             }
         }

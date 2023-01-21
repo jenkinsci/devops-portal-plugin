@@ -223,7 +223,7 @@
     <script type="text/javascript">
         function deleteOperation(environment, job, number) {
             if (confirm('${%confirm_delete_operation}')) {
-                javascript:document.location.href = '/jenkins/run-api/delete-operation?environment='
+                javascript:document.location.href = '${it.rootURL}/run-api/delete-operation?environment='
                     + escape(environment) + '&amp;job=' + escape(job) + '&amp;number=' + number + '&amp;origin=' + escape(window.location.href);
             }
         }

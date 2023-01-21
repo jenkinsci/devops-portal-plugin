@@ -86,6 +86,10 @@ public class RunDashboard extends View {
         return TimeAgoUtils.toDuration((Instant.now().getEpochSecond() - timestamp) * 1000L);
     }
 
+    public String getRootURL() {
+        return Objects.requireNonNull(Jenkins.getInstanceOrNull()).getRootUrl();
+    }
+
     @Extension
     public static final class DescriptorImpl extends ViewDescriptor {
 
