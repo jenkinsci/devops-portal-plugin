@@ -12,7 +12,7 @@ import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.BuildActivity;
 import io.jenkins.plugins.devopsportal.utils.MiscUtils;
-import io.jenkins.plugins.devopsportal.utils.SlaveFileSize;
+import io.jenkins.plugins.devopsportal.utils.RemoteFileSizeGetter;
 import org.jetbrains.annotations.NotNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -80,6 +80,7 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
         catch (Exception ex) {
             listener.getLogger().println("Error, unable to get file size: " + ex.getClass().getSimpleName()
                 + " - " + ex.getMessage());
+            ex.printStackTrace(listener.getLogger());
             return Result.FAILURE;
         }
         // File size comparison
@@ -102,9 +103,7 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
     }
 
     private void getFileSizeFromRemoteWorkspace(BuildActivity activity, FilePath target, @NonNull TaskListener listener) throws IOException, InterruptedException {
-        listener.getLogger().println("Fetch remote file: " + target);
-        long size = target.act(new SlaveFileSize());
-        listener.getLogger().println("Fetch remote size: " + size);
+        long size = target.act(new RemoteFileSizeGetter());
         activity.setArtifactFileSize(size);
     }
 

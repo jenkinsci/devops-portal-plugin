@@ -188,7 +188,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         item.activity.setBugScore(getMeasure(response, "reliability_rating", ActivityScore.class));
         item.activity.setVulnerabilityScore(getMeasure(response, "security_rating", ActivityScore.class));
         item.activity.setHotspotScore(getMeasure(response, "security_review_rating", ActivityScore.class));
-        item.activity.setTestCoverage(getMeasure(response, "coverage", Float.class));
+        item.activity.setTestCoverage(getMeasure(response, "coverage", Float.class) / 100f);
         item.activity.setDuplicationRate(getMeasure(response, "duplicated_lines_density", Float.class) / 100f);
         item.activity.setLinesCount(getMeasure(response, "ncloc", Integer.class));
     }

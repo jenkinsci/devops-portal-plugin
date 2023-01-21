@@ -166,7 +166,7 @@
                             </td>
                             <td style="text-align:right">
                                 <a class="jenkins-button" href="${build.buildURL}">
-                                    <l:icon class="symbol-eye-outline plugin-ionicons-api icon-sm" />
+                                    <l:icon class="symbol-open-outline plugin-ionicons-api icon-sm" />
                                 </a>
                             </td>
                         </tr>
