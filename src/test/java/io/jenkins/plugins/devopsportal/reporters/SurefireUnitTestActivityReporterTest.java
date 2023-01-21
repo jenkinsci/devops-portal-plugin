@@ -111,10 +111,14 @@ public class SurefireUnitTestActivityReporterTest {
                 "  )" +
                 "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
-        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.FAILURE, job.scheduleBuild2(0));
+        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.SUCCESS, job.scheduleBuild2(0));
         jenkins.assertLogContains(
                 "Report build activity 'UNIT_TEST' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
+                completedBuild
+        );
+        jenkins.assertLogContains(
+                "No test reports that matches 'report-surefire.xml' found. Configuration error?",
                 completedBuild
         );
     }
