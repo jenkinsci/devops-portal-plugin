@@ -4,21 +4,24 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
+import hudson.Util;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
-import io.jenkins.plugins.devopsportal.models.ActivityScore;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
 import io.jenkins.plugins.devopsportal.utils.MiscUtils;
+import io.jenkins.plugins.devopsportal.utils.RemoteFileSurefireParser;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Build step of a project used to record a UNIT_TEST activity.
@@ -47,38 +50,49 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull UnitTestActivity activity,
                                  @NonNull TaskListener listener, @NonNull EnvVars env, @NonNull FilePath workspace) {
 
-        final File file = MiscUtils.checkFilePathIllegalAccess(
-                env.get("WORKSPACE", ""), surefireReportPath);
-
-        if (file == null || !file.exists() || !file.canRead()) {
-            listener.getLogger().println(Messages.FormValidation_Error_FileNotReadable()
-                    .replace("%file%", surefireReportPath));
-            return Result.FAILURE;
-        }
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("<testsuite ")) {
-                    Matcher matcher = Pattern.compile("tests=\"(.*?)\" errors=\"(.*?)\" skipped=\"(.*?)\" failures=\"(.*?)\"")
-                            .matcher(line);
-                    if (matcher.find()) {
-                        activity.setTestCoverage(0);
-                        activity.setTestsPassed(Integer.parseInt(matcher.group(1)));
-                        activity.setTestsFailed(Integer.parseInt(matcher.group(2)) + Integer.parseInt(matcher.group(4)));
-                        activity.setTestsIgnored(Integer.parseInt(matcher.group(3)));
-                        activity.setScore(activity.getTestsFailed() > 0 ? ActivityScore.E : ActivityScore.A);
-                        break;
-                    }
-                }
+        activity.resetCounters();
+        int files = 0;
+        try {
+            if (workspace.isRemote()) {
+                files = parseFilesFromRemoteWorkspace(activity, workspace, surefireReportPath);
+            }
+            else {
+                files = parseFilesFromLocalWorkspace(activity, env);
             }
         }
-        catch (IOException e) {
-            listener.getLogger().println(Messages.FormValidation_Error_FileNotReadable()
-                    .replace("%file%", surefireReportPath));
+        catch (Exception ex) {
+            listener.getLogger().println("Error, unable to parse test files: " + ex.getClass().getSimpleName()
+                    + " - " + ex.getMessage());
+            ex.printStackTrace(listener.getLogger());
+            return Result.FAILURE;
         }
-
         return null;
+    }
+
+    private int parseFilesFromRemoteWorkspace(UnitTestActivity activity, FilePath workspace, String path)
+            throws IOException, InterruptedException {
+        return workspace.act(new RemoteFileSurefireParser(activity, path));
+    }
+
+    private int parseFilesFromLocalWorkspace(UnitTestActivity activity, EnvVars env) throws IOException {
+        FileSet fs = Util.createFileSet(
+                new File(env.get("WORKSPACE", "")),
+                surefireReportPath,
+                null
+        );
+        DirectoryScanner ds;
+        try {
+            ds = fs.getDirectoryScanner(new Project());
+        }
+        catch (BuildException ex) {
+            throw new IOException(ex.getMessage());
+        }
+        int i = 0;
+        for (String str : ds.getIncludedFiles()) {
+            i++;
+            RemoteFileSurefireParser.parse(new File(str), activity);
+        }
+        return i;
     }
 
     @Override

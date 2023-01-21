@@ -60,4 +60,27 @@ public class UnitTestActivity extends AbstractActivity {
         return getScore() == ActivityScore.A;
     }
 
+    public void resetCounters() {
+        this.testCoverage = 0;
+        this.testsPassed = 0;
+        this.testsIgnored = 0;
+        this.testsFailed = 0;
+    }
+
+    public void updateScore() {
+        setScore(testsFailed > 0 ? ActivityScore.E : ActivityScore.A);
+    }
+
+    public void addTestsPassed(int value) {
+        this.testsPassed += value;
+    }
+
+    public void addTestsFailed(int value) {
+        this.testsFailed += value;
+    }
+
+    public void addTestsIgnored(int value) {
+        this.testsIgnored += value;
+    }
+
 }

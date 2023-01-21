@@ -71,8 +71,9 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
         // Get file size
         try {
             if (workspace.isRemote()) {
-                getFileSizeFromRemoteWorkspace(activity, new FilePath(workspace, artifactFileName), listener);
-            } else {
+                getFileSizeFromRemoteWorkspace(activity, new FilePath(workspace, artifactFileName));
+            }
+            else {
                 getFileSizeFromLocalWorkspace(activity, env);
             }
         }
@@ -102,18 +103,18 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
         return null;
     }
 
-    private void getFileSizeFromRemoteWorkspace(BuildActivity activity, FilePath target, @NonNull TaskListener listener) throws IOException, InterruptedException {
+    private void getFileSizeFromRemoteWorkspace(BuildActivity activity, FilePath target) throws IOException, InterruptedException {
         long size = target.act(new RemoteFileSizeGetter());
         activity.setArtifactFileSize(size);
     }
 
     private void getFileSizeFromLocalWorkspace(@NotNull BuildActivity activity, @NotNull EnvVars env) {
         final File file = MiscUtils.checkFilePathIllegalAccess(
-                env.get("WORKSPACE", null),
-                artifactFileName
+            env.get("WORKSPACE", null),
+            artifactFileName
         );
         if (file != null) {
-                activity.setArtifactFileSize(file.length());
+            activity.setArtifactFileSize(file.length());
         }
     }
 
