@@ -476,16 +476,17 @@ Integration testing:
 
 - [ ] Ensure JenkinsUtils.getBuild() works with Multibranch Pipelines (!!! FAILED)
 - [ ] Check behavior with slaves workers (accessing local files)
-      (!!! FAILED)
-      See: https://github.com/jenkinsci/junit-plugin/blob/master/src/main/java/hudson/tasks/test/DefaultTestResultParserImpl.java
-      See: https://javadoc.jenkins.io/jenkins/MasterToSlaveFileCallable.html
+    - [x] BuildActivityReporter
+    - [x] SurefireUnitTestActivityReporter
+    - [ ] JMeterPerformanceTestActivityReporter
+    - [ ] DependenciesAnalysisActivityReporter
 - [ ] SonarQubeAudit
   - [ ] Test with invalid projectKey
   - [ ] Test with invalid server
 - [ ] Unstable Maven dependency analysis : stucked with vulnerabilities
-- [ ] SonarQube audit : 3 vulnerabitilies, 4 bugs
-- [ ] Build dashboad, Unit tests, change icon with detail to "open-outline"
-- [ ] SurefireUnitTestActivityReporter: allow wildcard for file selection
+- [x] SonarQube audit : 3 vulnerabitilies, 4 bugs
+- [x] Build dashboad, Unit tests, change icon with detail to "open-outline"
+- [x] SurefireUnitTestActivityReporter: allow wildcard for file selection
 
 Next features:
 

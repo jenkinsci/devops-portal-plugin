@@ -70,6 +70,9 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
             listener.getLogger().println("No test reports that matches '" + surefireReportPath
                     + "' found. Configuration error?");
         }
+        else {
+            listener.getLogger().println(files + " test reports where collected");
+        }
         return null;
     }
 
