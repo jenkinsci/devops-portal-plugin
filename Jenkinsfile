@@ -8,7 +8,6 @@ pipeline {
 
     environment {
         APPLICATION_NAME = "jenkins-plugin-devops-portal"
-        APPLICATION_VERSION = "1.0.0"
     }
 
     stages {
@@ -16,17 +15,15 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    if (isUnix()) {
+                    env.APPLICATION_VERSION = sh(script: "grep -m1 '<release.version>' pom.xml | cut -d '<' -f2  | cut -d '>' -f2", returnStdout: true).trim()
+                    withMaven() {
                         sh 'mvn -B -V -U -e -DskipTests package'
-                    }
-                    else {
-                        bat "mvn -B -V -U -e -DskipTests package"
                     }
                     reportBuild(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
-                        artifactFileName: "target/plugin-devops-portal.hpi"
+                        artifactFileName: "target/devops-portal.hpi"
                     )
                 }
             }
@@ -35,31 +32,15 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-
-                    reportUnitTest(
+                    withMaven() {
+                        sh 'mvn -B test'
+                    }
+                    reportSurefireTest(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "other-component",
-                        testsPassed: 31,
-                        testsFailed: 6,
-                        testsIgnored: 2,
-                        testCoverage: 0.51
+                        applicationComponent: "plugin-devops-portal",
+                        surefireReportPath: "target/surefire-reports/*.xml"
                     )
-
-                    withMaven() {
-                        if (isUnix()) {
-                            sh 'mvn -B test'
-                        }
-                        else {
-                            bat "mvn -B test"
-                        }
-                        reportSurefireTest(
-                            applicationName: env.APPLICATION_NAME,
-                            applicationVersion: env.APPLICATION_VERSION,
-                            applicationComponent: "plugin-devops-portal",
-                            surefireReportPath: "target/surefire-reports/TEST-InjectedTest.xml"
-                        )
-                    }
                 }
             }
         }
@@ -71,12 +52,7 @@ pipeline {
                     // Quality audit reported from Sonar Qube
                     withSonarQubeEnv(credentialsId: 'c191d43f-0199-4f04-95a1-3afe1cd9803e', installationName: 'SonarQube Scanner') {
                         withMaven() {
-                            if (isUnix()) {
-                                sh 'mvn -Djavax.net.ssl.trustStore=src/test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
-                            }
-                            else {
-                                bat "mvn -Djavax.net.ssl.trustStore=src\\test\\jobs\\test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar"
-                            }
+                            sh 'mvn -Djavax.net.ssl.trustStore=src/test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
                         }
                         reportSonarQubeAudit(
                             applicationName: env.APPLICATION_NAME,
