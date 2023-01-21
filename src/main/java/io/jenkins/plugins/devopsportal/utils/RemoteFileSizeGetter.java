@@ -7,6 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
+/**
+ * Let compute the length of a remote file.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class RemoteFileSizeGetter extends MasterToSlaveFileCallable<Long> implements Serializable {
 
     @Override

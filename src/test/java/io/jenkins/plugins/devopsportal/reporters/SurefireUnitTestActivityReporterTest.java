@@ -63,7 +63,7 @@ public class SurefireUnitTestActivityReporterTest {
     public void testReporterSuccess() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         SurefireUnitTestActivityReporter reporter = new SurefireUnitTestActivityReporter(applicationName, applicationVersion, applicationComponent);
-        reporter.setSurefireReportPath("report-surefire.xml");
+        reporter.setSurefireReportPath("report-*.xml");
         project.getBuildersList().add(reporter);
         project.setScm(new SingleFileSCM("report-surefire.xml", createReportContent()));
 

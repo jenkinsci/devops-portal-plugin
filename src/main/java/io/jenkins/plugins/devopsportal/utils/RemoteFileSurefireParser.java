@@ -10,6 +10,11 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Let parse test results of remote files.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class RemoteFileSurefireParser extends MasterToSlaveFileCallable<Integer> implements Serializable {
 
     private final UnitTestActivity activity;
