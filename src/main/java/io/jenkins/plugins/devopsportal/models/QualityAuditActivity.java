@@ -136,7 +136,7 @@ public class QualityAuditActivity extends AbstractActivity {
         if (linesCount < 1000) {
             return "" + linesCount;
         }
-        return String.format("%.3f", linesCount / 100f) + "k";
+        return Math.round(linesCount / 1000f) + "k";
     }
 
     @DataBoundSetter

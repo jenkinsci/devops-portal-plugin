@@ -75,8 +75,9 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
     }
 
     private int parseFilesFromLocalWorkspace(UnitTestActivity activity, EnvVars env) throws IOException {
+        File workspace = new File(env.get("WORKSPACE", ""));
         FileSet fs = Util.createFileSet(
-                new File(env.get("WORKSPACE", "")),
+                workspace,
                 surefireReportPath,
                 null
         );
@@ -90,7 +91,7 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
         int i = 0;
         for (String str : ds.getIncludedFiles()) {
             i++;
-            RemoteFileSurefireParser.parse(new File(str), activity);
+            RemoteFileSurefireParser.parse(new File(workspace, str), activity);
         }
         return i;
     }
