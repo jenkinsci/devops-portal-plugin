@@ -50,7 +50,7 @@ pipeline {
                 script {
 
                     // Quality audit reported from Sonar Qube
-                    withSonarQubeEnv(credentialsId: 'c191d43f-0199-4f04-95a1-3afe1cd9803e', installationName: 'SonarQube Scanner') {
+                    withSonarQubeEnv(credentialsId: 'sonar-forge', installationName: 'SonarQube Scanner') {
                         withMaven() {
                             sh 'mvn -Djavax.net.ssl.trustStore=src/test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
                         }
