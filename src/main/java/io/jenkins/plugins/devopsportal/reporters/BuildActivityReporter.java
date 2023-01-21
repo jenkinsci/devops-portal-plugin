@@ -6,14 +6,13 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.TaskListener;
-import hudson.remoting.VirtualChannel;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.BuildActivity;
 import io.jenkins.plugins.devopsportal.utils.MiscUtils;
-import jenkins.MasterToSlaveFileCallable;
+import io.jenkins.plugins.devopsportal.utils.SlaveFileSize;
 import org.jetbrains.annotations.NotNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -104,15 +103,7 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
 
     private void getFileSizeFromRemoteWorkspace(BuildActivity activity, FilePath target, @NonNull TaskListener listener) throws IOException, InterruptedException {
         listener.getLogger().println("Fetch remote file: " + target);
-        long size = target.act(new MasterToSlaveFileCallable<Long>() {
-            @Override
-            public Long invoke(File file, VirtualChannel channel) {
-                listener.getLogger().println("Invoke on slave file 1: " + file);
-                File report = new File(target.getRemote());
-                listener.getLogger().println("Invoke on slave file 2: " + report);
-                return file.length();
-            }
-        });
+        long size = target.act(new SlaveFileSize());
         listener.getLogger().println("Fetch remote size: " + size);
         activity.setArtifactFileSize(size);
     }
