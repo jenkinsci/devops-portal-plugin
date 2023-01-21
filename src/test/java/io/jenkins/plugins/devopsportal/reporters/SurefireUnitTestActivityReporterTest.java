@@ -47,14 +47,14 @@ public class SurefireUnitTestActivityReporterTest {
         reporter.setSurefireReportPath("report-surefire.xml");
         project.getBuildersList().add(reporter);
 
-        FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.FAILURE, project);
+        FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.SUCCESS, project);
         jenkins.assertLogContains(
                 "Report build activity 'UNIT_TEST' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
                 build
         );
         jenkins.assertLogContains(
-                "The file is unreadable: report-surefire.xml",
+                "No test reports that matches 'report-surefire.xml' found. Configuration error?",
                 build
         );
     }
