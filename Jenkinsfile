@@ -27,6 +27,11 @@ pipeline {
                     )
                 }
             }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'target/devops-portal.hpi', onlyIfSuccessful: true
+                }
+            }
         }
 
         stage('Test') {
