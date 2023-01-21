@@ -86,7 +86,7 @@ public class BuildActivityReporterTest {
         reporter.setArtifactFileSizeLimit(1024);
         project.getBuildersList().add(reporter);
 
-        FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
+        FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.UNSTABLE, project);
         jenkins.assertLogContains(
                 "Report build activity 'BUILD' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",

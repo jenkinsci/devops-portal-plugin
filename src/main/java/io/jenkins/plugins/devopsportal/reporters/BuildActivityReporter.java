@@ -96,8 +96,8 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
             }
         }
         else {
-            listener.getLogger().println("Error, artifact file not found: " + artifactFileName);
-            return Result.FAILURE;
+            listener.getLogger().println("Warning, artifact file not found: " + artifactFileName);
+            return Result.UNSTABLE;
         }
         return null;
     }
