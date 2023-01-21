@@ -18,7 +18,7 @@ public abstract class AbstractActivity implements Serializable {
     private ActivityScore score;
     private final long timestamp; // sec
 
-    public AbstractActivity(ActivityCategory category, String applicationComponent) {
+    protected AbstractActivity(ActivityCategory category, String applicationComponent) {
         if (category == null) {
             throw new IllegalArgumentException("Activity category is null");
         }

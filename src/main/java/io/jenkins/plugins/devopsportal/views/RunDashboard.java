@@ -29,8 +29,8 @@ import java.util.stream.Stream;
  */
 public class RunDashboard extends View {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_Date());
-    private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_Date());
+    private final SimpleDateFormat datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
 
     private String filter = "";
 

@@ -31,10 +31,14 @@ public class SSLUtils {
     public static X509TrustManager getUntrustedManager() {
         return new X509TrustManager() {
 
-            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            @SuppressWarnings({"java:S4830"})
+            public void checkClientTrusted(X509Certificate[] chain, String authType)
+                    throws CertificateException {
             }
 
-            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            @SuppressWarnings({"java:S4830"})
+            public void checkServerTrusted(X509Certificate[] chain, String authType)
+                    throws CertificateException {
             }
 
             public X509Certificate[] getAcceptedIssuers() {

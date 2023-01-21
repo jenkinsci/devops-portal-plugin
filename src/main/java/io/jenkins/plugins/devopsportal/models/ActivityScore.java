@@ -29,8 +29,8 @@ public enum ActivityScore {
             case "3.0": return C;
             case "4.0": return D;
             case "5.0": return E;
+            default: return null;
         }
-        return null;
     }
 
 }

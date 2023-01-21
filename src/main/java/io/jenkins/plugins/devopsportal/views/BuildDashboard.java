@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  */
 public class BuildDashboard extends View {
 
-    private static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
+    private final SimpleDateFormat datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
 
     private String filter = "";
 

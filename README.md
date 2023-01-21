@@ -485,6 +485,7 @@ Integration testing:
 - [ ] Unstable Maven dependency analysis : stucked with vulnerabilities
 - [ ] SonarQube audit : 3 vulnerabitilies, 4 bugs
 - [ ] Build dashboad, Unit tests, change icon with detail to "open-outline"
+- [ ] SurefireUnitTestActivityReporter: allow wildcard for file selection
 
 Next features:
 

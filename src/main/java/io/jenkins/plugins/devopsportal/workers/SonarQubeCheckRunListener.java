@@ -38,6 +38,7 @@ public class SonarQubeCheckRunListener extends RunListener<AbstractBuild<?, ?>> 
 
     @Override
     public void onFinalized(AbstractBuild r) {
+        // Not used
     }
 
 }

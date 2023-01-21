@@ -38,6 +38,7 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
     }
 
     @Override
+    @SuppressWarnings({"java:S3516"})
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull QualityAuditActivity activity,
                                  @NonNull TaskListener listener, @NonNull EnvVars env) {
 

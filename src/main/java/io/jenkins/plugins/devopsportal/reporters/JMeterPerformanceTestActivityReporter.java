@@ -64,6 +64,9 @@ public class JMeterPerformanceTestActivityReporter extends AbstractActivityRepor
 
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
@@ -81,7 +84,7 @@ public class JMeterPerformanceTestActivityReporter extends AbstractActivityRepor
             }
             activity.setTestCount(list.getLength());
             activity.setSampleCount(samples);
-            activity.setErrorCount(Float.valueOf(errors).intValue());
+            activity.setErrorCount((long) errors);
         }
         catch (Exception ex) {
             listener.getLogger().println(Messages.JMeterPerformanceTestActivityReporter_Error_XmlParserError()
