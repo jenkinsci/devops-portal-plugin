@@ -134,7 +134,7 @@ public class BuildActivityReporterTest {
                 "  )" +
                 "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
-        WorkflowRun completedBuild = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
+        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.UNSTABLE, job.scheduleBuild2(0));
         jenkins.assertLogContains(
                 "Report build activity 'BUILD' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
