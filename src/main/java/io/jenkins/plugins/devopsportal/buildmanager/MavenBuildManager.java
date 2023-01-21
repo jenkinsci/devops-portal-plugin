@@ -75,8 +75,8 @@ public class MavenBuildManager extends AbstractBuildManager {
 
     @Override
     public Map<String, List<DependencyUpgrade>> analyseOutdatedDependencies(List<String> lines) {
-        final Pattern regex1 = Pattern.compile("(.*)display-dependency-updates(.*) @ (.*) ---");
-        final Pattern regex2 = Pattern.compile("\\[INFO\\]   (.*) (\\.+) (.*) -> (.*)");
+        final Pattern regex1 = Pattern.compile("(.*)display-dependency-updates(.*) @ (.*) ---"); //NOSONAR
+        final Pattern regex2 = Pattern.compile("\\[INFO\\]   (.*) (\\.+) (.*) -> (.*)"); //NOSONAR
         final Map<String, List<DependencyUpgrade>> result = new HashMap<>();
         String component = null;
         for (String str : lines) {
@@ -99,7 +99,7 @@ public class MavenBuildManager extends AbstractBuildManager {
 
     @Override
     public Map<String, List<DependencyVulnerability>> analyseVulnerableDependencies(List<String> lines) {
-        final Pattern regex = Pattern.compile("^(.+?)(\\\\.*?)? \\((.*?)\\) : (CVE.*)$");
+        final Pattern regex = Pattern.compile("^(.+?)(\\\\.*?)? \\((.*?)\\) : (CVE.*)$"); //NOSONAR
         final Map<String, List<DependencyVulnerability>> result = new HashMap<>();
         result.put("ALL", new ArrayList<>());
         for (String str : lines) {

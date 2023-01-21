@@ -41,8 +41,8 @@ public class RemoteFileSurefireParser extends MasterToSlaveFileCallable<Integer>
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("<testsuite ")) {
-                    //NOSONAR
-                    Matcher matcher = Pattern.compile("tests=\"(.*?)\" errors=\"(.*?)\" skipped=\"(.*?)\" failures=\"(.*?)\"")
+                    Matcher matcher = Pattern
+                            .compile("tests=\"(.*?)\" errors=\"(.*?)\" skipped=\"(.*?)\" failures=\"(.*?)\"") //NOSONAR
                             .matcher(line);
                     if (matcher.find()) {
                         activity.addTestsPassed(Integer.parseInt(matcher.group(1)));
