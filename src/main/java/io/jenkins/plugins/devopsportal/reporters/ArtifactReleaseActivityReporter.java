@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
@@ -68,7 +69,7 @@ public class ArtifactReleaseActivityReporter extends AbstractActivityReporter<Ar
 
     @Override
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull ArtifactReleaseActivity activity,
-                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
+                                 @NonNull TaskListener listener, @NonNull EnvVars env, @NonNull FilePath workspace) {
         activity.setRepositoryName(repositoryName);
         activity.setArtifactName(artifactName);
         activity.setArtifactURL(artifactURL);

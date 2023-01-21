@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.models;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.*;
 import hudson.util.CopyOnWriteList;
 import io.jenkins.plugins.devopsportal.Messages;
@@ -190,7 +191,8 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
                                                               @NonNull ActivityCategory category,
                                                               @NonNull TaskListener listener,
                                                               @NonNull EnvVars env,
-                                                              @NonNull GenericActivityHandler<T> updater) {
+                                                              @NonNull GenericActivityHandler<T> updater,
+                                                              @NonNull FilePath workspace) {
         T activity;
         synchronized (activities) {
             activity = (T) activities.getOrDefault(category, new ArrayList<>())
@@ -206,7 +208,7 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
                 activities.get(category).add(activity);
             }
         }
-        final Result result = updater.updateActivity(this, activity, listener, env);
+        final Result result = updater.updateActivity(this, activity, listener, env, workspace);
         synchronized (activities) {
             getDescriptor().save();
         }

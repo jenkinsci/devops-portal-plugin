@@ -2,6 +2,7 @@ package io.jenkins.plugins.devopsportal.models;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
+import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 
@@ -12,6 +13,12 @@ import hudson.model.TaskListener;
  */
 public interface GenericActivityHandler<T extends AbstractActivity> {
 
-    Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull T activity, @NonNull TaskListener listener, @NonNull EnvVars env);
+    Result updateActivity(
+            @NonNull ApplicationBuildStatus status,
+            @NonNull T activity,
+            @NonNull TaskListener listener,
+            @NonNull EnvVars env,
+            @NonNull FilePath workspace
+    );
 
 }

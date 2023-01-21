@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 import hudson.util.ListBoxModel;
@@ -154,7 +155,7 @@ public class QualityAuditActivityReporter extends AbstractActivityReporter<Quali
 
     @Override
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull QualityAuditActivity activity,
-                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
+                                 @NonNull TaskListener listener, @NonNull EnvVars env, @NonNull FilePath workspace) {
         activity.setComplete(true);
         activity.setBugCount(bugCount);
         activity.setBugScore(bugScore);

@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
@@ -40,7 +41,7 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
     @Override
     @SuppressWarnings({"java:S3516"})
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull QualityAuditActivity activity,
-                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
+                                 @NonNull TaskListener listener, @NonNull EnvVars env, @NonNull FilePath workspace) {
 
         if (!env.containsKey("SONAR_AUTH_TOKEN") || !env.containsKey("SONAR_HOST_URL")) {
             listener.getLogger().println(Messages.SonarQualityAuditActivityReporter_Error_MissingEnvVar());

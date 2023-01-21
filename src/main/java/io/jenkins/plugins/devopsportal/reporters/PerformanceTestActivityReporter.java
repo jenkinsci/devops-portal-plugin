@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.reporters;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.Messages;
@@ -59,7 +60,7 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
 
     @Override
     public Result updateActivity(@NonNull ApplicationBuildStatus status, @NonNull PerformanceTestActivity activity,
-                                 @NonNull TaskListener listener, @NonNull EnvVars env) {
+                                 @NonNull TaskListener listener, @NonNull EnvVars env, @NonNull FilePath workspace) {
         activity.setTestCount(testCount);
         activity.setSampleCount(sampleCount);
         activity.setErrorCount(errorCount);

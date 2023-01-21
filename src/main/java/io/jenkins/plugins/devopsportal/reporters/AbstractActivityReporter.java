@@ -83,7 +83,14 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
 
             // Create or update AbstractActivity
             try {
-                final Result result = record.updateActivity(applicationComponent, getActivityCategory(), listener, env, this);
+                final Result result = record.updateActivity(
+                        applicationComponent,
+                        getActivityCategory(),
+                        listener,
+                        env,
+                        this,
+                        workspace
+                );
                 // In case of failure
                 if (result != null && run.getResult() != Result.FAILURE && run.getResult() != Result.ABORTED) {
                     listener.getLogger().printf("Build activity '%s' changed run result to: %s%n", getActivityCategory(), result);
