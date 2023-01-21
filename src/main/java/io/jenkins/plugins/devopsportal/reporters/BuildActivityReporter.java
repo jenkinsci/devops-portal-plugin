@@ -77,7 +77,10 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
                 getFileSizeFromLocalWorkspace(activity, env);
             }
         }
-        // Unable to get file size
+        catch (InterruptedException ex) {
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
+        }
         catch (Exception ex) {
             listener.getLogger().println("Error, unable to get file size: " + ex.getClass().getSimpleName()
                 + " - " + ex.getMessage());

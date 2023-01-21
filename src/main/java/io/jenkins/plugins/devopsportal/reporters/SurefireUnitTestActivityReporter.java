@@ -60,6 +60,10 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
                 files = parseFilesFromLocalWorkspace(activity, env);
             }
         }
+        catch (InterruptedException ex) {
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
+        }
         catch (Exception ex) {
             listener.getLogger().println("Error, unable to parse test files: " + ex.getClass().getSimpleName()
                     + " - " + ex.getMessage());
