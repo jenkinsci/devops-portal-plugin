@@ -36,21 +36,29 @@ public class RemoteFileSurefireParser extends MasterToSlaveFileCallable<Integer>
         return i;
     }
 
-    public static final void parse(@NonNull File file, @NonNull UnitTestActivity activity) throws IOException {
+    public static void parse(@NonNull File file, @NonNull UnitTestActivity activity) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.startsWith("<testsuite ")) {
-                    Matcher matcher = Pattern
-                            .compile("tests=\"(.*?)\" errors=\"(.*?)\" skipped=\"(.*?)\" failures=\"(.*?)\"") //NOSONAR
-                            .matcher(line);
+                if (line.trim().startsWith("<testsuite ")) {
+                    Matcher matcher = Pattern.compile("tests=\"(.*?)\"").matcher(line); // NOSONAR
                     if (matcher.find()) {
                         activity.addTestsPassed(Integer.parseInt(matcher.group(1)));
-                        activity.addTestsFailed(Integer.parseInt(matcher.group(2)) + Integer.parseInt(matcher.group(4)));
-                        activity.addTestsIgnored(Integer.parseInt(matcher.group(3)));
-                        activity.updateScore();
-                        break;
                     }
+                    matcher = Pattern.compile("errors=\"(.*?)\"").matcher(line); // NOSONAR
+                    if (matcher.find()) {
+                        activity.addTestsFailed(Integer.parseInt(matcher.group(1)));
+                    }
+                    matcher = Pattern.compile("failures=\"(.*?)\"").matcher(line); // NOSONAR
+                    if (matcher.find()) {
+                        activity.addTestsFailed(Integer.parseInt(matcher.group(1)));
+                    }
+                    matcher = Pattern.compile("skipped=\"(.*?)\"").matcher(line); // NOSONAR
+                    if (matcher.find()) {
+                        activity.addTestsIgnored(Integer.parseInt(matcher.group(1)));
+                    }
+                    activity.updateScore();
+                    break;
                 }
             }
         }
