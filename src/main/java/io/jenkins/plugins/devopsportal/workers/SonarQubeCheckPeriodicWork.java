@@ -188,16 +188,16 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         item.activity.setBugScore(getMeasure(response, "reliability_rating", ActivityScore.class));
         item.activity.setVulnerabilityScore(getMeasure(response, "security_rating", ActivityScore.class));
         item.activity.setHotspotScore(getMeasure(response, "security_review_rating", ActivityScore.class));
-        item.activity.setTestCoverage(getMeasure(response, "coverage", Float.class) / 100f);
-        item.activity.setDuplicationRate(getMeasure(response, "duplicated_lines_density", Float.class) / 100f);
-        item.activity.setLinesCount(getMeasure(response, "ncloc", Integer.class));
+        item.activity.setTestCoverage(getMeasure(response, "coverage", Float.class) / 100f); //NOSONAR
+        item.activity.setDuplicationRate(getMeasure(response, "duplicated_lines_density", Float.class) / 100f); //NOSONAR
+        item.activity.setLinesCount(getMeasure(response, "ncloc", Integer.class)); //NOSONAR
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T getMeasure(Measures.SearchWsResponse response, String name, Class<T> type) {
         for (int i = 0, l = response.getMeasuresCount(); i < l; i++) {
             Measures.Measure measure = response.getMeasures(i);
-            if (!name.equals(measure.getMetric())) {
+            if (!name.equals(measure.getMetric().toLowerCase())) {
                 continue;
             }
             if (type == String.class) {
@@ -217,7 +217,17 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             }
             throw new IllegalArgumentException("Unable to convert measure '" + name + "' into " + type.getSimpleName());
         }
-        throw new IllegalArgumentException("Unable to get measure '" + name + "' from response");
+        LOGGER.warning("Unable to get measure '" + name + "' from response");
+        if (type == Integer.class) {
+            return (T) Integer.valueOf(-1);
+        }
+        if (type == Float.class) {
+            return (T) Float.valueOf(-1f);
+        }
+        if (type == Boolean.class) {
+            return (T) Boolean.valueOf(false);
+        }
+        return (T) null;
     }
 
     public static void push(@NonNull String jobName, @NonNull String buildNumber, @NonNull String projectKey,
@@ -256,8 +266,6 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
 
         }
     }
-
-
 
     static class WorkItem {
 

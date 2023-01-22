@@ -354,7 +354,7 @@
                             <td style="text-align:right">
                                 <j:if test="${activity.urlPresent}">
                                     <a class="jenkins-button" href="${activity.artifactURL}" target="_blank">
-                                        <l:icon class="symbol-arrow-redo-outline plugin-ionicons-api icon-sm" />
+                                        <l:icon class="symbol-open-outline plugin-ionicons-api icon-sm" />
                                     </a>
                                 </j:if>
                             </td>
