@@ -101,8 +101,9 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
         }
         int i = 0;
         for (String str : ds.getIncludedFiles()) {
-            i++;
-            RemoteFileSurefireParser.parse(new File(workspace, str), activity);
+            if (RemoteFileSurefireParser.parse(new File(workspace, str), activity)) {
+                i++;
+            }
         }
         return i;
     }

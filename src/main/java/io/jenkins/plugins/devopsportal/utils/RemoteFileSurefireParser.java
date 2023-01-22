@@ -29,14 +29,15 @@ public class RemoteFileSurefireParser extends MasterToSlaveFileCallable<Integer>
     public Integer invoke(File dir, VirtualChannel channel) throws IOException, InterruptedException {
         int i = 0;
         for (FilePath path : new FilePath(dir).list(path)) {
-            i++;
             File file = new File(path.getRemote());
-            parse(file, activity);
+            if (parse(file, activity)) {
+                i++;
+            }
         }
         return i;
     }
 
-    public static void parse(@NonNull File file, @NonNull UnitTestActivity activity) throws IOException {
+    public static boolean parse(@NonNull File file, @NonNull UnitTestActivity activity) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -58,10 +59,11 @@ public class RemoteFileSurefireParser extends MasterToSlaveFileCallable<Integer>
                         activity.addTestsIgnored(Integer.parseInt(matcher.group(1)));
                     }
                     activity.updateScore();
-                    break;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
 }

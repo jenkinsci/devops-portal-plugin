@@ -461,6 +461,11 @@ flowchart TD
     linkStyle 3,4,5,6,7,8,9,10 stroke-width:2px,fill:none
 ```
 
+## Troubleshooting
+
+To debug plugin behavior, configure a jenkins logger on the class:
+`io.jenkins.plugins.devopsportal`
+
 ## Author & Licence
 
 This plugin is provided by Rémi BELLO \
@@ -480,13 +485,14 @@ Integration testing:
     - [x] SurefireUnitTestActivityReporter
     - [ ] JMeterPerformanceTestActivityReporter
     - [ ] DependenciesAnalysisActivityReporter
-- [ ] SonarQubeAudit
+- [x] SonarQubeAudit
   - [ ] Test with invalid projectKey
   - [ ] Test with invalid server
 - [ ] Unstable Maven dependency analysis : stucked with vulnerabilities
 - [x] SonarQube audit : 3 vulnerabitilies, 4 bugs
 - [x] Build dashboad, Unit tests, change icon with detail to "open-outline"
 - [x] SurefireUnitTestActivityReporter: allow wildcard for file selection
+- [ ] Date bug on BuildDashboard
 
 Next features:
 
