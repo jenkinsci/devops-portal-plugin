@@ -39,9 +39,11 @@ public final class JenkinsUtils {
      *   Multi-Branch pipeline. In this case, itemName must be given.
      */
     public static Job<?, ?> findJobByName(String jobName, String itemName, Collection<? extends TopLevelItem> items) {
+        LOGGER.fine("Find: " + jobName + " / " + itemName);
         for (TopLevelItem item : items) {
             // Item groups (WorkflowMultiBranchProject)
             if (itemName != null && item instanceof ItemGroup && item.getName().equals(jobName)) {
+                LOGGER.fine(" - ItemGroup: " + item.getName());
                 try {
                     Object job = ((ItemGroup<?>) item).getItem(itemName);
                     if (job != null) {
@@ -55,7 +57,9 @@ public final class JenkinsUtils {
             }
             // View groups (Folders)
             else if (item instanceof ViewGroup) {
+                LOGGER.fine(" - ViewGroup: " + item.getName());
                 for (View view : ((ViewGroup) item).getAllViews()) {
+                    LOGGER.fine("   - View: " + view.getViewName());
                     Job<?, ?> job = findJobByName(jobName, itemName, view.getItems());
                     if (job != null) {
                         return job;
@@ -64,6 +68,7 @@ public final class JenkinsUtils {
             }
             // Jobs (FreeStyleProject, WorkflowJob, ...)
             else if (itemName == null && item instanceof Job && item.getName().equals(jobName)) {
+                LOGGER.fine(" - Job: " + item.getName());
                 return (Job<?, ?>) item;
             }
         }

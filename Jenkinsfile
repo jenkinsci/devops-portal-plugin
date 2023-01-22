@@ -63,7 +63,7 @@ pipeline {
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
                             applicationComponent: "plugin-devops-portal",
-                            projectKey: "io.jenkins.plugins:plugin-devops-portal:" + env.APPLICATION_VERSION
+                            projectKey: "io.jenkins.plugins.devops-portal:" + env.APPLICATION_VERSION
                         )
                     }
 
