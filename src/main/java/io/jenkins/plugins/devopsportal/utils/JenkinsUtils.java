@@ -77,6 +77,9 @@ public final class JenkinsUtils {
                     return (Job<?, ?>) item;
                 }
             }
+            else {
+                LOGGER.fine(" - Unknown: " + path + "/" + item.getName() + " (" + item.getClass() + ")");
+            }
         }
         return null;
     }
