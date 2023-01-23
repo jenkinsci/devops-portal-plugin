@@ -46,6 +46,7 @@
                             <br/>
                             <span class="build-date">
                                 <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
+                                ${build.buildTimestamp} /
                                 ${it.formatDatetimeSeconds(build.buildTimestamp)}
                             </span>
                         </td>
