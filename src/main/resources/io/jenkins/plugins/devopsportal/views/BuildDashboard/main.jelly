@@ -245,16 +245,16 @@
                                 <strong>${activity.applicationComponent}</strong>
                             </td>
                             <td>
-                                ${%quality_item_dependenciesManager} <strong>${activity.manager}</strong>
-                            </td>
-                            <td>
                                 <span>
                                     <l:icon class="symbol-timer-outline plugin-ionicons-api icon-sm"/>
                                     ${%quality_item_outdatedDependencies} <strong>${activity.outdatedDependenciesCount}</strong>
                                 </span>
-                                <span style="margin-left:.4rem">
+                            </td>
+                            <td>
+                                <span>
                                     <l:icon class="symbol-bug-outline plugin-ionicons-api icon-sm"/>
-                                    ${%quality_item_vulnerableDependencies} <strong>${activity.vulnerabilitiesCount}</strong>
+                                    ${%quality_item_vulnerableDependencies} <strong>${activity.vulnerableDependenciesCount}</strong>
+                                    (${activity.vulnerabilitiesCount})
                                 </span>
                             </td>
                             <td style="text-align:right">
@@ -496,7 +496,7 @@
                                     </j:if>
                                     <tbody>
                                         <!-- VULNERABILITIES -->
-                                        <j:forEach var="dependency" indexVar="l" items="${activity.vulnerabilities.dependencies}">
+                                        <j:forEach var="dependency" indexVar="l" items="${activity.getVulnerabilities().getDependencies()}">
                                             <j:if test="${l == 0}">
                                                 <tr>
                                                     <td colspan="3">
@@ -505,7 +505,7 @@
                                                     </td>
                                                 </tr>
                                             </j:if>
-                                            <j:forEach var="vulnerability" indexVar="m" items="${activity.vulnerabilities.getVulnerabilitiesByDependency(dependency)}">
+                                            <j:forEach var="vulnerability" indexVar="m" items="${activity.getVulnerabilities().getVulnerabilitiesByDependency(dependency)}">
                                                 <tr>
                                                     <td>${dependency}</td>
                                                     <td>${vulnerability.name} (${vulnerability.severity})</td>

@@ -47,6 +47,10 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
         return (outdatedDependenciesList != null && !outdatedDependenciesList.isEmpty()) || !vulnerabilities.isEmpty();
     }
 
+    public int getVulnerableDependenciesCount() {
+        return vulnerabilities.getDependenciesCount();
+    }
+
     public int getVulnerabilitiesCount() {
         return vulnerabilities.getVulnerabilitiesCount();
     }
