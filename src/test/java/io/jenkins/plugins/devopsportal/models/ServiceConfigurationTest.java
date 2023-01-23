@@ -1,5 +1,7 @@
 package io.jenkins.plugins.devopsportal.models;
 
+import hudson.model.Descriptor;
+import hudson.util.FormValidation;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -73,6 +75,32 @@ public class ServiceConfigurationTest {
         ServiceConfiguration service2 = getDescriptor().getService(service1.getId()).orElse(null);
         assertNotNull(service2);
         assertEquals(service1.getLabel(), service2.getLabel());
+    }
+
+    @Test
+    public void testProperties() {
+        ServiceConfiguration service = getDescriptor().getService("Server 1").orElse(null);
+        assertNotNull(service);
+        assertEquals("ServiceConfiguration[Server 1,production,https://foo.mydomain.com/,true,5,true]", service.toString());
+        assertEquals(-37982208, service.hashCode());
+        assertEquals(service, getDescriptor().getService("Server 1").orElse(null));
+        assertNotEquals(service, getDescriptor().getService("Server 2").orElse(null));
+        assertEquals("foo.mydomain.com", service.getHostname());
+        service.setUrl("inval!d://URL");
+        assertFalse(service.isHttps());
+        assertEquals("", service.getHostname());
+    }
+
+    @Test
+    public void testDescriptor() {
+        Descriptor<?> descriptor = jenkins.getInstance().getDescriptor(ServiceConfiguration.class);
+        assertNotNull(descriptor);
+        assertTrue(descriptor instanceof ServiceConfiguration.DescriptorImpl);
+        ServiceConfiguration.DescriptorImpl descriptorImpl = ((ServiceConfiguration.DescriptorImpl) descriptor);
+        assertTrue(descriptorImpl.getService("Server 1").isPresent());
+        assertNotNull(descriptorImpl.doCheckLabel("", "Server 1"));
+        assertNotNull(descriptorImpl.doCheckLabel("Server 1", "Server 1"));
+        assertEquals(FormValidation.ok(), descriptorImpl.doCheckLabel("Server X", "Server 1"));
     }
 
 }
