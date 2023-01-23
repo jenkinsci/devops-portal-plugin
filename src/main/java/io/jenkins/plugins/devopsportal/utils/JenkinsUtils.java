@@ -31,7 +31,7 @@ public final class JenkinsUtils {
     }
 
     public static Job<?, ?> findJobByName(String jobName, String itemName, Collection<? extends TopLevelItem> items) {
-        return findJobByName(jobName, itemName, items);
+        return findJobByName(jobName, itemName, items, "");
     }
 
     /**
