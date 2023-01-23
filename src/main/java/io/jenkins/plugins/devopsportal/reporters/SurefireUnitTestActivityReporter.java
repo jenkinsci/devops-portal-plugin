@@ -11,8 +11,8 @@ import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
-import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import io.jenkins.plugins.devopsportal.utils.RemoteFileSurefireParser;
+import io.jenkins.plugins.devopsportal.utils.TestSuiteResult;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
@@ -51,18 +51,19 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
                                  @NonNull TaskListener listener, @NonNull EnvVars env, @NonNull FilePath workspace) {
 
         activity.resetCounters();
-        int files = 0;
+        TestSuiteResult result = null;
         try {
             if (workspace.isRemote()) {
-                files = parseFilesFromRemoteWorkspace(activity, workspace, surefireReportPath);
+                result = parseFilesFromRemoteWorkspace(workspace, surefireReportPath);
             }
             else {
-                files = parseFilesFromLocalWorkspace(activity, env);
+                result = parseFilesFromLocalWorkspace(env);
             }
         }
         catch (InterruptedException ex) {
             // Restore interrupted state...
             Thread.currentThread().interrupt();
+            return null;
         }
         catch (Exception ex) {
             listener.getLogger().println("Error, unable to parse test files: " + ex.getClass().getSimpleName()
@@ -70,22 +71,28 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
             ex.printStackTrace(listener.getLogger());
             return Result.FAILURE;
         }
-        if (files < 1) {
+        if (result.files.isEmpty()) {
             listener.getLogger().println("No test reports that matches '" + surefireReportPath
                     + "' found. Configuration error?");
         }
         else {
-            listener.getLogger().println(files + " test reports where collected");
+            listener.getLogger().println(result.files.size() + " test reports where collected:");
+            listener.getLogger().println(String.join(", ", result.files));
+            activity.setTestsPassed(result.testsPassed);
+            activity.setTestsIgnored(result.testsIgnored);
+            activity.setTestsFailed(result.testsFailed);
+
         }
+        activity.updateScore();
         return null;
     }
 
-    private int parseFilesFromRemoteWorkspace(UnitTestActivity activity, FilePath workspace, String path)
+    private TestSuiteResult parseFilesFromRemoteWorkspace(FilePath workspace, String path)
             throws IOException, InterruptedException {
-        return workspace.act(new RemoteFileSurefireParser(activity, path));
+        return workspace.act(new RemoteFileSurefireParser(path));
     }
 
-    private int parseFilesFromLocalWorkspace(UnitTestActivity activity, EnvVars env) throws IOException {
+    private TestSuiteResult parseFilesFromLocalWorkspace(EnvVars env) throws IOException {
         File workspace = new File(env.get("WORKSPACE", ""));
         FileSet fs = Util.createFileSet(
                 workspace,
@@ -99,13 +106,11 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
         catch (BuildException ex) {
             throw new IOException(ex.getMessage());
         }
-        int i = 0;
+        TestSuiteResult result = new TestSuiteResult();
         for (String str : ds.getIncludedFiles()) {
-            if (RemoteFileSurefireParser.parse(new File(workspace, str), activity)) {
-                i++;
-            }
+            RemoteFileSurefireParser.parse(new File(workspace, str), result);
         }
-        return i;
+        return result;
     }
 
     @Override

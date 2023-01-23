@@ -3,7 +3,6 @@ package io.jenkins.plugins.devopsportal.utils;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.FilePath;
 import hudson.remoting.VirtualChannel;
-import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
 import jenkins.MasterToSlaveFileCallable;
 
 import java.io.*;
@@ -15,50 +14,46 @@ import java.util.regex.Pattern;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class RemoteFileSurefireParser extends MasterToSlaveFileCallable<Integer> implements Serializable {
+public class RemoteFileSurefireParser extends MasterToSlaveFileCallable<TestSuiteResult> implements Serializable {
 
-    private final UnitTestActivity activity;
     private final String path;
 
-    public RemoteFileSurefireParser(@NonNull UnitTestActivity activity, String path) {
-        this.activity = activity;
+    public RemoteFileSurefireParser(String path) {
         this.path = path;
     }
 
     @Override
-    public Integer invoke(File dir, VirtualChannel channel) throws IOException, InterruptedException {
-        int i = 0;
+    public TestSuiteResult invoke(File dir, VirtualChannel channel) throws IOException, InterruptedException {
+        TestSuiteResult result = new TestSuiteResult();
         for (FilePath path : new FilePath(dir).list(path)) {
             File file = new File(path.getRemote());
-            if (parse(file, activity)) {
-                i++;
-            }
+            parse(file, result);
         }
-        return i;
+        return result;
     }
 
-    public static boolean parse(@NonNull File file, @NonNull UnitTestActivity activity) throws IOException {
+    public static boolean parse(@NonNull File file, @NonNull TestSuiteResult result) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.trim().startsWith("<testsuite ")) {
                     Matcher matcher = Pattern.compile("tests=\"(.*?)\"").matcher(line); // NOSONAR
                     if (matcher.find()) {
-                        activity.addTestsPassed(Integer.parseInt(matcher.group(1)));
+                        result.testsPassed += Integer.parseInt(matcher.group(1));
                     }
                     matcher = Pattern.compile("errors=\"(.*?)\"").matcher(line); // NOSONAR
                     if (matcher.find()) {
-                        activity.addTestsFailed(Integer.parseInt(matcher.group(1)));
+                        result.testsFailed += Integer.parseInt(matcher.group(1));
                     }
                     matcher = Pattern.compile("failures=\"(.*?)\"").matcher(line); // NOSONAR
                     if (matcher.find()) {
-                        activity.addTestsFailed(Integer.parseInt(matcher.group(1)));
+                        result.testsFailed += Integer.parseInt(matcher.group(1));
                     }
                     matcher = Pattern.compile("skipped=\"(.*?)\"").matcher(line); // NOSONAR
                     if (matcher.find()) {
-                        activity.addTestsIgnored(Integer.parseInt(matcher.group(1)));
+                        result.testsIgnored += Integer.parseInt(matcher.group(1));
                     }
-                    activity.updateScore();
+                    result.files.add(file.getName());
                     return true;
                 }
             }
