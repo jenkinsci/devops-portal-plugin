@@ -62,7 +62,7 @@ public class RemoteFileDependencyAnalysisParser extends MasterToSlaveFileCallabl
             }
             String dependency = (String) xPath.compile("fileName").evaluate(dependencies.item(i), XPathConstants.STRING);
             String project = (String) xPath.compile("projectReferences/projectReference").evaluate(dependencies.item(i), XPathConstants.STRING);
-            List<DependencyVulnerability> items = result.add(project + ":::" + dependency);
+            List<DependencyVulnerability> items = result.add(project + "::::" + dependency);
             for (int j = 0, k = vulnerabilities.getLength(); j < k; j++) {
                 String name = (String) xPath.compile("name").evaluate(vulnerabilities.item(j), XPathConstants.STRING);
                 String severity = (String) xPath.compile("severity").evaluate(vulnerabilities.item(j), XPathConstants.STRING);

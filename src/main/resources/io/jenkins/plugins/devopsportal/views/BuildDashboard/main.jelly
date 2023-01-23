@@ -507,8 +507,8 @@
                                             </j:if>
                                             <j:forEach var="vulnerability" indexVar="m" items="${activity.getVulnerabilities().getVulnerabilitiesByDependency(dependency)}">
                                                 <tr>
-                                                    <td>XXX</td>
-                                                    <td>${dependency}</td>
+                                                    <td>${vulnerability.getProjectName(dependency)}</td>
+                                                    <td>${vulnerability.getDependencyName(dependency)}</td>
                                                     <td style="line-height:1.8rem">
                                                         <span style="margin-right:.5rem">
                                                             ${vulnerability.name} (${vulnerability.severity})
