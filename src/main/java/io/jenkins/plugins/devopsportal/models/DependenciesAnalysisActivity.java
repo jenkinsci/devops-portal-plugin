@@ -5,6 +5,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A persistent record of a DEPENDENCIES_ANALYSIS activity.
@@ -29,7 +30,7 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
 
     @DataBoundSetter
     public void setOutdatedDependenciesList(List<DependencyUpgrade> outdatedDependenciesList) {
-        this.outdatedDependenciesList = outdatedDependenciesList;
+        this.outdatedDependenciesList = Objects.requireNonNull(outdatedDependenciesList);
     }
 
     public VulnerabilityAnalysisResult getVulnerabilities() {
@@ -38,12 +39,20 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
 
     @DataBoundSetter
     public void setVulnerabilities(VulnerabilityAnalysisResult vulnerabilities) {
-        this.vulnerabilities = vulnerabilities;
+        this.vulnerabilities = Objects.requireNonNull(vulnerabilities);
     }
 
     @SuppressWarnings("unused")
     public boolean hasIssues() {
         return outdatedDependenciesList != null && !vulnerabilities.isEmpty();
+    }
+
+    public int getVulnerabilitiesCount() {
+        return vulnerabilities.getVulnerabilitiesCount();
+    }
+
+    public int getOutdatedDependenciesCount() {
+        return outdatedDependenciesList.size();
     }
 
 }

@@ -250,11 +250,11 @@
                             <td>
                                 <span>
                                     <l:icon class="symbol-timer-outline plugin-ionicons-api icon-sm"/>
-                                    ${%quality_item_outdatedDependencies} <strong>${activity.outdatedDependencies}</strong>
+                                    ${%quality_item_outdatedDependencies} <strong>${activity.outdatedDependenciesCount}</strong>
                                 </span>
                                 <span style="margin-left:.4rem">
                                     <l:icon class="symbol-bug-outline plugin-ionicons-api icon-sm"/>
-                                    ${%quality_item_vulnerableDependencies} <strong>${activity.vulnerabilities}</strong>
+                                    ${%quality_item_vulnerableDependencies} <strong>${activity.vulnerabilitiesCount}</strong>
                                 </span>
                             </td>
                             <td style="text-align:right">
