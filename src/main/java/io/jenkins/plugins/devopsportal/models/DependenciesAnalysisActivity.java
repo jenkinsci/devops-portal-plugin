@@ -44,7 +44,7 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
 
     @SuppressWarnings("unused")
     public boolean hasIssues() {
-        return outdatedDependenciesList != null && !vulnerabilities.isEmpty();
+        return (outdatedDependenciesList != null && !outdatedDependenciesList.isEmpty()) || !vulnerabilities.isEmpty();
     }
 
     public int getVulnerabilitiesCount() {
