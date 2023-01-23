@@ -30,6 +30,10 @@ public final class JenkinsUtils {
         return Optional.ofNullable(job.getBuild(buildNumber));
     }
 
+    public static Job<?, ?> findJobByName(String jobName, String itemName, Collection<? extends TopLevelItem> items) {
+        return findJobByName(jobName, itemName, items);
+    }
+
     /**
      * This function is used to retrieve a job instance from Jenkins persistent data.
      * It has two behaviour:
@@ -38,12 +42,12 @@ public final class JenkinsUtils {
      * - But it also allows to get the sub-job in the case of a complex object like a
      *   Multi-Branch pipeline. In this case, itemName must be given.
      */
-    public static Job<?, ?> findJobByName(String jobName, String itemName, Collection<? extends TopLevelItem> items) {
-        LOGGER.fine("Find: " + jobName + " / " + itemName);
+    private static Job<?, ?> findJobByName(String jobName, String itemName, Collection<? extends TopLevelItem> items, String path) {
+        LOGGER.fine("Find: " + jobName + " / " + itemName + " path=" + path);
         for (TopLevelItem item : items) {
             // Item groups (WorkflowMultiBranchProject)
             if (itemName != null && item instanceof ItemGroup && item.getName().equals(jobName)) {
-                LOGGER.fine(" - ItemGroup: " + item.getName());
+                LOGGER.fine(" - ItemGroup: " + item.getName() + " path=" + path);
                 try {
                     Object job = ((ItemGroup<?>) item).getItem(itemName);
                     if (job != null) {
@@ -57,19 +61,21 @@ public final class JenkinsUtils {
             }
             // View groups (Folders)
             else if (item instanceof ViewGroup) {
-                LOGGER.fine(" - ViewGroup: " + item.getName());
+                LOGGER.fine(" - ViewGroup: " + path + "/" + item.getName());
                 for (View view : ((ViewGroup) item).getAllViews()) {
-                    LOGGER.fine("   - View: " + view.getViewName());
-                    Job<?, ?> job = findJobByName(jobName, itemName, view.getItems());
+                    LOGGER.fine("   - View: " + path + "/" + item.getName() + "/" + view.getViewName());
+                    Job<?, ?> job = findJobByName(jobName, itemName, view.getItems(), path + "/" + item.getName() + "/" + view.getViewName());
                     if (job != null) {
                         return job;
                     }
                 }
             }
             // Jobs (FreeStyleProject, WorkflowJob, ...)
-            else if (itemName == null && item instanceof Job && item.getName().equals(jobName)) {
-                LOGGER.fine(" - Job: " + item.getName());
-                return (Job<?, ?>) item;
+            else if (itemName == null && item instanceof Job) {
+                LOGGER.fine(" - Job: " + path + "/" + item.getName());
+                if (item.getName().equals(jobName)) {
+                    return (Job<?, ?>) item;
+                }
             }
         }
         return null;

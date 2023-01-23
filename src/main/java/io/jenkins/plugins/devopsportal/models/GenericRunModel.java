@@ -18,7 +18,12 @@ public interface GenericRunModel {
 
     @SuppressWarnings("unused")
     static void updateRecordFromRun(GenericRunModel record, Run<?,?> run, EnvVars env) {
-        record.setBuildJob(env.get("JOB_NAME"));
+        if (env.get("JOB_NAME").indexOf('/') > -1) {
+            record.setBuildJob(env.get("JOB_NAME").split("/")[0]);
+        }
+        else {
+            record.setBuildJob(env.get("JOB_NAME"));
+        }
         record.setBuildNumber(env.get("BUILD_NUMBER"));
         record.setBuildURL(env.get("RUN_DISPLAY_URL"));
         record.setBuildBranch(env.containsKey("GIT_BRANCH")
