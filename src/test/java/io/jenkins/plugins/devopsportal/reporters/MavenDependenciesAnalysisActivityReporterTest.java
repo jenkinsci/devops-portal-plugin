@@ -4,10 +4,7 @@ import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Label;
 import hudson.model.Result;
-import io.jenkins.plugins.devopsportal.models.AbstractActivity;
-import io.jenkins.plugins.devopsportal.models.ActivityCategory;
-import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
-import io.jenkins.plugins.devopsportal.models.UnitTestActivity;
+import io.jenkins.plugins.devopsportal.models.*;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -20,20 +17,21 @@ import java.io.File;
 
 import static org.junit.Assert.*;
 
-public class SurefireUnitTestActivityReporterTest {
+public class MavenDependenciesAnalysisActivityReporterTest {
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
 
     final String applicationName = "My Application";
-    final String applicationVersion = "1.0.2";
+    final String applicationVersion = "1.0.5";
     final String applicationComponent = "backend";
 
     @Test
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        SurefireUnitTestActivityReporter reporter = new SurefireUnitTestActivityReporter(applicationName, applicationVersion, applicationComponent);
-        reporter.setSurefireReportPath("report-surefire.xml");
+        MavenDependenciesAnalysisActivityReporter reporter = new MavenDependenciesAnalysisActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
+        reporter.setReportPath("target/dependency-check-report.xml");
         project.getBuildersList().add(reporter);
         project = jenkins.configRoundtrip(project);
         jenkins.assertEqualDataBoundBeans(
@@ -43,38 +41,38 @@ public class SurefireUnitTestActivityReporterTest {
     }
 
     @Test
-    public void testReporterReportFileNotFound() throws Exception {
+    public void testFileNotFound() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        SurefireUnitTestActivityReporter reporter = new SurefireUnitTestActivityReporter(applicationName, applicationVersion, applicationComponent);
-        reporter.setSurefireReportPath("report-surefire.xml");
+        MavenDependenciesAnalysisActivityReporter reporter = new MavenDependenciesAnalysisActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
+        reporter.setReportPath("dependency-check-report.xml");
         project.getBuildersList().add(reporter);
-
-        FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.SUCCESS, project);
+        FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.UNSTABLE, project);
         jenkins.assertLogContains(
-                "Report build activity 'UNIT_TEST' for application '" + applicationName + "' version "
+                "Report build activity 'DEPENDENCIES_ANALYSIS' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
                 build
         );
         jenkins.assertLogContains(
-                "No test reports that matches 'report-surefire.xml' found. Configuration error?",
+                "No dependency analysis report 'dependency-check-report.xml' found. Configuration error?",
                 build
         );
     }
 
     @Test
-    public void testReporterSuccess() throws Exception {
+    public void testSuccess() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        SurefireUnitTestActivityReporter reporter = new SurefireUnitTestActivityReporter(applicationName, applicationVersion, applicationComponent);
-        reporter.setSurefireReportPath("surefire-*.xml");
+        MavenDependenciesAnalysisActivityReporter reporter = new MavenDependenciesAnalysisActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
+        reporter.setReportPath("dependency-check-report.xml");
         project.getBuildersList().add(reporter);
         project.setScm(new SingleFileSCM(
-                "surefire-report.xml",
-                new File("src/test/resources/surefire-report.xml").toURI().toURL())
+                "dependency-check-report.xml",
+                new File("src/test/resources/dependency-check-report.xml").toURI().toURL())
         );
-
         FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.SUCCESS, project);
         jenkins.assertLogContains(
-                "Report build activity 'UNIT_TEST' for application '" + applicationName + "' version "
+                "Report build activity 'DEPENDENCIES_ANALYSIS' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
                 build
         );
@@ -87,18 +85,13 @@ public class SurefireUnitTestActivityReporterTest {
 
         assertNotNull(status);
 
-        AbstractActivity activity = status.getComponentActivityByCategory(ActivityCategory.UNIT_TEST, applicationComponent)
+        AbstractActivity activity = status.getComponentActivityByCategory(ActivityCategory.DEPENDENCIES_ANALYSIS, applicationComponent)
                 .orElse(null);
 
         assertNotNull(activity);
-        assertTrue(activity instanceof UnitTestActivity);
+        assertTrue(activity instanceof DependenciesAnalysisActivity);
 
-        UnitTestActivity tests = (UnitTestActivity) activity;
-
-        assertEquals(4, tests.getTestsFailed());
-        assertEquals(2, tests.getTestsIgnored());
-        assertEquals(51, tests.getTestsPassed());
-        assertEquals(0, tests.getTestCoverage(), 0);
+        DependenciesAnalysisActivity perf = (DependenciesAnalysisActivity) activity;
 
     }
 
@@ -108,22 +101,22 @@ public class SurefireUnitTestActivityReporterTest {
         jenkins.createOnlineSlave(Label.get(agentLabel));
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
         String pipelineScript = "node {\n" +
-                "  reportSurefireTest(\n" +
+                "  reportDependenciesAnalysis(\n" +
                 "       applicationName: '" + applicationName + "',\n" +
                 "       applicationVersion: '" + applicationVersion + "',\n" +
                 "       applicationComponent: '" + applicationComponent + "',\n" +
-                "       surefireReportPath: 'report-surefire.xml'\n" +
-                "  )" +
+                "       reportPath: 'dependency-check-report.xml'\n" +
+                "  )\n" +
                 "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
-        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.SUCCESS, job.scheduleBuild2(0));
+        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.UNSTABLE, job.scheduleBuild2(0));
         jenkins.assertLogContains(
-                "Report build activity 'UNIT_TEST' for application '" + applicationName + "' version "
+                "Report build activity 'DEPENDENCIES_ANALYSIS' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
                 completedBuild
         );
         jenkins.assertLogContains(
-                "No test reports that matches 'report-surefire.xml' found. Configuration error?",
+                "No test reports 'dependency-check-report.xml' found. Configuration error?",
                 completedBuild
         );
     }

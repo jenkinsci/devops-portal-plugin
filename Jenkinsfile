@@ -25,6 +25,12 @@ pipeline {
                         applicationComponent: "plugin-devops-portal",
                         artifactFileName: "target/devops-portal.hpi"
                     )
+                    reportMavenDependenciesAnalysis(
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION,
+                        applicationComponent: "plugin-devops-portal",
+                        reportPath: "target/dependency-check-report.xml"
+                    )
                 }
             }
             post {
@@ -66,15 +72,6 @@ pipeline {
                             projectKey: "io.jenkins.plugins.devops-portal:" + env.APPLICATION_VERSION
                         )
                     }
-
-                    // Dependencies analysis
-                    /*reportDependenciesAnalysis(
-                        applicationName: env.APPLICATION_NAME,
-                        applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin-devops-portal",
-                        manifestFile: "pom.xml",
-                        manager: "MAVEN"
-                    )*/
 
                 }
             }

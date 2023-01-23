@@ -26,7 +26,8 @@ public class PerformanceTestActivityReporterTest {
     @Test
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        PerformanceTestActivityReporter reporter = new PerformanceTestActivityReporter(applicationName, applicationVersion, applicationComponent);
+        PerformanceTestActivityReporter reporter = new PerformanceTestActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
         reporter.setTestCount(10);
         reporter.setSampleCount(450);
         reporter.setErrorCount(3);
@@ -41,7 +42,8 @@ public class PerformanceTestActivityReporterTest {
     @Test
     public void testReporterSuccess() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        PerformanceTestActivityReporter reporter = new PerformanceTestActivityReporter(applicationName, applicationVersion, applicationComponent);
+        PerformanceTestActivityReporter reporter = new PerformanceTestActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
         reporter.setTestCount(10);
         reporter.setSampleCount(450);
         reporter.setErrorCount(0);

@@ -9,7 +9,7 @@
 	<ninetieth>4</ninetieth>
 	<max>8</max>
 	<httpCode>200</httpCode>
-	<errors>0.0</errors>
+	<errors>5.0</errors>
 </api>
 <api>
 	<uri>Requête : backend</uri>
@@ -75,7 +75,7 @@
 	<ninetieth>11455</ninetieth>
 	<max>11531</max>
 	<httpCode>200</httpCode>
-	<errors>0.0</errors>
+	<errors>1.0</errors>
 </api>
 <api>
 	<uri>Requête : liste des propriétaires</uri>

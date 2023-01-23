@@ -16,6 +16,9 @@ public class RemoteFileSizeGetter extends MasterToSlaveFileCallable<Long> implem
 
     @Override
     public Long invoke(File file, VirtualChannel channel) throws IOException, InterruptedException {
+        if (!file.exists()) {
+            return -1L;
+        }
         return file.length();
     }
 

@@ -13,6 +13,8 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.SingleFileSCM;
 
+import java.io.File;
+
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
@@ -61,10 +63,12 @@ public class JMeterPerformanceTestActivityReporterTest {
     public void testReporterSuccess() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         JMeterPerformanceTestActivityReporter reporter = new JMeterPerformanceTestActivityReporter(applicationName, applicationVersion, applicationComponent);
-        reporter.setJmeterReportPath("report.xml");
+        reporter.setJmeterReportPath("jmeter-report.xml");
         project.getBuildersList().add(reporter);
-        project.setScm(new SingleFileSCM("report.xml", createReportContent()));
-
+        project.setScm(new SingleFileSCM(
+                "jmeter-report.xml",
+                new File("src/test/resources/jmeter-report.xml").toURI().toURL())
+        );
         FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.UNSTABLE, project);
         jenkins.assertLogContains(
                 "Report build activity 'PERFORMANCE_TEST' for application '" + applicationName + "' version "
@@ -88,34 +92,10 @@ public class JMeterPerformanceTestActivityReporterTest {
 
         PerformanceTestActivity tests = (PerformanceTestActivity) activity;
 
-        assertEquals(2, tests.getTestCount());
-        assertEquals(15, tests.getSampleCount());
-        assertEquals(5, tests.getErrorCount());
+        assertEquals(10, tests.getTestCount());
+        assertEquals(80, tests.getSampleCount());
+        assertEquals(6, tests.getErrorCount());
 
-    }
-
-    private String createReportContent() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<?xml version=\"1.0\"?>\n");
-        sb.append("<results>\n");
-        sb.append("  <api>\n");
-        sb.append("    <uri>A</uri>\n");
-        sb.append("    <samples>5</samples>\n");
-        sb.append("    <average>4</average>\n");
-        sb.append("    <min>3</min>\n");
-        sb.append("    <httpCode>200</httpCode>\n");
-        sb.append("    <errors>0.0</errors>\n");
-        sb.append("  </api>\n");
-        sb.append("  <api>\n");
-        sb.append("    <uri>B</uri>\n");
-        sb.append("    <samples>10</samples>\n");
-        sb.append("    <average>4</average>\n");
-        sb.append("    <min>3</min>\n");
-        sb.append("    <httpCode>200</httpCode>\n");
-        sb.append("    <errors>5.0</errors>\n");
-        sb.append("  </api>\n");
-        sb.append("</results>");
-        return sb.toString();
     }
 
     @Test

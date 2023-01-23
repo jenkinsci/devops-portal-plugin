@@ -214,7 +214,7 @@ In the `Configure` screen of a job, click on `Add Build Step` button and choose 
 |----------------------------------|
 | `Record a dependencies analysis` |
 
-If you are using MAVEN as dependencies manager, you need to add this plugin in your pom:
+Using MAVEN as dependencies manager, you need to add this plugin into your pom:
 
 ```xml
 <plugins>
@@ -229,21 +229,28 @@ If you are using MAVEN as dependencies manager, you need to add this plugin in y
                 </goals>
             </execution>
         </executions>
+        <configuration>
+            <format>ALL</format>
+            <outputDirectory>${project.basedir}/target</outputDirectory>
+        </configuration>
     </plugin>
 </plugins>
+```
+
+Then, when running your build add the **dependency-check** goal:
+
+```
+mvn -B -V -U -e -DskipTests clean package dependency-check:aggregate
 ```
 
 Run with pipeline script (DSL):
 
 ```groovy
-reportDependenciesAnalysis(
+reportMavenDependenciesAnalysis(
     applicationName: String,       // Name of application built
     applicationVersion: String,    // Version of application built
     applicationComponent: String,  // Name of application component built
-    manager: String,               // Only 'MAVEN' is supported actually
-    manifestFile: String,          // Path to project manifest file (pom.xml)
-    managerCommand: String = null  // Optional: shell command to run the manager
-                                   // If not provided, the plugin will try to guess it 
+    reportPath: string             // Path to the dependency analysis XML report
 )
 ```
 
@@ -428,8 +435,8 @@ flowchart TD
         BuildActivityReporter:::reporter -.-> AbstractActivity:::entity
         UnitTestActivityReporter:::reporter -.-> AbstractActivity:::entity
         SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
-        DependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
-        PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
+        MavenDependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
+        PerformanceTestActivityReporter:::reporter -.-> AbstractActivity:::entity
         JMeterPerformanceTestActivity:::reporter -.-> PerformanceTestActivity:::reporter
         QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
         SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter

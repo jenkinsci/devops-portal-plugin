@@ -1,7 +1,5 @@
 package io.jenkins.plugins.devopsportal.models;
 
-import io.jenkins.plugins.devopsportal.buildmanager.DependencyUpgrade;
-import io.jenkins.plugins.devopsportal.buildmanager.DependencyVulnerability;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -15,7 +13,6 @@ import java.util.List;
  */
 public class DependenciesAnalysisActivity extends AbstractActivity {
 
-    private String manager;
     private int outdatedDependencies;
     private int vulnerabilities;
     private List<DependencyUpgrade> outdatedDependenciesList;
@@ -26,15 +23,6 @@ public class DependenciesAnalysisActivity extends AbstractActivity {
         super(ActivityCategory.DEPENDENCIES_ANALYSIS, applicationComponent);
         this.outdatedDependenciesList = new ArrayList<>();
         this.vulnerabilitiesList = new ArrayList<>();
-    }
-
-    public String getManager() {
-        return manager;
-    }
-
-    @DataBoundSetter
-    public void setManager(String manager) {
-        this.manager = manager;
     }
 
     public int getOutdatedDependencies() {

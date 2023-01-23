@@ -22,6 +22,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Build step of a project used to record a UNIT_TEST activity.
@@ -29,6 +31,8 @@ import java.io.*;
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
 public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<UnitTestActivity> {
+
+    private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
     private String surefireReportPath;
 
@@ -68,7 +72,9 @@ public class SurefireUnitTestActivityReporter extends AbstractActivityReporter<U
         catch (Exception ex) {
             listener.getLogger().println("Error, unable to parse test files: " + ex.getClass().getSimpleName()
                     + " - " + ex.getMessage());
-            ex.printStackTrace(listener.getLogger());
+            if (LOGGER.isLoggable(Level.FINER)) {
+                LOGGER.log(Level.FINER, "Error parsing test files: " + surefireReportPath, ex);
+            }
             return Result.FAILURE;
         }
         if (result.files.isEmpty()) {

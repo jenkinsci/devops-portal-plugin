@@ -22,6 +22,8 @@ import org.kohsuke.stapler.QueryParameter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Build step of a project used to record a BUILD activity.
@@ -29,6 +31,8 @@ import java.io.IOException;
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
 public class BuildActivityReporter extends AbstractActivityReporter<BuildActivity> {
+
+    private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
     private String artifactFileName;
 
@@ -84,7 +88,9 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
         catch (Exception ex) {
             listener.getLogger().println("Error, unable to get file size: " + ex.getClass().getSimpleName()
                 + " - " + ex.getMessage());
-            ex.printStackTrace(listener.getLogger());
+            if (LOGGER.isLoggable(Level.FINER)) {
+                LOGGER.log(Level.FINER, "Error reading artifact file: " + artifactFileName, ex);
+            }
             return Result.FAILURE;
         }
         // File size comparison

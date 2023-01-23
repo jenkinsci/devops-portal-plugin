@@ -1,4 +1,4 @@
-package io.jenkins.plugins.devopsportal.buildmanager;
+package io.jenkins.plugins.devopsportal.models;
 
 import java.io.Serializable;
 
