@@ -25,12 +25,12 @@ pipeline {
                         applicationComponent: "plugin-devops-portal",
                         artifactFileName: "target/devops-portal.hpi"
                     )
-                    reportMavenDependenciesAnalysis(
+                    /*reportMavenDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
                         reportPath: "target/dependency-check-report.xml"
-                    )
+                    )*/
                 }
             }
             post {
