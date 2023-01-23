@@ -46,7 +46,6 @@
                             <br/>
                             <span class="build-date">
                                 <l:icon class="symbol-calendar-outline plugin-ionicons-api icon-sm"/>
-                                ${build.buildTimestamp} /
                                 ${it.formatDatetimeSeconds(build.buildTimestamp)}
                             </span>
                         </td>
@@ -508,9 +507,12 @@
                                             </j:if>
                                             <j:forEach var="vulnerability" indexVar="m" items="${activity.getVulnerabilities().getVulnerabilitiesByDependency(dependency)}">
                                                 <tr>
+                                                    <td>XXX</td>
                                                     <td>${dependency}</td>
-                                                    <td>${vulnerability.name} (${vulnerability.severity})</td>
                                                     <td style="line-height:1.8rem">
+                                                        <span style="margin-right:.5rem">
+                                                            ${vulnerability.name} (${vulnerability.severity})
+                                                        </span>
                                                         <j:forEach var="tag" indexVar="i" items="${vulnerability.tags}">
                                                             <span class="badge">
                                                                 ${tag}

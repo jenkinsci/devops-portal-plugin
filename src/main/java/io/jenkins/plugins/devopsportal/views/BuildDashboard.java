@@ -25,13 +25,14 @@ import java.util.stream.Stream;
  */
 public class BuildDashboard extends View {
 
-    private final SimpleDateFormat datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
+    private final SimpleDateFormat datetimeFormat;
 
     private String filter = "";
 
     @DataBoundConstructor
     public BuildDashboard(String name) {
         super(name);
+        datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
     }
 
     @NonNull
