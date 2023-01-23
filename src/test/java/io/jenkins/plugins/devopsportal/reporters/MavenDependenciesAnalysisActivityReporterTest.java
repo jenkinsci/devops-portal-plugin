@@ -93,6 +93,9 @@ public class MavenDependenciesAnalysisActivityReporterTest {
 
         DependenciesAnalysisActivity perf = (DependenciesAnalysisActivity) activity;
 
+        assertEquals(30, perf.getVulnerabilities().getDependenciesCount());
+        assertEquals(62, perf.getVulnerabilities().getVulnerabilitiesCount());
+
     }
 
     @Test
@@ -101,7 +104,7 @@ public class MavenDependenciesAnalysisActivityReporterTest {
         jenkins.createOnlineSlave(Label.get(agentLabel));
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
         String pipelineScript = "node {\n" +
-                "  reportDependenciesAnalysis(\n" +
+                "  reportMavenDependenciesAnalysis(\n" +
                 "       applicationName: '" + applicationName + "',\n" +
                 "       applicationVersion: '" + applicationVersion + "',\n" +
                 "       applicationComponent: '" + applicationComponent + "',\n" +
@@ -116,7 +119,7 @@ public class MavenDependenciesAnalysisActivityReporterTest {
                 completedBuild
         );
         jenkins.assertLogContains(
-                "No test reports 'dependency-check-report.xml' found. Configuration error?",
+                "No dependency analysis report 'dependency-check-report.xml' found. Configuration error?",
                 completedBuild
         );
     }

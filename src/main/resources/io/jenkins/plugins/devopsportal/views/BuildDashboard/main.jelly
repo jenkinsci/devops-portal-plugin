@@ -495,7 +495,8 @@
                                         </thead>
                                     </j:if>
                                     <tbody>
-                                        <j:forEach var="item" indexVar="l" items="${activity.vulnerabilitiesList}">
+                                        <!-- VULNERABILITIES -->
+                                        <j:forEach var="dependency" indexVar="l" items="${activity.vulnerabilities.dependencies}">
                                             <j:if test="${l == 0}">
                                                 <tr>
                                                     <td colspan="3">
@@ -504,18 +505,21 @@
                                                     </td>
                                                 </tr>
                                             </j:if>
-                                            <tr>
-                                                <td>${item.dependency}</td>
-                                                <td>${item.packages}</td>
-                                                <td style="line-height:1.8rem">
-                                                    <j:forEach var="tag" indexVar="i" items="${item.vulnerabilities}">
-                                                        <span class="badge">
-                                                            ${tag}
-                                                        </span>
-                                                    </j:forEach>
-                                                </td>
-                                            </tr>
+                                            <j:forEach var="vulnerability" indexVar="m" items="${activity.vulnerabilities.getVulnerabilitiesByDependency(dependency)}">
+                                                <tr>
+                                                    <td>${dependency}</td>
+                                                    <td>${vulnerability.name} (${vulnerability.severity})</td>
+                                                    <td style="line-height:1.8rem">
+                                                        <j:forEach var="tag" indexVar="i" items="${vulnerability.tags}">
+                                                            <span class="badge">
+                                                                ${tag}
+                                                            </span>
+                                                        </j:forEach>
+                                                    </td>
+                                                </tr>
+                                            </j:forEach>
                                         </j:forEach>
+                                        <!-- OUTDATED DEPENDENCIES -->
                                         <j:forEach var="item" indexVar="l" items="${activity.outdatedDependenciesList}">
                                             <j:if test="${l == 0}">
                                                 <tr>

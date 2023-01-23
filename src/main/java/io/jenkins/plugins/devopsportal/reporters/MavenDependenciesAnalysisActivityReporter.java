@@ -15,6 +15,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -51,7 +52,7 @@ public class MavenDependenciesAnalysisActivityReporter extends AbstractActivityR
                 .replace("%file%", reportPath)
         );
 
-        DependencyAnalysisResult result;
+        VulnerabilityAnalysisResult result;
         try {
             if (workspace.isRemote()) {
                 result = parseFilesFromRemoteWorkspace(new FilePath(workspace, reportPath));
@@ -68,7 +69,9 @@ public class MavenDependenciesAnalysisActivityReporter extends AbstractActivityR
         catch (Exception ex) {
             listener.getLogger().println("Error, unable to parse report file: " + ex.getClass().getSimpleName()
                     + " - " + ex.getMessage());
-            ex.printStackTrace(listener.getLogger());
+            if (LOGGER.isLoggable(Level.FINER)) {
+                LOGGER.log(Level.FINER, "Error reading analysis report file: " + reportPath, ex);
+            }
             return Result.FAILURE;
         }
 
@@ -78,10 +81,14 @@ public class MavenDependenciesAnalysisActivityReporter extends AbstractActivityR
             return Result.UNSTABLE;
         }
 
-        return activity.getVulnerabilities() > 0 ? Result.UNSTABLE : null;
+        listener.getLogger().println("Dependencies: " + result.getDependenciesCount());
+        listener.getLogger().println("Vulnerabilities: " + result.getVulnerabilitiesCount());
+
+        activity.setVulnerabilities(result);
+        return null;
     }
 
-    private DependencyAnalysisResult parseFilesFromLocalWorkspace(EnvVars env) throws Exception {
+    private VulnerabilityAnalysisResult parseFilesFromLocalWorkspace(EnvVars env) throws Exception {
         final File file = MiscUtils.checkFilePathIllegalAccess(
                 env.get("WORKSPACE", null),
                 reportPath
@@ -89,12 +96,12 @@ public class MavenDependenciesAnalysisActivityReporter extends AbstractActivityR
         if (file == null) {
             return null;
         }
-        DependencyAnalysisResult result = new DependencyAnalysisResult();
+        VulnerabilityAnalysisResult result = new VulnerabilityAnalysisResult();
         RemoteFileDependencyAnalysisParser.parse(file, result);
         return result;
     }
 
-    private DependencyAnalysisResult parseFilesFromRemoteWorkspace(FilePath target)
+    private VulnerabilityAnalysisResult parseFilesFromRemoteWorkspace(FilePath target)
             throws IOException, InterruptedException {
         return target.act(new RemoteFileDependencyAnalysisParser());
     }

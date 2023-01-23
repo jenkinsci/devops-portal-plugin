@@ -13,60 +13,37 @@ import java.util.List;
  */
 public class DependenciesAnalysisActivity extends AbstractActivity {
 
-    private int outdatedDependencies;
-    private int vulnerabilities;
     private List<DependencyUpgrade> outdatedDependenciesList;
-    private List<DependencyVulnerability> vulnerabilitiesList;
+    private VulnerabilityAnalysisResult vulnerabilities;
 
     @DataBoundConstructor
     public DependenciesAnalysisActivity(String applicationComponent) {
         super(ActivityCategory.DEPENDENCIES_ANALYSIS, applicationComponent);
         this.outdatedDependenciesList = new ArrayList<>();
-        this.vulnerabilitiesList = new ArrayList<>();
+        this.vulnerabilities = new VulnerabilityAnalysisResult();
     }
 
-    public int getOutdatedDependencies() {
-        return outdatedDependencies;
-    }
-
-    @DataBoundSetter
-    public void setOutdatedDependencies(int outdatedDependencies) {
-        this.outdatedDependencies = outdatedDependencies;
-    }
-
-    public int getVulnerabilities() {
-        return vulnerabilities;
-    }
-
-    @DataBoundSetter
-    public void setVulnerabilities(int vulnerabilities) {
-        this.vulnerabilities = vulnerabilities;
-    }
-
-    @SuppressWarnings("unused")
     public List<DependencyUpgrade> getOutdatedDependenciesList() {
         return outdatedDependenciesList;
     }
 
     @DataBoundSetter
-    public void setOutdatedDependenciesList(List<DependencyUpgrade> list) {
-        this.outdatedDependenciesList = list;
+    public void setOutdatedDependenciesList(List<DependencyUpgrade> outdatedDependenciesList) {
+        this.outdatedDependenciesList = outdatedDependenciesList;
     }
 
-    @SuppressWarnings("unused")
-    public List<DependencyVulnerability> getVulnerabilitiesList() {
-        return vulnerabilitiesList;
+    public VulnerabilityAnalysisResult getVulnerabilities() {
+        return vulnerabilities;
     }
 
     @DataBoundSetter
-    public void setVulnerabilitiesList(List<DependencyVulnerability> list) {
-        this.vulnerabilitiesList = list;
+    public void setVulnerabilities(VulnerabilityAnalysisResult vulnerabilities) {
+        this.vulnerabilities = vulnerabilities;
     }
 
     @SuppressWarnings("unused")
     public boolean hasIssues() {
-        return (outdatedDependenciesList != null && vulnerabilitiesList != null)
-                && (!outdatedDependenciesList.isEmpty() || !vulnerabilitiesList.isEmpty());
+        return outdatedDependenciesList != null && !vulnerabilities.isEmpty();
     }
 
 }

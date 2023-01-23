@@ -1,6 +1,8 @@
 package io.jenkins.plugins.devopsportal.utils;
 
 import hudson.remoting.VirtualChannel;
+import io.jenkins.plugins.devopsportal.models.DependencyVulnerability;
+import io.jenkins.plugins.devopsportal.models.VulnerabilityAnalysisResult;
 import jenkins.MasterToSlaveFileCallable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,18 +25,18 @@ import java.util.function.Function;
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */
-public class RemoteFileDependencyAnalysisParser extends MasterToSlaveFileCallable<DependencyAnalysisResult> implements Serializable {
+public class RemoteFileDependencyAnalysisParser extends MasterToSlaveFileCallable<VulnerabilityAnalysisResult> implements Serializable {
 
     public RemoteFileDependencyAnalysisParser() {
     }
 
     @Override
-    public DependencyAnalysisResult invoke(File file, VirtualChannel channel) throws IOException, InterruptedException {
+    public VulnerabilityAnalysisResult invoke(File file, VirtualChannel channel) throws IOException, InterruptedException {
         if (!file.exists()) {
             return null;
         }
         try {
-            DependencyAnalysisResult result = new DependencyAnalysisResult();
+            VulnerabilityAnalysisResult result = new VulnerabilityAnalysisResult();
             parse(file, result);
             return result;
         }
@@ -43,7 +45,7 @@ public class RemoteFileDependencyAnalysisParser extends MasterToSlaveFileCallabl
         }
     }
 
-    public static void parse(File file, DependencyAnalysisResult result) throws Exception {
+    public static void parse(File file, VulnerabilityAnalysisResult result) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
@@ -55,9 +57,11 @@ public class RemoteFileDependencyAnalysisParser extends MasterToSlaveFileCallabl
         NodeList dependencies = (NodeList) xPath.compile("/analysis/dependencies/dependency").evaluate(document, XPathConstants.NODESET);
         for (int i = 0, l = dependencies.getLength(); i < l; i++) {
             NodeList vulnerabilities = (NodeList) xPath.compile("vulnerabilities/vulnerability").evaluate(dependencies.item(i), XPathConstants.NODESET);
-            if (vulnerabilities.getLength() > 0) {
-                System.out.println(dependencies.item(i).getNodeName() + " - " + ((Element) dependencies.item(i)).getElementsByTagName("fileName").item(0).getTextContent());
+            if (vulnerabilities.getLength() < 1) {
+                continue;
             }
+            List<DependencyVulnerability> items = result.add(((Element) dependencies.item(i))
+                    .getElementsByTagName("fileName").item(0).getTextContent());
             for (int j = 0, k = vulnerabilities.getLength(); j < k; j++) {
                 String name = (String) xPath.compile("name").evaluate(vulnerabilities.item(j), XPathConstants.STRING);
                 String severity = (String) xPath.compile("severity").evaluate(vulnerabilities.item(j), XPathConstants.STRING);
@@ -70,7 +74,11 @@ public class RemoteFileDependencyAnalysisParser extends MasterToSlaveFileCallabl
                 addTagIf(xPath, vulnerabilities.item(j), "cvssV3/confidentialityImpact", "HIGH"::equals, "confidentiality", tags);
                 addTagIf(xPath, vulnerabilities.item(j), "cvssV3/integrityImpact", "HIGH"::equals, "integrity", tags);
                 addTagIf(xPath, vulnerabilities.item(j), "cvssV3/availabilityImpact", "HIGH"::equals, "availability", tags);
-                System.out.println("  " + name + "  " + severity + "  " + tags);
+                items.add(new DependencyVulnerability(
+                        name,
+                        severity,
+                        tags
+                ));
             }
         }
     }
