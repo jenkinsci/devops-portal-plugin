@@ -130,6 +130,11 @@ public class DeploymentOperation implements Describable<DeploymentOperation>, Se
         this.buildCommit = buildCommit;
     }
 
+    @Override
+    public void setBuildTimestamp(long timestamp) {
+        setTimestamp(timestamp);
+    }
+
     public List<String> getTags() {
         return tags;
     }

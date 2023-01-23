@@ -5,6 +5,7 @@ import jenkins.model.Jenkins;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -43,11 +44,15 @@ public final class JenkinsUtils {
      *   Multi-Branch pipeline. In this case, itemName must be given.
      */
     private static Job<?, ?> findJobByName(String jobName, String itemName, Collection<? extends TopLevelItem> items, String path) {
-        LOGGER.fine("Find: " + jobName + " / " + itemName + " path=" + path);
+        if (LOGGER.isLoggable(Level.FINER)) {
+            LOGGER.finer("Find: " + jobName + " / " + itemName + " path=" + path);
+        }
         for (TopLevelItem item : items) {
             // Item groups (WorkflowMultiBranchProject)
             if (itemName != null && item instanceof ItemGroup && item.getName().equals(jobName)) {
-                LOGGER.fine(" - ItemGroup: " + item.getName() + " path=" + path);
+                if (LOGGER.isLoggable(Level.FINER)) {
+                    LOGGER.finer(" - ItemGroup: " + item.getName() + " path=" + path);
+                }
                 try {
                     Object job = ((ItemGroup<?>) item).getItem(itemName);
                     if (job != null) {
@@ -61,9 +66,13 @@ public final class JenkinsUtils {
             }
             // View groups (Folders)
             else if (item instanceof ViewGroup) {
-                LOGGER.fine(" - ViewGroup: " + path + "/" + item.getName());
+                if (LOGGER.isLoggable(Level.FINER)) {
+                    LOGGER.finer(" - ViewGroup: " + path + "/" + item.getName());
+                }
                 for (View view : ((ViewGroup) item).getAllViews()) {
-                    LOGGER.fine("   - View: " + path + "/" + item.getName() + "/" + view.getViewName());
+                    if (LOGGER.isLoggable(Level.FINER)) {
+                        LOGGER.finer("   - View: " + path + "/" + item.getName() + "/" + view.getViewName());
+                    }
                     Job<?, ?> job = findJobByName(jobName, itemName, view.getItems(), path + "/" + item.getName() + "/" + view.getViewName());
                     if (job != null) {
                         return job;
@@ -72,13 +81,15 @@ public final class JenkinsUtils {
             }
             // Jobs (FreeStyleProject, WorkflowJob, ...)
             else if (itemName == null && item instanceof Job) {
-                LOGGER.fine(" - Job: " + path + "/" + item.getName());
+                if (LOGGER.isLoggable(Level.FINER)) {
+                    LOGGER.finer(" - Job: " + path + "/" + item.getName());
+                }
                 if (item.getName().equals(jobName)) {
                     return (Job<?, ?>) item;
                 }
             }
-            else {
-                LOGGER.fine(" - Unknown: " + path + "/" + item.getName() + " (" + item.getClass() + ")");
+            else if (LOGGER.isLoggable(Level.FINER)) {
+                LOGGER.finer(" - Unknown: " + path + "/" + item.getName() + " (" + item.getClass() + ")");
             }
         }
         return null;

@@ -117,6 +117,7 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
     }
 
     @DataBoundSetter
+    @Override
     public void setBuildTimestamp(long buildTimestamp) {
         this.buildTimestamp = buildTimestamp;
     }

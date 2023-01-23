@@ -3,6 +3,8 @@ package io.jenkins.plugins.devopsportal.models;
 import hudson.EnvVars;
 import hudson.model.Run;
 
+import java.time.Instant;
+
 /**
  * Provide a standard interface to all persistent objects which are associated with a run.
  *
@@ -15,6 +17,7 @@ public interface GenericRunModel {
     void setBuildURL(String buildJob);
     void setBuildBranch(String buildJob);
     void setBuildCommit(String buildJob);
+    void setBuildTimestamp(long timestamp);
 
     @SuppressWarnings("unused")
     static void updateRecordFromRun(GenericRunModel record, Run<?,?> run, EnvVars env) {
@@ -29,6 +32,7 @@ public interface GenericRunModel {
         record.setBuildBranch(env.containsKey("GIT_BRANCH")
                 ? env.get("GIT_BRANCH").replace("origin/", "") : "");
         record.setBuildCommit(env.getOrDefault("GIT_COMMIT", ""));
+        record.setBuildTimestamp(Instant.now().getEpochSecond());
     }
 
 }
