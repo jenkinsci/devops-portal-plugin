@@ -29,16 +29,14 @@ import java.util.stream.Stream;
  */
 public class RunDashboard extends View {
 
-    private final SimpleDateFormat dateFormat;
-    private final SimpleDateFormat datetimeFormat;
+    private transient SimpleDateFormat dateFormat;
+    private transient SimpleDateFormat datetimeFormat;
 
     private String filter = "";
 
     @DataBoundConstructor
     public RunDashboard(String name) {
         super(name);
-        dateFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_Date());
-        datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
     }
 
     @NonNull
@@ -72,16 +70,22 @@ public class RunDashboard extends View {
     }
 
     @SuppressWarnings("unused")
-    public String formatDateMs(Long timestamp) {
+    public synchronized String formatDateMs(Long timestamp) {
         if (timestamp == null) {
             return "?";
+        }
+        if (dateFormat == null) {
+            dateFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_Date());
         }
         return dateFormat.format(new java.util.Date(timestamp));
     }
 
-    public String formatDatetimeSeconds(Long timestamp) {
+    public synchronized String formatDatetimeSeconds(Long timestamp) {
         if (timestamp == null) {
             return "?";
+        }
+        if (datetimeFormat == null) {
+            datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
         }
         return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
     }

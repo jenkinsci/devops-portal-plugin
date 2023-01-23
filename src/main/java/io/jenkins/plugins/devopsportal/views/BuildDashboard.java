@@ -25,14 +25,13 @@ import java.util.stream.Stream;
  */
 public class BuildDashboard extends View {
 
-    private final SimpleDateFormat datetimeFormat;
+    private transient SimpleDateFormat datetimeFormat;
 
     private String filter = "";
 
     @DataBoundConstructor
     public BuildDashboard(String name) {
         super(name);
-        datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
     }
 
     @NonNull
@@ -65,9 +64,12 @@ public class BuildDashboard extends View {
         this.filter = filter;
     }
 
-    public String formatDatetimeSeconds(Long timestamp) {
+    public synchronized String formatDatetimeSeconds(Long timestamp) {
         if (timestamp == null) {
             return "?";
+        }
+        if (datetimeFormat == null) {
+            datetimeFormat = new SimpleDateFormat(io.jenkins.plugins.devopsportal.Messages.DateFormatter_DateTime());
         }
         return datetimeFormat.format(new java.util.Date(timestamp * 1000L));
     }
