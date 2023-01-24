@@ -6,6 +6,7 @@ import hudson.model.*;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.*;
+import io.jenkins.plugins.devopsportal.utils.SummaryTitle;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.*;
 
@@ -163,6 +164,18 @@ public class BuildDashboard extends View {
                 return getServiceConfigurationDescriptor().getService(operation.getServiceId()).orElse(null);
             }
             return null;
+        }
+
+        public String getSummaryArtifactsCount(String applicationName, String applicationVersion) {
+            return "7";
+        }
+
+        public String getSummaryCoverageRate(String applicationName, String applicationVersion) {
+            return "0.3%";
+        }
+
+        public SummaryTitle getSummaryBuild(String applicationName, String applicationVersion) {
+            return new SummaryTitle("good", "heart-outline", "Healthy");
         }
 
         @SuppressWarnings("unused")

@@ -99,20 +99,21 @@
                                 <div class="card">
                                     <div class="title">
                                         <h2>Build</h2>
-                                        <div class="status" health="good">
-                                            <l:icon class="symbol-heart-outline plugin-ionicons-api icon-md" />
-                                            Healthy
+                                        <j:set var="status" value="${it.descriptor.getSummaryBuild(application, version)}"/>
+                                        <div class="status" health="${status.health}">
+                                            <l:icon class="symbol-${status.icon} plugin-ionicons-api icon-md" />
+                                            ${status.title}
                                         </div>
                                     </div>
                                     <div class="content">
                                         <div class="summary-build col-2">
                                             <div>
                                                 <h3>Artifacts</h3>
-                                                <strong>3</strong>
+                                                <strong>${it.descriptor.getSummaryArtifactsCount(application, version)}</strong>
                                             </div>
                                             <div>
                                                 <h3>Coverage</h3>
-                                                <strong>50%</strong>
+                                                <strong>${it.descriptor.getSummaryCoverageRate(application, version)}</strong>
                                             </div>
                                         </div>
                                     </div>

@@ -494,6 +494,7 @@ Integration testing:
 - [ ] Build dashboard: visual improvements
     - [x] Design
     - [ ] Behaviour
+    - [ ] i18n
     - [ ] Dark theme
 Next features:
 
