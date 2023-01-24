@@ -92,41 +92,118 @@
                         </td>
                     </tr>
                     <!-- BUILD activities -->
-                    <!--
-                    <tr class="version-summary" version="${application}-${version}">
+                    <tr class="version-summary-tr" version="${application}-${version}">
                         <td />
-                        <td colspan="4">
-                            <div class="card">
-                                <p class="title">Build</p>
-                                <div class="status" health="good">
-                                    <l:icon class="symbol-heart-outline plugin-ionicons-api icon-md" />
-                                    Healty
+                        <td colspan="4" style="padding:0">
+                            <div class="version-summary">
+                                <div class="card">
+                                    <div class="title">
+                                        <h2>Build</h2>
+                                        <div class="status" health="good">
+                                            <l:icon class="symbol-heart-outline plugin-ionicons-api icon-md" />
+                                            Healthy
+                                        </div>
+                                    </div>
+                                    <div class="content">
+                                        <div class="summary-build col-2">
+                                            <div>
+                                                <h3>Artifacts</h3>
+                                                <strong>3</strong>
+                                            </div>
+                                            <div>
+                                                <h3>Coverage</h3>
+                                                <strong>50%</strong>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card">
-                                <p class="title">QUALITY &amp; SECURITY</p>
-                                <div class="status" health="pending">
-                                    <l:icon class="symbol-sync-circle-outline plugin-ionicons-api icon-md" />
-                                    Updating
+                                <div class="card summary-audit" style="width:50%">
+                                    <div class="title">
+                                        <h2>QUALITY &amp; SECURITY</h2>
+                                        <div class="status" health="pending">
+                                            <l:icon class="symbol-sync-circle-outline plugin-ionicons-api icon-md" />
+                                            Updating
+                                        </div>
+                                    </div>
+                                    <div class="content summary-quality col-2">
+                                        <div class="col-3">
+                                            <div>
+                                                <h3>Bug</h3>
+                                                <span class="activity-score score-B">
+                                                    B
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h3>Vulnerability</h3>
+                                                <span class="activity-score score-C">
+                                                    C
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h3>Hotspot</h3>
+                                                <span class="activity-score score-A">
+                                                    A
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div style="padding-left: 10px">
+                                            <div class="col-2">
+                                                <div>
+                                                    <h3>Vulnerabilities</h3>
+                                                    <strong>15</strong>
+                                                </div>
+                                                <div>
+                                                    <h3>Worst score</h3>
+                                                    <small>CRITICAL</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card">
-                                <p class="title">Test</p>
-                                <div class="status" health="warn">
-                                    <l:icon class="symbol-bug-outline plugin-ionicons-api icon-md" />
-                                    Warning
-                                </div>
-                            </div>
-                            <div class="card">
-                                <p class="title">Release</p>
-                                <div class="status" health="bad">
-                                    <l:icon class="symbol-skull-outline plugin-ionicons-api icon-md" />
-                                    Failure
+                                <!--<div class="card">
+                                    <p class="title">Test</p>
+                                    <div class="status" health="warn">
+                                        <l:icon class="symbol-bug-outline plugin-ionicons-api icon-md" />
+                                        Warning
+                                    </div>
+                                    <div class="content">
+                                        X
+                                    </div>
+                                </div>-->
+                                <div class="card">
+                                    <div class="title">
+                                        <h2>Release</h2>
+                                        <div class="status" health="bad">
+                                            <l:icon class="symbol-skull-outline plugin-ionicons-api icon-md" />
+                                            Failure
+                                        </div>
+                                    </div>
+                                    <div class="content">
+                                        <div class="summary-release col-2">
+                                            <div>
+                                                <h3>Releases</h3>
+                                                <strong>3</strong>
+                                            </div>
+                                            <div style="padding-right: 10px;line-height:180%">
+                                                <span class="deployment-tag badge">
+                                                    tag-a
+                                                </span>
+                                                <span class="deployment-tag badge">
+                                                    tag 3
+                                                </span>
+                                                <span class="deployment-tag badge">
+                                                    tag 3
+                                                </span>
+                                                <span class="deployment-tag badge">
+                                                    tag 3
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </td>
                     </tr>
-                    -->
                     <!-- BUILD activities -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'BUILD')}">
                         <tr class="version-activities" hidden="true" version="${application}-${version}">
@@ -592,7 +669,11 @@
 
     <script type="text/javascript">
         function toggleVisibility(version) {
-            const items = document.querySelectorAll("tr.version-activities[version='" + version + "']");
+            let items = document.querySelectorAll("tr.version-activities[version='" + version + "']");
+            for (const item of items) {
+                item.toggleAttribute('hidden');
+            }
+            items = document.querySelectorAll("tr.version-summary-tr[version='" + version + "']");
             for (const item of items) {
                 item.toggleAttribute('hidden');
             }
@@ -614,7 +695,7 @@
             }
             function windowClose(event) {
                 if (event.target === modal) {
-                close();
+                    close();
                 }
             }
             window.addEventListener('click', windowClose);

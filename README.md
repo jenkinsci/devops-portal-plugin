@@ -492,7 +492,9 @@ Integration testing:
     - [ ] JMeterPerformanceTestActivityReporter
     - [x] DependenciesAnalysisActivityReporter
 - [ ] Build dashboard: visual improvements
-
+    - [x] Design
+    - [ ] Behaviour
+    - [ ] Dark theme
 Next features:
 
 - [ ] Report dependencies analysis: implements with NPM

@@ -59,7 +59,7 @@
     background: #f0f0f0 !important;
     line-height: 1.0rem;
 }
-.version-activities[hidden] {
+.version-activities[hidden], .version-summary-tr[hidden] {
     display: none;
 }
 .version-activities td:nth-child(1) {
@@ -130,38 +130,97 @@ html[data-theme="dark"] .build-dashboard .group-title {
 .change-bad { color: red }
 .change-unstable { color: orange }
 
-tr.version-summary td:nth-child(2) {
+.version-summary {
     border-top: 1px solid #ddd;
     padding: 0 !important;
-    height: 110px;
+    display: flex !important;
+    flex-wrap: wrap;
+    flex: 0 0 100%;
+    min-width: 800px;
 }
 
-tr.version-summary .card {
-    display: inline-block;
-    height: 110px;
-    width: 25%;
-    padding: 5px 10px;
+.version-summary .card {
+    flex: 0 0 25%;
+    padding: 0 0 10px 0;
 }
-tr.version-summary .card:not(:last-child) {
+.version-summary .card:nth-of-type(2) {
+    flex: 1 1  50%;
+}
+.version-summary .card:not(:last-child) {
     border-right: 1px solid #ddd;
 }
 
-tr.version-summary .card .title {
-    margin: 0;
-    text-transform: uppercase;
-    color: #777;
+.version-summary .card .title {
+    display: flex !important;
+    flex-wrap: wrap;
+    margin: 0 0 12px 0;
+    padding: 2px 5px;
+    height: 28px;
+    align-items: center;
 }
-
-tr.version-summary .card .status {
+.version-summary .card h2 {
+    color: #777;
+    text-transform: uppercase;
+    font-weight: normal;
+    font-size: .9rem;
+    margin: 0;
+    height: 28px;
+}
+.version-summary .card .status {
     font-size: 18px;
     line-height: 18px;
     color: #333;
+    padding: 2px 5px;
+    text-align: right;
+    flex: 1 1 auto;
+    padding: 6px 8px 0 0;
+    height: 34px;
 }
 
-tr.version-summary [health=good] path { color: #34ba4d; fill: #34ba4d; }
-tr.version-summary [health=warn] path { color: #ba6e22; fill: #ba6e22; }
-tr.version-summary [health=warn] path:not(:nth-of-type(1)) { color: #fff; }
-tr.version-summary [health=bad] path { color: #fff; }
-tr.version-summary [health=bad] path:nth-of-type(1) { color: #c92a2a; fill: #c92a2a; }
-tr.version-summary [health=bad] circle { color: #fff; fill: #fff; }
-tr.version-summary [health=pending] path { color: #3165c4 }
+.version-summary .card .content {
+    display: block;
+}
+
+.summary-build, .summary-quality, .summary-release {
+    text-align: center;
+}
+.summary-build h3, .summary-quality h3, .summary-release h3 {
+    margin: 4px 0 0 0;
+    padding: 0;
+    font-size: .8rem;
+    color: #999;
+    font-weight: normal;
+}
+.summary-build strong, .summary-quality strong, .summary-release strong {
+    font-size: 1.3rem;
+    font-weight: normal;
+}
+.summary-quality small {
+    display: inline-block;
+    font-size: 1rem;
+    padding-top: 6px;
+}
+.summary-quality span.activity-score {
+    display: inline-block;
+    margin-top: 8px;
+    line-height: 18px;
+}
+
+.version-summary [health=good] path { color: #34ba4d; fill: #34ba4d; }
+.version-summary [health=warn] path { color: #ba6e22; fill: #ba6e22; }
+.version-summary [health=warn] path:not(:nth-of-type(1)) { color: #fff; }
+.version-summary [health=bad] path { color: #fff; }
+.version-summary [health=bad] path:nth-of-type(1) { color: #c92a2a; fill: #c92a2a; }
+.version-summary [health=bad] circle { color: #fff; fill: #fff; }
+.version-summary [health=pending] path { color: #3165c4 }
+
+div.col-3, div.col-2 {
+    display: flex !important;
+    flex-wrap: wrap;
+}
+div.col-2 > div {
+    flex: 1 1 50%;
+}
+div.col-3 > div {
+    flex: 1 1 30%;
+}
