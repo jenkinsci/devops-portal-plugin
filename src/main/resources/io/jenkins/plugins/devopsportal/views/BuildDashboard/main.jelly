@@ -92,6 +92,42 @@
                         </td>
                     </tr>
                     <!-- BUILD activities -->
+                    <!--
+                    <tr class="version-summary" version="${application}-${version}">
+                        <td />
+                        <td colspan="4">
+                            <div class="card">
+                                <p class="title">Build</p>
+                                <div class="status" health="good">
+                                    <l:icon class="symbol-heart-outline plugin-ionicons-api icon-md" />
+                                    Healty
+                                </div>
+                            </div>
+                            <div class="card">
+                                <p class="title">QUALITY &amp; SECURITY</p>
+                                <div class="status" health="pending">
+                                    <l:icon class="symbol-sync-circle-outline plugin-ionicons-api icon-md" />
+                                    Updating
+                                </div>
+                            </div>
+                            <div class="card">
+                                <p class="title">Test</p>
+                                <div class="status" health="warn">
+                                    <l:icon class="symbol-bug-outline plugin-ionicons-api icon-md" />
+                                    Warning
+                                </div>
+                            </div>
+                            <div class="card">
+                                <p class="title">Release</p>
+                                <div class="status" health="bad">
+                                    <l:icon class="symbol-skull-outline plugin-ionicons-api icon-md" />
+                                    Failure
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    -->
+                    <!-- BUILD activities -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'BUILD')}">
                         <tr class="version-activities" hidden="true" version="${application}-${version}">
                             <td />

@@ -177,19 +177,19 @@ public class JMeterPerformanceTestActivityReporterTest {
         assertEquals(ActivityScore.A, result.getScore());
         assertTrue(result.isQualityGatePassed());
 
-        // PARTIAL FAILURE (5%)
+        // PARTIAL FAILURE (<= 10%)
         result.setErrorCount(10);
         assertEquals(Result.UNSTABLE, PerformanceTestActivityReporter.handleActivityResult(result));
         assertEquals(ActivityScore.B, result.getScore());
         assertFalse(result.isQualityGatePassed());
 
-        // PARTIAL FAILURE (25%)
+        // PARTIAL FAILURE (<= 30%)
         result.setErrorCount(50);
         assertEquals(Result.UNSTABLE, PerformanceTestActivityReporter.handleActivityResult(result));
         assertEquals(ActivityScore.C, result.getScore());
         assertFalse(result.isQualityGatePassed());
 
-        // PARTIAL FAILURE (45%)
+        // PARTIAL FAILURE (> 30%)
         result.setErrorCount(90);
         assertEquals(Result.UNSTABLE, PerformanceTestActivityReporter.handleActivityResult(result));
         assertEquals(ActivityScore.D, result.getScore());

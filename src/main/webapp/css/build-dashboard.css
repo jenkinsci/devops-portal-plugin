@@ -11,6 +11,7 @@
 .build-dashboard .group-title th {
     text-align: left;
     padding: .8rem 1rem;
+    font-size: 1rem;
 }
 .build-dashboard .group-headers {
     font-size: 80%;
@@ -125,5 +126,42 @@ html[data-theme="dark"] .build-dashboard .group-title {
     border-top: 2px solid #18181B;
 }
 .unchanged { color: #2d67ad; }
-.change-good { color: green; }
+.change-good { color: green }
 .change-bad { color: red }
+.change-unstable { color: orange }
+
+tr.version-summary td:nth-child(2) {
+    border-top: 1px solid #ddd;
+    padding: 0 !important;
+    height: 110px;
+}
+
+tr.version-summary .card {
+    display: inline-block;
+    height: 110px;
+    width: 25%;
+    padding: 5px 10px;
+}
+tr.version-summary .card:not(:last-child) {
+    border-right: 1px solid #ddd;
+}
+
+tr.version-summary .card .title {
+    margin: 0;
+    text-transform: uppercase;
+    color: #777;
+}
+
+tr.version-summary .card .status {
+    font-size: 18px;
+    line-height: 18px;
+    color: #333;
+}
+
+tr.version-summary [health=good] path { color: #34ba4d; fill: #34ba4d; }
+tr.version-summary [health=warn] path { color: #ba6e22; fill: #ba6e22; }
+tr.version-summary [health=warn] path:not(:nth-of-type(1)) { color: #fff; }
+tr.version-summary [health=bad] path { color: #fff; }
+tr.version-summary [health=bad] path:nth-of-type(1) { color: #c92a2a; fill: #c92a2a; }
+tr.version-summary [health=bad] circle { color: #fff; fill: #fff; }
+tr.version-summary [health=pending] path { color: #3165c4 }
