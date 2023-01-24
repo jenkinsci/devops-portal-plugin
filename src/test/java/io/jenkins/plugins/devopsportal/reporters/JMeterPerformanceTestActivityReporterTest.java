@@ -30,7 +30,8 @@ public class JMeterPerformanceTestActivityReporterTest {
     @Test
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        JMeterPerformanceTestActivityReporter reporter = new JMeterPerformanceTestActivityReporter(applicationName, applicationVersion, applicationComponent);
+        JMeterPerformanceTestActivityReporter reporter = new JMeterPerformanceTestActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
         reporter.setJmeterReportPath("report.xml");
         project.getBuildersList().add(reporter);
         project = jenkins.configRoundtrip(project);
@@ -41,33 +42,35 @@ public class JMeterPerformanceTestActivityReporterTest {
     }
 
     @Test
-    public void testReporterReportFileNotFound() throws Exception {
+    public void testReporterFileNotFound() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        JMeterPerformanceTestActivityReporter reporter = new JMeterPerformanceTestActivityReporter(applicationName, applicationVersion, applicationComponent);
+        JMeterPerformanceTestActivityReporter reporter = new JMeterPerformanceTestActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
         reporter.setJmeterReportPath("report.xml");
         project.getBuildersList().add(reporter);
 
-        FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.FAILURE, project);
+        FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.UNSTABLE, project);
         jenkins.assertLogContains(
                 "Report build activity 'PERFORMANCE_TEST' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
                 build
         );
         jenkins.assertLogContains(
-                "The file is unreadable: report.xml",
+                "No performance report 'report.xml' found. Configuration error?",
                 build
         );
     }
 
     @Test
-    public void testReporterSuccess() throws Exception {
+    public void testReporterSuccess1() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        JMeterPerformanceTestActivityReporter reporter = new JMeterPerformanceTestActivityReporter(applicationName, applicationVersion, applicationComponent);
+        JMeterPerformanceTestActivityReporter reporter = new JMeterPerformanceTestActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
         reporter.setJmeterReportPath("jmeter-report.xml");
         project.getBuildersList().add(reporter);
         project.setScm(new SingleFileSCM(
                 "jmeter-report.xml",
-                new File("src/test/resources/jmeter-report.xml").toURI().toURL())
+                new File("src/test/resources/jmeter-report-1.xml").toURI().toURL())
         );
         FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.UNSTABLE, project);
         jenkins.assertLogContains(
@@ -95,7 +98,45 @@ public class JMeterPerformanceTestActivityReporterTest {
         assertEquals(10, tests.getTestCount());
         assertEquals(80, tests.getSampleCount());
         assertEquals(6, tests.getErrorCount());
+    }
 
+    @Test
+    public void testReporterSuccess2() throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        JMeterPerformanceTestActivityReporter reporter = new JMeterPerformanceTestActivityReporter(
+                applicationName, applicationVersion, applicationComponent);
+        reporter.setJmeterReportPath("jmeter-report.xml");
+        project.getBuildersList().add(reporter);
+        project.setScm(new SingleFileSCM(
+                "jmeter-report.xml",
+                new File("src/test/resources/jmeter-report-2.xml").toURI().toURL())
+        );
+        FreeStyleBuild build = jenkins.buildAndAssertStatus(Result.SUCCESS, project);
+        jenkins.assertLogContains(
+                "Report build activity 'PERFORMANCE_TEST' for application '" + applicationName + "' version "
+                        + applicationVersion + " component '" + applicationComponent + "'",
+                build
+        );
+
+        ApplicationBuildStatus status = jenkins
+                .getInstance()
+                .getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class)
+                .getBuildStatusByApplication(applicationName, applicationVersion)
+                .orElse(null);
+
+        assertNotNull(status);
+
+        AbstractActivity activity = status.getComponentActivityByCategory(ActivityCategory.PERFORMANCE_TEST, applicationComponent)
+                .orElse(null);
+
+        assertNotNull(activity);
+        assertTrue(activity instanceof PerformanceTestActivity);
+
+        PerformanceTestActivity tests = (PerformanceTestActivity) activity;
+
+        assertEquals(9, tests.getTestCount());
+        assertEquals(15, tests.getSampleCount());
+        assertEquals(0, tests.getErrorCount());
     }
 
     @Test
@@ -112,12 +153,62 @@ public class JMeterPerformanceTestActivityReporterTest {
                 "  )\n" +
                 "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
-        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.FAILURE, job.scheduleBuild2(0));
+        WorkflowRun completedBuild = jenkins.assertBuildStatus(Result.UNSTABLE, job.scheduleBuild2(0));
         jenkins.assertLogContains(
                 "Report build activity 'PERFORMANCE_TEST' for application '" + applicationName + "' version "
                         + applicationVersion + " component '" + applicationComponent + "'",
                 completedBuild
         );
+        jenkins.assertLogContains(
+                "No performance report 'report.xml' found. Configuration error?",
+                completedBuild
+        );
+    }
+
+    @Test
+    public void testResultFunction() {
+
+        // SUCCESS
+        PerformanceTestActivity result = new PerformanceTestActivity("test");
+        result.setTestCount(100);
+        result.setSampleCount(200);
+        result.setErrorCount(0);
+        assertNull(PerformanceTestActivityReporter.handleActivityResult(result));
+        assertEquals(ActivityScore.A, result.getScore());
+        assertTrue(result.isQualityGatePassed());
+
+        // PARTIAL FAILURE (5%)
+        result.setErrorCount(10);
+        assertEquals(Result.UNSTABLE, PerformanceTestActivityReporter.handleActivityResult(result));
+        assertEquals(ActivityScore.B, result.getScore());
+        assertFalse(result.isQualityGatePassed());
+
+        // PARTIAL FAILURE (25%)
+        result.setErrorCount(50);
+        assertEquals(Result.UNSTABLE, PerformanceTestActivityReporter.handleActivityResult(result));
+        assertEquals(ActivityScore.C, result.getScore());
+        assertFalse(result.isQualityGatePassed());
+
+        // PARTIAL FAILURE (45%)
+        result.setErrorCount(90);
+        assertEquals(Result.UNSTABLE, PerformanceTestActivityReporter.handleActivityResult(result));
+        assertEquals(ActivityScore.D, result.getScore());
+        assertFalse(result.isQualityGatePassed());
+
+        // TOTAL FAILURE
+        result.setErrorCount(200);
+        assertEquals(Result.FAILURE, PerformanceTestActivityReporter.handleActivityResult(result));
+        assertEquals(ActivityScore.E, result.getScore());
+        assertFalse(result.isQualityGatePassed());
+
+        // EMPTY RESULT SET
+        result.setTestCount(0);
+        result.setSampleCount(0);
+        result.setErrorCount(0);
+        assertNull(PerformanceTestActivityReporter.handleActivityResult(result));
+        assertNull(result.getScore());
+        assertFalse(result.isQualityGatePassed());
+
     }
 
 }

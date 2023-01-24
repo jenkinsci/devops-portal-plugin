@@ -486,20 +486,12 @@ Version 3, 29 June 2007
 
 Integration testing:
 
-- [x] Ensure JenkinsUtils.getBuild() works with Multibranch Pipelines
 - [ ] Check behavior with slaves workers (accessing local files)
     - [x] BuildActivityReporter
     - [x] SurefireUnitTestActivityReporter
     - [ ] JMeterPerformanceTestActivityReporter
-    - [ ] DependenciesAnalysisActivityReporter
-- [x] SonarQubeAudit
-  - [x] Test with invalid projectKey
-  - [x] Test with invalid server
-- [x] Unstable Maven dependency analysis : stucked with vulnerabilities
-- [x] SonarQube audit : 3 vulnerabitilies, 4 bugs
-- [x] Build dashboad, Unit tests, change icon with detail to "open-outline"
-- [x] SurefireUnitTestActivityReporter: allow wildcard for file selection
-- [x] Date bug on BuildDashboard
+    - [x] DependenciesAnalysisActivityReporter
+- [ ] Build dashboard: visual improvements
 
 Next features:
 

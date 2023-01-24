@@ -76,7 +76,16 @@ public class PerformanceTestActivityReporter extends AbstractActivityReporter<Pe
                 return Result.FAILURE;
             }
             // Partial failure
-            activity.setScore(ActivityScore.D);
+            float ratio = (float) activity.getErrorCount() / (float) activity.getSampleCount() * 100;
+            if (ratio <= 10) {
+                activity.setScore(ActivityScore.B);
+            }
+            else if (ratio <= 30) {
+                activity.setScore(ActivityScore.C);
+            }
+            else {
+                activity.setScore(ActivityScore.D);
+            }
             return Result.UNSTABLE;
         }
         activity.setScore(activity.getSampleCount() > 0 ? ActivityScore.A : null);

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testResults version="1.2">
+<httpSample t="363" it="0" lt="359" ct="347" ts="1674557336494" s="true" lb="Requête : frontend" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="1398" sby="204" ng="1" na="1">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <java.net.URL>https://registry.trustingenierie.com:444/</java.net.URL>
+</httpSample>
+<httpSample t="53" it="0" lt="52" ct="0" ts="1674557336873" s="true" lb="Requête : backend" rc="200" rm="200" tn="Thread Group 1-1" dt="text" by="817" sby="218" ng="1" na="1">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <java.net.URL>https://registry.trustingenierie.com:444/back-api/about</java.net.URL>
+</httpSample>
+<httpSample t="504" it="0" lt="504" ct="0" ts="1674557336928" s="true" lb="Requête : login" rc="200" rm="200" tn="Thread Group 1-1" dt="text" by="1693" sby="410" ng="1" na="1">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <java.net.URL>https://registry.trustingenierie.com:444/back-api/auth/login</java.net.URL>
+</httpSample>
+<httpSample t="7206" it="0" lt="7188" ct="0" ts="1674557337470" s="true" lb="Requête : liste des parcelles" rc="200" rm="200" tn="Thread Group 1-1" dt="text" by="75670" sby="521" ng="1" na="1">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <java.net.URL>https://registry.trustingenierie.com:444/back-api/cadastre/parcel/</java.net.URL>
+</httpSample>
+<httpSample t="10062" it="0" lt="10037" ct="0" ts="1674557344681" s="true" lb="Requête : liste des procédures" rc="200" rm="200" tn="Thread Group 1-1" dt="text" by="183632" sby="521" ng="1" na="1">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <java.net.URL>https://registry.trustingenierie.com:444/back-api/workflow/folder/</java.net.URL>
+</httpSample>
+<httpSample t="234" it="0" lt="230" ct="0" ts="1674557354744" s="true" lb="Requête : liste des propriétaires" rc="200" rm="200" tn="Thread Group 1-1" dt="text" by="43638" sby="517" ng="1" na="1">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <java.net.URL>https://registry.trustingenierie.com:444/back-api/party/owner/</java.net.URL>
+</httpSample>
+<httpSample t="176" it="0" lt="168" ct="0" ts="1674557354980" s="true" lb="Requête : lecture d&apos;une entrée de registre" rc="200" rm="200" tn="Thread Group 1-1" dt="text" by="18549" sby="504" ng="1" na="1">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <java.net.URL>https://registry.trustingenierie.com:444/back-api/registry/livre-foncier/archive/municipality/69/volume/I/folio/1</java.net.URL>
+</httpSample>
+<httpSample t="484" it="0" lt="484" ct="0" ts="1674557355158" s="true" lb="Requête : liste des OT de l&apos;utilisateur" rc="200" rm="200" tn="Thread Group 1-1" dt="text" by="6378" sby="469" ng="1" na="1">
+  <assertionResult>
+    <name>Response Assertion</name>
+    <failure>false</failure>
+    <error>false</error>
+  </assertionResult>
+  <java.net.URL>https://registry.trustingenierie.com:444/back-api/workflow/assignment/user/me/</java.net.URL>
+</httpSample>
+<httpSample t="4" it="0" lt="4" ct="0" ts="1674557355644" s="true" lb="Requête : ressources JS" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="2774" sby="470" ng="1" na="1">
+  <java.net.URL>https://registry.trustingenierie.com:444/runtime-es2015.18b3b3553f9bae35ca00.js</java.net.URL>
+</httpSample>
+<httpSample t="3" it="0" lt="3" ct="0" ts="1674557355650" s="true" lb="Requête : ressources JS" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="2771" sby="467" ng="1" na="1">
+  <java.net.URL>https://registry.trustingenierie.com:444/runtime-es5.18b3b3553f9bae35ca00.js</java.net.URL>
+</httpSample>
+<httpSample t="8" it="0" lt="3" ct="0" ts="1674557355653" s="true" lb="Requête : ressources JS" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="130854" sby="469" ng="1" na="1">
+  <java.net.URL>https://registry.trustingenierie.com:444/polyfills-es5.ed4611a2f3a039729377.js</java.net.URL>
+</httpSample>
+<httpSample t="5" it="0" lt="4" ct="0" ts="1674557355661" s="true" lb="Requête : ressources JS" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="37509" sby="472" ng="1" na="1">
+  <java.net.URL>https://registry.trustingenierie.com:444/polyfills-es2015.4fb63107b75b1a96895e.js</java.net.URL>
+</httpSample>
+<httpSample t="6" it="0" lt="3" ct="0" ts="1674557355667" s="true" lb="Requête : ressources JS" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="78812" sby="463" ng="1" na="1">
+  <java.net.URL>https://registry.trustingenierie.com:444/scripts.f2ac5056792707091828.js</java.net.URL>
+</httpSample>
+<httpSample t="36" it="0" lt="4" ct="0" ts="1674557355673" s="true" lb="Requête : ressources JS" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="849836" sby="467" ng="1" na="1">
+  <java.net.URL>https://registry.trustingenierie.com:444/main-es2015.0d9e30b0794ea2ca8bea.js</java.net.URL>
+</httpSample>
+<httpSample t="46" it="0" lt="4" ct="0" ts="1674557355710" s="true" lb="Requête : ressources JS" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="961169" sby="464" ng="1" na="1">
+  <java.net.URL>https://registry.trustingenierie.com:444/main-es5.0d9e30b0794ea2ca8bea.js</java.net.URL>
+</httpSample>
+<sample t="3" it="0" lt="0" ct="0" ts="1674557355775" s="true" lb="Debug" rc="200" rm="OK" tn="Thread Group 1-1" dt="text" by="2004" sby="0" ng="1" na="1"/>
+
+</testResults>
