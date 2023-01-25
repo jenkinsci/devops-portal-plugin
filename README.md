@@ -484,26 +484,3 @@ https://github.com/rbello/jenkins-plugin-devops-portal
 **Licence** \
 GNU GENERAL PUBLIC LICENSE \
 Version 3, 29 June 2007
-
-## TODO
-
-Integration testing:
-
-- [ ] Check behavior with slaves workers (accessing local files)
-    - [x] BuildActivityReporter
-    - [x] SurefireUnitTestActivityReporter
-    - [ ] JMeterPerformanceTestActivityReporter
-    - [x] DependenciesAnalysisActivityReporter
-- [x] Build dashboard: visual improvements
-    - [x] Design
-    - [x] Behaviour / TU
-    - [x] i18n
-    - [x] Dark theme
-- [ ] Documentation
-  - [ ] Update screenshots for build dashboard
-  - [x] Explain the principe or the plugin (recording things)
-
-Next features:
-
-- [ ] Report dependencies analysis: implements with NPM
-- [ ] DependenciesAnalysisActivityReporter: automatic population with Annotation detection
