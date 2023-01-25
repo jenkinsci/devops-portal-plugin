@@ -5,6 +5,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,6 +59,9 @@ public class ArtifactReleaseActivity extends AbstractActivity {
     }
 
     public List<String> getTags() {
+        if (tags == null) {
+            return Collections.emptyList();
+        }
         return tags;
     }
 

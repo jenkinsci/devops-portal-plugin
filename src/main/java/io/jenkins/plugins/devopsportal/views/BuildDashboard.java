@@ -214,7 +214,32 @@ public class BuildDashboard extends View {
         }
 
         public SummaryTitle getSummaryQuality(String applicationName, String applicationVersion) {
-            return new SummaryTitle("pending", "sync-circle-outline", "Updating"); // TODO
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return new SummaryTitle("warn", "help-circle-outline", "Unknown");
+            }
+            boolean incomplete = status
+                    .getActivitiesByCategory(ActivityCategory.QUALITY_AUDIT)
+                    .stream()
+                    .map(activity -> (QualityAuditActivity) activity)
+                    .anyMatch(activity -> !activity.isComplete());
+            if (incomplete) {
+                return new SummaryTitle("pending", "sync-circle-outline", "Updating");
+            }
+            if ("CRITICAL".equals(getSummaryWorstScore(applicationName, applicationVersion))) {
+                return new SummaryTitle("bad", "skull-outline", "Dependency Failure");
+            }
+            List<String> scores = Arrays.asList(
+                    getLowerQualityScore(status, QualityAuditActivity::getBugScore),
+                    getLowerQualityScore(status, QualityAuditActivity::getVulnerabilityScore),
+                    getLowerQualityScore(status, QualityAuditActivity::getHotspotScore)
+            );
+            for (String score : Arrays.asList("E", "D", "C")) {
+                if (scores.contains(score)) {
+                    return new SummaryTitle("bad", "skull-outline", "Quality Failure");
+                }
+            }
+            return new SummaryTitle("good", "heart-outline", "Healthy");
         }
 
         private static String getLowerQualityScore(ApplicationBuildStatus status,
@@ -255,23 +280,70 @@ public class BuildDashboard extends View {
         }
 
         public String getSummaryDependencyVulnerabilityCount(String applicationName, String applicationVersion) {
-            return "60"; // TODO
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return "-";
+            }
+            return "" + status
+                    .getActivitiesByCategory(ActivityCategory.DEPENDENCIES_ANALYSIS)
+                    .stream()
+                    .map(activity -> (DependenciesAnalysisActivity) activity)
+                    .mapToInt(DependenciesAnalysisActivity::getVulnerabilitiesCount)
+                    .sum();
         }
 
         public String getSummaryWorstScore(String applicationName, String applicationVersion) {
-            return "CRITICAL"; // TODO
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return "-";
+            }
+            List<String> scores = status
+                    .getActivitiesByCategory(ActivityCategory.DEPENDENCIES_ANALYSIS)
+                    .stream()
+                    .map(activity -> (DependenciesAnalysisActivity) activity)
+                    .flatMap(activity -> activity.getVulnerabilities().getItems().values().stream())
+                    .flatMap(Collection::stream)
+                    .map(DependencyVulnerability::getSeverity)
+                    .collect(Collectors.toList());
+            for (String severity : Arrays.asList("CRITICAL", "HIGHEST", "HIGH", "MEDIUM", "LOW", "LOWEST")) {
+                if (scores.contains(severity)) {
+                    return severity;
+                }
+            }
+            return "-";
         }
 
         public SummaryTitle getSummaryRelease(String applicationName, String applicationVersion) {
-            return new SummaryTitle("bad", "skull-outline", "Failure"); // TODO
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return new SummaryTitle("warn", "help-circle-outline", "Unknown");
+            }
+            if (status.getActivitiesByCategory(ActivityCategory.ARTIFACT_RELEASE).isEmpty()) {
+                return new SummaryTitle("bad", "skull-outline", "Missing");
+            }
+            return new SummaryTitle("good", "heart-outline", "Healthy");
         }
 
         public String getSummaryReleasesCount(String applicationName, String applicationVersion) {
-            return "3"; // TODO
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return "-";
+            }
+            return "" + status.getActivitiesByCategory(ActivityCategory.ARTIFACT_RELEASE).size();
         }
 
         public List<String> getSummaryReleasesTags(String applicationName, String applicationVersion) {
-            return Arrays.asList("tag1", "tag2", "autre-tag"); // TODO
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return Collections.emptyList();
+            }
+            return status
+                    .getActivitiesByCategory(ActivityCategory.ARTIFACT_RELEASE)
+                    .stream()
+                    .map(activity -> (ArtifactReleaseActivity) activity)
+                    .flatMap(activity -> activity.getTags().stream())
+                    .distinct()
+                    .collect(Collectors.toList());
         }
 
         public FormValidation doCheckFilter(@QueryParameter String filter) {

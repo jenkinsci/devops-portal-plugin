@@ -1,14 +1,16 @@
 package io.jenkins.plugins.devopsportal.views;
 
+import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.models.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public class BuildDashboardTest {
@@ -22,6 +24,10 @@ public class BuildDashboardTest {
 
     public ApplicationBuildStatus.DescriptorImpl getApplicationDescriptor() {
         return jenkins.getInstance().getDescriptorByType(ApplicationBuildStatus.DescriptorImpl.class);
+    }
+
+    public DeploymentOperation.DescriptorImpl getDeploymentDescriptor() {
+        return jenkins.getInstance().getDescriptorByType(DeploymentOperation.DescriptorImpl.class);
     }
 
     public BuildDashboard.DescriptorImpl getViewDescriptor() {
@@ -45,6 +51,20 @@ public class BuildDashboardTest {
 
         // Configure application
         getApplicationDescriptor().update("My Application", "2.4.0", status -> {
+
+            // Quality
+            QualityAuditActivity qualityBackend = new QualityAuditActivity("backend");
+            qualityBackend.setLinesCount(14500);
+            qualityBackend.setBugCount(25);
+            qualityBackend.setBugScore(ActivityScore.D);
+            qualityBackend.setVulnerabilityCount(10);
+            qualityBackend.setVulnerabilityScore(ActivityScore.C);
+            qualityBackend.setHotspotCount(8);
+            qualityBackend.setHotspotScore(ActivityScore.D);
+            qualityBackend.setDuplicationRate(.14f);
+            qualityBackend.setQualityGatePassed(false);
+            qualityBackend.setComplete(false);
+            status.setComponentActivityByCategory(ActivityCategory.QUALITY_AUDIT, "backend", qualityBackend);
 
         });
         getApplicationDescriptor().update("My Application", "2.5.8", status -> {
@@ -75,6 +95,55 @@ public class BuildDashboardTest {
             testFrontend.setTestCoverage(.40f);
             status.setComponentActivityByCategory(ActivityCategory.UNIT_TEST, "frontend", testFrontend);
 
+            // Quality
+            QualityAuditActivity qualityBackend = new QualityAuditActivity("backend");
+            qualityBackend.setLinesCount(14500);
+            qualityBackend.setBugCount(2);
+            qualityBackend.setBugScore(ActivityScore.B);
+            qualityBackend.setVulnerabilityCount(0);
+            qualityBackend.setVulnerabilityScore(ActivityScore.A);
+            qualityBackend.setHotspotCount(0);
+            qualityBackend.setHotspotScore(ActivityScore.A);
+            qualityBackend.setDuplicationRate(.14f);
+            qualityBackend.setQualityGatePassed(true);
+            qualityBackend.setComplete(true);
+            status.setComponentActivityByCategory(ActivityCategory.QUALITY_AUDIT, "backend", qualityBackend);
+
+            // Dependencies
+            DependenciesAnalysisActivity dependenciesBackend = new DependenciesAnalysisActivity("backend");
+            VulnerabilityAnalysisResult vulnerabilities = new VulnerabilityAnalysisResult();
+            vulnerabilities.add("dependency1")
+                    .add(new DependencyVulnerability("CVE-2020-11022", "MEDIUM", Arrays.asList("network", "confidentiality")));
+            vulnerabilities.add("dependency2")
+                    .add(new DependencyVulnerability("CVE-2022-40152", "CRITICAL", Arrays.asList("network", "availability")));
+            vulnerabilities.add("dependency3")
+                    .add(new DependencyVulnerability("CVE-2022-40152", "MEDIUM", Arrays.asList("network", "integrity")));
+            dependenciesBackend.setVulnerabilities(vulnerabilities);
+            status.setComponentActivityByCategory(ActivityCategory.DEPENDENCIES_ANALYSIS, "backend", dependenciesBackend);
+
+            // Release
+            ArtifactReleaseActivity releaseBackend = new ArtifactReleaseActivity("backend");
+            releaseBackend.setArtifactName("Backend API");
+            releaseBackend.setRepositoryName("Artifactory");
+            releaseBackend.setArtifactURL("https://myartifactory.mysociety.com/artifact/a.b.c/latest");
+            releaseBackend.setTags("tag1,tag2,tag3");
+            status.setComponentActivityByCategory(ActivityCategory.ARTIFACT_RELEASE, "backend", releaseBackend);
+        });
+
+        // Deploy 2.5.8
+        getDeploymentDescriptor().append(deployment -> {
+            deployment.setApplicationName("My Application");
+            deployment.setApplicationVersion("2.5.8");
+            deployment.setServiceId("Server 1");
+            deployment.setTimestamp(Instant.parse("2022-11-30T18:35:24.00Z").getEpochSecond());
+            deployment.setTags("A");
+        });
+        getDeploymentDescriptor().append(deployment -> {
+            deployment.setApplicationName("My Application");
+            deployment.setApplicationVersion("2.5.8");
+            deployment.setServiceId("Server 1");
+            deployment.setTimestamp(Instant.parse("2023-01-05T14:30:06.00Z").getEpochSecond());
+            deployment.setTags("B");
         });
 
         // Configure application
@@ -104,6 +173,7 @@ public class BuildDashboardTest {
             qualityBackend.setDuplicationRate(.15f);
             qualityBackend.setQualityGatePassed(false);
             qualityBackend.setTestCoverage(.15f);
+            qualityBackend.setComplete(true);
             status.setComponentActivityByCategory(ActivityCategory.QUALITY_AUDIT, "backend", qualityBackend);
             QualityAuditActivity qualityFrontend = new QualityAuditActivity("frontend");
             qualityFrontend.setLinesCount(14460);
@@ -116,8 +186,47 @@ public class BuildDashboardTest {
             qualityFrontend.setDuplicationRate(.25f);
             qualityFrontend.setQualityGatePassed(true);
             qualityFrontend.setTestCoverage(.35f);
+            qualityFrontend.setComplete(true);
             status.setComponentActivityByCategory(ActivityCategory.QUALITY_AUDIT, "frontend", qualityFrontend);
 
+            // Dependencies
+            DependenciesAnalysisActivity dependenciesBackend = new DependenciesAnalysisActivity("backend");
+            VulnerabilityAnalysisResult vulnerabilities = new VulnerabilityAnalysisResult();
+            vulnerabilities.add("dependency1")
+                    .add(new DependencyVulnerability("CVE-2020-11022", "MEDIUM", Arrays.asList("network", "confidentiality")));
+            vulnerabilities.add("dependency2")
+                    .add(new DependencyVulnerability("CVE-2022-40152", "HIGH", Arrays.asList("network", "availability")));
+            vulnerabilities.add("dependency3")
+                    .add(new DependencyVulnerability("CVE-2022-40152", "MEDIUM", Arrays.asList("network", "integrity")));
+            vulnerabilities.add("dependency4")
+                    .add(new DependencyVulnerability("CVE-2022-22976", "LOW", Arrays.asList("network", "confidentiality")));
+            vulnerabilities.add("dependency5")
+                    .add(new DependencyVulnerability("CVE-2022-45047", "HIGH", Arrays.asList("network", "easycomplexity")));
+            dependenciesBackend.setVulnerabilities(vulnerabilities);
+            status.setComponentActivityByCategory(ActivityCategory.DEPENDENCIES_ANALYSIS, "backend", dependenciesBackend);
+
+            // Release
+            ArtifactReleaseActivity releaseBackend = new ArtifactReleaseActivity("backend");
+            releaseBackend.setArtifactName("Backend API");
+            releaseBackend.setRepositoryName("Artifactory");
+            releaseBackend.setArtifactURL("https://myartifactory.mysociety.com/artifact/a.b.c/latest");
+            releaseBackend.setTags("docker,latest,3.0.0,tomcat");
+            status.setComponentActivityByCategory(ActivityCategory.ARTIFACT_RELEASE, "backend", releaseBackend);
+            ArtifactReleaseActivity releaseFrontend = new ArtifactReleaseActivity("frontend");
+            releaseFrontend.setArtifactName("Backend API");
+            releaseFrontend.setRepositoryName("Artifactory");
+            releaseFrontend.setArtifactURL("https://myartifactory.mysociety.com/artifact/a.b.c/latest");
+            releaseFrontend.setTags("docker,latest,3.0.0,angular");
+            status.setComponentActivityByCategory(ActivityCategory.ARTIFACT_RELEASE, "frontend", releaseFrontend);
+
+        });
+
+        // Deploy 3.0.0
+        getDeploymentDescriptor().append(deployment -> {
+            deployment.setApplicationName("My Application");
+            deployment.setApplicationVersion("3.0.0");
+            deployment.setServiceId("Server 1");
+            deployment.setTimestamp(Instant.parse("2023-02-14T08:11:13.00Z").getEpochSecond());
         });
 
     }
@@ -153,7 +262,7 @@ public class BuildDashboardTest {
         // Valid application
         versions = getViewDescriptor().getApplicationVersions("My Application");
         assertNotNull(versions);
-        assertEquals(2, versions.size());
+        assertEquals(3, versions.size());
     }
 
     @Test
@@ -180,12 +289,30 @@ public class BuildDashboardTest {
 
     @Test
     public void testGetLastDeploymentByApplication() {
-        // TODO
+        assertNull(getViewDescriptor().getLastDeploymentByApplication("Unknown application", "1.0.0"));
+        assertNull(getViewDescriptor().getLastDeploymentByApplication("My Application", "Unknown version"));
+        assertNull(getViewDescriptor().getLastDeploymentByApplication("My Application", "2.4.0"));
+        DeploymentOperation deployment = getViewDescriptor().getLastDeploymentByApplication("My Application", "2.5.8");
+        assertNotNull(deployment);
+        assertEquals("My Application", deployment.getApplicationName());
+        assertEquals("2.5.8", deployment.getApplicationVersion());
+        assertEquals("Server 1", deployment.getServiceId());
+        assertEquals(1672929006L, deployment.getTimestamp());
+        org.hamcrest.MatcherAssert.assertThat(
+                deployment.getTags(),
+                is(Collections.singletonList("B"))
+        );
+        assertNotNull(getViewDescriptor().getLastDeploymentByApplication("My Application", "3.0.0"));
     }
 
     @Test
     public void testGetDeploymentTarget() {
-        // TODO
+        DeploymentOperation deployment = getViewDescriptor().getLastDeploymentByApplication("My Application", "3.0.0");
+        assertNotNull(deployment);
+        ServiceConfiguration service = getViewDescriptor().getDeploymentTarget(deployment);
+        assertNotNull(service);
+        assertEquals("Server 1", service.getLabel());
+        assertEquals("foo.mydomain.com", service.getHostname());
     }
 
     @Test
@@ -232,15 +359,34 @@ public class BuildDashboardTest {
 
     @Test
     public void testGetSummaryQuality() {
-        // TODO
+        assertEquals(
+                "{warn/help-circle-outline/Unknown}",
+                getViewDescriptor().getSummaryQuality("Unknown application", "1.0.0").toString()
+        );
+        assertEquals(
+                "{warn/help-circle-outline/Unknown}",
+                getViewDescriptor().getSummaryQuality("My Application", "Unknown version").toString()
+        );
+        assertEquals(
+                "{pending/sync-circle-outline/Updating}",
+                getViewDescriptor().getSummaryQuality("My Application", "2.4.0").toString()
+        );
+        assertEquals(
+                "{bad/skull-outline/Dependency Failure}",
+                getViewDescriptor().getSummaryQuality("My Application", "2.5.8").toString()
+        );
+        assertEquals(
+                "{bad/skull-outline/Quality Failure}",
+                getViewDescriptor().getSummaryQuality("My Application", "3.0.0").toString()
+        );
     }
 
     @Test
     public void testGetSummaryBugScore() {
         assertEquals("-", getViewDescriptor().getSummaryBugScore("Unknown application", "1.0.0"));
         assertEquals("-", getViewDescriptor().getSummaryBugScore("My Application", "Unknown version"));
-        assertEquals("?", getViewDescriptor().getSummaryBugScore("My Application", "2.4.0"));
-        assertEquals("?", getViewDescriptor().getSummaryBugScore("My Application", "2.5.8"));
+        assertEquals("D", getViewDescriptor().getSummaryBugScore("My Application", "2.4.0"));
+        assertEquals("B", getViewDescriptor().getSummaryBugScore("My Application", "2.5.8"));
         assertEquals("B", getViewDescriptor().getSummaryBugScore("My Application", "3.0.0"));
     }
 
@@ -248,8 +394,8 @@ public class BuildDashboardTest {
     public void testGetSummaryVulnerabilityScore() {
         assertEquals("-", getViewDescriptor().getSummaryVulnerabilityScore("Unknown application", "1.0.0"));
         assertEquals("-", getViewDescriptor().getSummaryVulnerabilityScore("My Application", "Unknown version"));
-        assertEquals("?", getViewDescriptor().getSummaryVulnerabilityScore("My Application", "2.4.0"));
-        assertEquals("?", getViewDescriptor().getSummaryVulnerabilityScore("My Application", "2.5.8"));
+        assertEquals("C", getViewDescriptor().getSummaryVulnerabilityScore("My Application", "2.4.0"));
+        assertEquals("A", getViewDescriptor().getSummaryVulnerabilityScore("My Application", "2.5.8"));
         assertEquals("C", getViewDescriptor().getSummaryVulnerabilityScore("My Application", "3.0.0"));
     }
 
@@ -257,10 +403,93 @@ public class BuildDashboardTest {
     public void testGetSummaryHotspotScore() {
         assertEquals("-", getViewDescriptor().getSummaryHotspotScore("Unknown application", "1.0.0"));
         assertEquals("-", getViewDescriptor().getSummaryHotspotScore("My Application", "Unknown version"));
-        assertEquals("?", getViewDescriptor().getSummaryHotspotScore("My Application", "2.4.0"));
-        assertEquals("?", getViewDescriptor().getSummaryHotspotScore("My Application", "2.5.8"));
+        assertEquals("D", getViewDescriptor().getSummaryHotspotScore("My Application", "2.4.0"));
+        assertEquals("A", getViewDescriptor().getSummaryHotspotScore("My Application", "2.5.8"));
         assertEquals("D", getViewDescriptor().getSummaryHotspotScore("My Application", "3.0.0"));
     }
 
+    @Test
+    public void getSummaryDependencyVulnerabilityCount() {
+        assertEquals("-", getViewDescriptor().getSummaryDependencyVulnerabilityCount("Unknown application", "1.0.0"));
+        assertEquals("-", getViewDescriptor().getSummaryDependencyVulnerabilityCount("My Application", "Unknown version"));
+        assertEquals("0", getViewDescriptor().getSummaryDependencyVulnerabilityCount("My Application", "2.4.0"));
+        assertEquals("3", getViewDescriptor().getSummaryDependencyVulnerabilityCount("My Application", "2.5.8"));
+        assertEquals("5", getViewDescriptor().getSummaryDependencyVulnerabilityCount("My Application", "3.0.0"));
+    }
+
+    @Test
+    public void testGetSummaryWorstScore() {
+        assertEquals("-", getViewDescriptor().getSummaryWorstScore("Unknown application", "1.0.0"));
+        assertEquals("-", getViewDescriptor().getSummaryWorstScore("My Application", "Unknown version"));
+        assertEquals("-", getViewDescriptor().getSummaryWorstScore("My Application", "2.4.0"));
+        assertEquals("CRITICAL", getViewDescriptor().getSummaryWorstScore("My Application", "2.5.8"));
+        assertEquals("HIGH", getViewDescriptor().getSummaryWorstScore("My Application", "3.0.0"));
+    }
+
+    @Test
+    public void testGetSummaryRelease() {
+        assertEquals(
+                "{warn/help-circle-outline/Unknown}",
+                getViewDescriptor().getSummaryRelease("Unknown application", "1.0.0").toString()
+        );
+        assertEquals(
+                "{warn/help-circle-outline/Unknown}",
+                getViewDescriptor().getSummaryRelease("My Application", "Unknown version").toString()
+        );
+        assertEquals(
+                "{bad/skull-outline/Missing}",
+                getViewDescriptor().getSummaryRelease("My Application", "2.4.0").toString()
+        );
+        assertEquals(
+                "{good/heart-outline/Healthy}",
+                getViewDescriptor().getSummaryRelease("My Application", "2.5.8").toString()
+        );
+        assertEquals(
+                "{good/heart-outline/Healthy}",
+                getViewDescriptor().getSummaryRelease("My Application", "3.0.0").toString()
+        );
+    }
+
+    @Test
+    public void testGetSummaryReleasesCount() {
+        assertEquals("-", getViewDescriptor().getSummaryReleasesCount("Unknown application", "1.0.0"));
+        assertEquals("-", getViewDescriptor().getSummaryReleasesCount("My Application", "Unknown version"));
+        assertEquals("0", getViewDescriptor().getSummaryReleasesCount("My Application", "2.4.0"));
+        assertEquals("1", getViewDescriptor().getSummaryReleasesCount("My Application", "2.5.8"));
+        assertEquals("2", getViewDescriptor().getSummaryReleasesCount("My Application", "3.0.0"));
+    }
+
+    @Test
+    public void testGetSummaryReleasesTags() {
+        org.hamcrest.MatcherAssert.assertThat(
+                getViewDescriptor().getSummaryReleasesTags("Unknown application", "1.0.0"),
+                is(Collections.emptyList())
+        );
+        org.hamcrest.MatcherAssert.assertThat(
+                getViewDescriptor().getSummaryReleasesTags("My Application", "Unknown version"),
+                is(Collections.emptyList())
+        );
+        org.hamcrest.MatcherAssert.assertThat(
+                getViewDescriptor().getSummaryReleasesTags("My Application", "2.4.0"),
+                is(Collections.emptyList())
+        );
+        org.hamcrest.MatcherAssert.assertThat(
+                getViewDescriptor().getSummaryReleasesTags("My Application", "2.5.8"),
+                is(Arrays.asList("tag1", "tag2", "tag3"))
+        );
+        org.hamcrest.MatcherAssert.assertThat(
+                getViewDescriptor().getSummaryReleasesTags("My Application", "3.0.0"),
+                is(Arrays.asList("docker", "latest", "3.0.0", "tomcat", "angular"))
+        );
+    }
+
+    @Test
+    public void testDoCheckFilter() {
+        assertEquals(FormValidation.ok(), getViewDescriptor().doCheckFilter(null));
+        assertEquals(FormValidation.ok(), getViewDescriptor().doCheckFilter(""));
+        assertEquals(FormValidation.ok(), getViewDescriptor().doCheckFilter("Valid"));
+        assertEquals(FormValidation.ok(), getViewDescriptor().doCheckFilter("V.?lid"));
+        assertNotEquals(FormValidation.ok(), getViewDescriptor().doCheckFilter("In{v}4.lid"));
+    }
 
 }
