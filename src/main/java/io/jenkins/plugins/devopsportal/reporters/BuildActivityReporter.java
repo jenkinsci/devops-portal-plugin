@@ -9,6 +9,7 @@ import hudson.model.TaskListener;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
+import io.jenkins.plugins.devopsportal.models.ActivityScore;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.BuildActivity;
 import io.jenkins.plugins.devopsportal.utils.MiscUtils;
@@ -91,6 +92,7 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.log(Level.FINER, "Error reading artifact file: " + artifactFileName, ex);
             }
+            activity.setScore(ActivityScore.E);
             return Result.FAILURE;
         }
         // File size comparison
@@ -102,13 +104,16 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
             // File size limit
             if (artifactFileSizeLimit > 0 && activity.getArtifactFileSize() > artifactFileSizeLimit) {
                 listener.getLogger().println("Current artifact file size exceed limit: " + artifactFileSizeLimit);
+                activity.setScore(ActivityScore.C);
                 return Result.FAILURE;
             }
         }
         else {
             listener.getLogger().println("Warning, artifact file not found: " + artifactFileName);
+            activity.setScore(ActivityScore.D);
             return Result.UNSTABLE;
         }
+        activity.setScore(ActivityScore.A);
         return null;
     }
 

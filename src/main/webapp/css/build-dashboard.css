@@ -137,6 +137,7 @@ html[data-theme="dark"] .build-dashboard .group-title {
     flex-wrap: wrap;
     flex: 0 0 100%;
     min-width: 800px;
+    margin-top: 10px;
 }
 
 .version-summary .card {

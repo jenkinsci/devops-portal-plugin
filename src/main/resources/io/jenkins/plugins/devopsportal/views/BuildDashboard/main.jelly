@@ -91,14 +91,14 @@
                             </l:isAdmin>
                         </td>
                     </tr>
-                    <!-- BUILD activities -->
+                    <!-- Version summary -->
                     <tr class="version-summary-tr" version="${application}-${version}">
                         <td />
                         <td colspan="4" style="padding:0">
                             <div class="version-summary">
                                 <div class="card">
                                     <div class="title">
-                                        <h2>Build</h2>
+                                        <h2>${%summary_section_build}</h2>
                                         <j:set var="status" value="${it.descriptor.getSummaryBuild(application, version)}"/>
                                         <div class="status" health="${status.health}">
                                             <l:icon class="symbol-${status.icon} plugin-ionicons-api icon-md" />
@@ -108,11 +108,11 @@
                                     <div class="content">
                                         <div class="summary-build col-2">
                                             <div>
-                                                <h3>Artifacts</h3>
+                                                <h3>${%summary_item_artifacts}</h3>
                                                 <strong>${it.descriptor.getSummaryArtifactsCount(application, version)}</strong>
                                             </div>
                                             <div>
-                                                <h3>Coverage</h3>
+                                                <h3>${%summary_item_coverage}</h3>
                                                 <strong>${it.descriptor.getSummaryCoverageRate(application, version)}</strong>
                                             </div>
                                         </div>
@@ -120,84 +120,66 @@
                                 </div>
                                 <div class="card summary-audit" style="width:50%">
                                     <div class="title">
-                                        <h2>QUALITY &amp; SECURITY</h2>
-                                        <div class="status" health="pending">
-                                            <l:icon class="symbol-sync-circle-outline plugin-ionicons-api icon-md" />
-                                            Updating
+                                        <h2>${%summary_section_qa}</h2>
+                                        <j:set var="status" value="${it.descriptor.getSummaryQuality(application, version)}"/>
+                                        <div class="status" health="${status.health}">
+                                            <l:icon class="symbol-${status.icon} plugin-ionicons-api icon-md" />
+                                            ${status.title}
                                         </div>
                                     </div>
                                     <div class="content summary-quality col-2">
                                         <div class="col-3">
                                             <div>
-                                                <h3>Bug</h3>
-                                                <span class="activity-score score-B">
-                                                    B
-                                                </span>
+                                                <h3>${%summary_item_code_bugs}</h3>
+                                                <j:set var="score" value="${it.descriptor.getSummaryBugScore(application, version)}"/>
+                                                <span class="activity-score score-${score}">${score}</span>
                                             </div>
                                             <div>
-                                                <h3>Vulnerability</h3>
-                                                <span class="activity-score score-C">
-                                                    C
-                                                </span>
+                                                <h3>${%summary_item_code_vulnerabilities}</h3>
+                                                <j:set var="score" value="${it.descriptor.getSummaryVulnerabilityScore(application, version)}"/>
+                                                <span class="activity-score score-${score}">${score}</span>
                                             </div>
                                             <div>
-                                                <h3>Hotspot</h3>
-                                                <span class="activity-score score-A">
-                                                    A
-                                                </span>
+                                                <h3>${%summary_item_code_hotspots}</h3>
+                                                <j:set var="score" value="${it.descriptor.getSummaryHotspotScore(application, version)}"/>
+                                                <span class="activity-score score-${score}">${score}</span>
                                             </div>
                                         </div>
                                         <div style="padding-left: 10px">
                                             <div class="col-2">
                                                 <div>
-                                                    <h3>Vulnerabilities</h3>
-                                                    <strong>15</strong>
+                                                    <h3>${%summary_item_dependency_vulnerabilities}</h3>
+                                                    <strong>${it.descriptor.getSummaryDependencyVulnerabilityCount(application, version)}</strong>
                                                 </div>
                                                 <div>
-                                                    <h3>Worst score</h3>
-                                                    <small>CRITICAL</small>
+                                                    <h3>${%summary_item_dependency_score}</h3>
+                                                    <small>${it.descriptor.getSummaryWorstScore(application, version)}</small>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <!--<div class="card">
-                                    <p class="title">Test</p>
-                                    <div class="status" health="warn">
-                                        <l:icon class="symbol-bug-outline plugin-ionicons-api icon-md" />
-                                        Warning
-                                    </div>
-                                    <div class="content">
-                                        X
-                                    </div>
-                                </div>-->
                                 <div class="card">
                                     <div class="title">
-                                        <h2>Release</h2>
-                                        <div class="status" health="bad">
-                                            <l:icon class="symbol-skull-outline plugin-ionicons-api icon-md" />
-                                            Failure
+                                        <h2>${%summary_section_release}</h2>
+                                        <j:set var="status" value="${it.descriptor.getSummaryRelease(application, version)}"/>
+                                        <div class="status" health="${status.health}">
+                                            <l:icon class="symbol-${status.icon} plugin-ionicons-api icon-md" />
+                                            ${status.title}
                                         </div>
                                     </div>
                                     <div class="content">
                                         <div class="summary-release col-2">
                                             <div>
-                                                <h3>Releases</h3>
-                                                <strong>3</strong>
+                                                <h3>${%summary_item_releases}</h3>
+                                                <strong>${it.descriptor.getSummaryReleasesCount(application, version)}</strong>
                                             </div>
                                             <div style="padding-right: 10px;line-height:180%">
-                                                <span class="deployment-tag badge">
-                                                    tag-a
-                                                </span>
-                                                <span class="deployment-tag badge">
-                                                    tag 3
-                                                </span>
-                                                <span class="deployment-tag badge">
-                                                    tag 3
-                                                </span>
-                                                <span class="deployment-tag badge">
-                                                    tag 3
-                                                </span>
+                                                <j:forEach var="tag" indexVar="i" items="${it.descriptor.getSummaryReleasesTags(application, version)}">
+                                                    <span class="deployment-tag badge">
+                                                        ${tag}
+                                                    </span>
+                                                </j:forEach>
                                             </div>
                                         </div>
                                     </div>
@@ -205,7 +187,7 @@
                             </div>
                         </td>
                     </tr>
-                    <!-- BUILD activities -->
+                    <!-- Version details (activities) -->
                     <j:forEach var="activity" indexVar="k" items="${it.descriptor.getBuildActivities(build, 'BUILD')}">
                         <tr class="version-activities" hidden="true" version="${application}-${version}">
                             <td />

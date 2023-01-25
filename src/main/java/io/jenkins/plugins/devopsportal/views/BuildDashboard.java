@@ -104,7 +104,6 @@ public class BuildDashboard extends View {
             return Jenkins.get().getDescriptorByType(DeploymentOperation.DescriptorImpl.class);
         }
 
-        @SuppressWarnings("unused")
         public List<String> getApplicationNames(String filter) {
             Stream<String> stream = getBuildStatusDescriptor()
                     .getBuildStatus()
@@ -119,12 +118,13 @@ public class BuildDashboard extends View {
                     Pattern pattern = Pattern.compile(filter);
                     stream = stream.filter(name -> pattern.matcher(name).matches());
                 }
-                catch (PatternSyntaxException ignored) { }
+                catch (PatternSyntaxException ignored) {
+                    return Collections.emptyList();
+                }
             }
             return stream.collect(Collectors.toList());
         }
 
-        @SuppressWarnings("unused")
         public List<String> getApplicationVersions(String applicationName) {
             return getBuildStatusDescriptor()
                     .getBuildStatus()
@@ -137,7 +137,6 @@ public class BuildDashboard extends View {
                     .collect(Collectors.toList());
         }
 
-        @SuppressWarnings("unused")
         public ApplicationBuildStatus getApplicationBuild(String applicationName, String applicationVersion) {
             return getBuildStatusDescriptor()
                     .getBuildStatus()
@@ -148,7 +147,6 @@ public class BuildDashboard extends View {
                     .orElse(null);
         }
 
-        @SuppressWarnings("unused")
         public List<AbstractActivity> getBuildActivities(ApplicationBuildStatus build, String category) {
             return build.getActivitiesByCategory(ActivityCategory.valueOf(category));
         }
@@ -158,7 +156,6 @@ public class BuildDashboard extends View {
                     .getLastDeploymentByApplication(applicationName, applicationVersion).orElse(null);
         }
 
-        @SuppressWarnings("unused")
         public ServiceConfiguration getDeploymentTarget(DeploymentOperation operation) {
             if (operation != null) {
                 return getServiceConfigurationDescriptor().getService(operation.getServiceId()).orElse(null);
@@ -166,19 +163,117 @@ public class BuildDashboard extends View {
             return null;
         }
 
-        public String getSummaryArtifactsCount(String applicationName, String applicationVersion) {
-            return "7";
-        }
-
-        public String getSummaryCoverageRate(String applicationName, String applicationVersion) {
-            return "0.3%";
-        }
-
         public SummaryTitle getSummaryBuild(String applicationName, String applicationVersion) {
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return new SummaryTitle("warn", "help-circle-outline", "Unknown");
+            }
+            List<AbstractActivity> builds = status.getActivitiesByCategory(ActivityCategory.BUILD);
+            if (builds.isEmpty()) {
+                return new SummaryTitle("warn", "help-circle-outline", "NotBuilt");
+            }
+            long success = builds.stream().filter(activity -> activity.getScore() == ActivityScore.A).count();
+            if (success < builds.size()) {
+                return new SummaryTitle("bad", "skull-outline", "Failure");
+            }
             return new SummaryTitle("good", "heart-outline", "Healthy");
         }
 
-        @SuppressWarnings("unused")
+        public String getSummaryArtifactsCount(String applicationName, String applicationVersion) {
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return "-";
+            }
+            List<AbstractActivity> builds = status.getActivitiesByCategory(ActivityCategory.BUILD);
+            long success = builds.stream().filter(activity -> activity.getScore() == ActivityScore.A).count();
+            return success + "/" + builds.size();
+        }
+
+        public String getSummaryCoverageRate(String applicationName, String applicationVersion) {
+            ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
+            if (status == null) {
+                return "-";
+            }
+            Stream<Float> value1 = status
+                    .getActivitiesByCategory(ActivityCategory.QUALITY_AUDIT)
+                    .stream()
+                    .map(activity -> (QualityAuditActivity) activity)
+                    .map(QualityAuditActivity::getTestCoverage)
+                    .filter(value -> value > 0);
+            Stream<Float> value2 = status
+                    .getActivitiesByCategory(ActivityCategory.UNIT_TEST)
+                    .stream()
+                    .map(activity -> (UnitTestActivity) activity)
+                    .map(UnitTestActivity::getTestCoverage)
+                    .filter(value -> value > 0);
+            double average = Stream.concat(value1, value2)
+                    .mapToDouble(d -> d)
+                    .average()
+                    .orElse(0);
+            return String.format("%.0f", average * 100) + "%";
+        }
+
+        public SummaryTitle getSummaryQuality(String applicationName, String applicationVersion) {
+            return new SummaryTitle("pending", "sync-circle-outline", "Updating"); // TODO
+        }
+
+        private static String getLowerQualityScore(ApplicationBuildStatus status,
+                                                   java.util.function.Function<QualityAuditActivity, ActivityScore> extractor) {
+            if (status == null) {
+                return "-";
+            }
+            return status
+                    .getActivitiesByCategory(ActivityCategory.QUALITY_AUDIT)
+                    .stream()
+                    .map(activity -> (QualityAuditActivity) activity)
+                    .map(extractor)
+                    .filter(Objects::nonNull)
+                    .map(Enum::name)
+                    .max(String::compareTo)
+                    .orElse("?");
+        }
+
+        public String getSummaryBugScore(String applicationName, String applicationVersion) {
+            return getLowerQualityScore(
+                    getApplicationBuild(applicationName, applicationVersion),
+                    QualityAuditActivity::getBugScore
+            );
+        }
+
+        public String getSummaryVulnerabilityScore(String applicationName, String applicationVersion) {
+            return getLowerQualityScore(
+                    getApplicationBuild(applicationName, applicationVersion),
+                    QualityAuditActivity::getVulnerabilityScore
+            );
+        }
+
+        public String getSummaryHotspotScore(String applicationName, String applicationVersion) {
+            return getLowerQualityScore(
+                    getApplicationBuild(applicationName, applicationVersion),
+                    QualityAuditActivity::getHotspotScore
+            );
+        }
+
+        public String getSummaryDependencyVulnerabilityCount(String applicationName, String applicationVersion) {
+            return "60"; // TODO
+        }
+
+        public String getSummaryWorstScore(String applicationName, String applicationVersion) {
+            return "CRITICAL"; // TODO
+        }
+
+        public SummaryTitle getSummaryRelease(String applicationName, String applicationVersion) {
+            return new SummaryTitle("bad", "skull-outline", "Failure"); // TODO
+        }
+
+        public String getSummaryReleasesCount(String applicationName, String applicationVersion) {
+            return "3"; // TODO
+        }
+
+        public List<String> getSummaryReleasesTags(String applicationName, String applicationVersion) {
+            return Arrays.asList("tag1", "tag2", "autre-tag"); // TODO
+        }
+
         public FormValidation doCheckFilter(@QueryParameter String filter) {
             if (filter != null && !filter.isEmpty()) {
                 try {

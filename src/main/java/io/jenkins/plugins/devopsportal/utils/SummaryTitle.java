@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class SummaryTitle implements Serializable {
 
-    private String health;
-    private String icon; // heart-outline skull-outline
+    private String health; // good bad warn pending
+    private String icon; // heart-outline skull-outline sync-circle-outline bug-outline
     private String title; // Healthy
 
     public SummaryTitle(String health, String icon, String title) {
@@ -38,4 +38,8 @@ public class SummaryTitle implements Serializable {
         this.title = title;
     }
 
+    @Override
+    public String toString() {
+        return "{" + health + '/' + icon + '/' + title + '}';
+    }
 }
