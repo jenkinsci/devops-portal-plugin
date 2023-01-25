@@ -403,9 +403,9 @@ reportDeployOperation(
 
 ## <a name="section-sample"></a> Samples
 
-| Sample                               | Content                                                         |
-|--------------------------------------|-----------------------------------------------------------------|
-| [Plugin build pipeline](Jenkinsfile) | Provides a complete example of integrating all BUILD activities |
+| Sample                               | Content                                                          |
+|--------------------------------------|------------------------------------------------------------------|
+| [Plugin build pipeline](Jenkinsfile) | Provides a complete example of integrating many BUILD activities |
 
 ## <a name="section-dev"></a> Setup as Developer
 
@@ -501,7 +501,7 @@ Integration testing:
     - [x] Dark theme
 - [ ] Documentation
   - [ ] Update screenshots for build dashboard
-  - [ ] Explain the principe or the plugin (recording things)
+  - [x] Explain the principe or the plugin (recording things)
 
 Next features:
 

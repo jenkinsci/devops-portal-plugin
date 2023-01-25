@@ -84,25 +84,10 @@ pipeline {
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
                         applicationComponent: "plugin-devops-portal",
-                        repositoryName: "registry.mydomain.com",
+                        repositoryName: "github.com",
                         artifactName: env.APPLICATION_NAME,
-                        tags: "docker-image,snapshot,${env.APPLICATION_VERSION}",
-                        artifactURL: "https://registry.mydomain.com/projects/plugin-devops-portal/${env.APPLICATION_VERSION}"
-                    )
-                }
-            }
-        }
-
-        stage('Performance') {
-            steps {
-                script {
-                    reportPerformanceTest(
-                        applicationName: env.APPLICATION_NAME,
-                        applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin-devops-portal",
-                        testCount: 10,
-                        sampleCount: 50,
-                        errorCount: 0
+                        tags: "hpi,${env.APPLICATION_VERSION}",
+                        artifactURL: "https://github.com/rbello/jenkins-plugin-devops-portal/releases/tag/${env.APPLICATION_VERSION}"
                     )
                 }
             }
