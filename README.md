@@ -253,7 +253,7 @@ reportMavenDependenciesAnalysis(
     applicationName: String,       // Name of application built
     applicationVersion: String,    // Version of application built
     applicationComponent: String,  // Name of application component built
-    reportPath: string             // Path to the dependency analysis XML report
+    reportPath: String             // Path to the dependency analysis XML report
 )
 ```
 
@@ -412,7 +412,7 @@ reportDeployOperation(
 1. Checkout from: https://github.com/rbello/jenkins-plugin-devops-portal.git
 2. Recommended IDE is **Intellij IDEA**
 3. JDK 11 is preferred (newer JDK may introduce serialization issues)
-4. The minimal Jenkins version is: 2.346.1
+4. The minimal Jenkins version is: 2.361.4
 5. Run locally with: `mvn hpi:run -Djetty.port=5000`
 6. Create HPI package with: `mvn hpi:hpi`
 7. Suggest any change by Forking the project and opening a Pull Request
@@ -473,7 +473,7 @@ flowchart TD
 
 ## Troubleshooting
 
-To debug plugin behavior, configure a jenkins logger on the class:
+To debug plugin behavior, configure a jenkins logger on the package:
 `io.jenkins.plugins.devopsportal`
 
 ## Author & Licence
