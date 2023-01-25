@@ -141,7 +141,9 @@ public class RunDashboard extends View {
                     Pattern pattern = Pattern.compile(filter);
                     stream = stream.filter(category -> pattern.matcher(category).matches());
                 }
-                catch (PatternSyntaxException ignored) { }
+                catch (PatternSyntaxException ignored) {
+                    return Collections.emptyList();
+                }
             }
             return stream.collect(Collectors.toList());
         }
@@ -176,7 +178,9 @@ public class RunDashboard extends View {
                     Pattern pattern = Pattern.compile(filter);
                     stream = stream.filter(service -> pattern.matcher(service.getCategory()).matches());
                 }
-                catch (PatternSyntaxException ignored) { }
+                catch (PatternSyntaxException ignored) {
+                    return Collections.emptyList();
+                }
             }
             return stream.collect(Collectors.toList());
         }

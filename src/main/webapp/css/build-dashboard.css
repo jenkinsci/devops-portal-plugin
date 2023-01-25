@@ -107,28 +107,13 @@
     border-radius: 3px;
     font-size: .7rem;
 }
-/* Dark theme */
-html[data-theme="dark"] .badge {
-    background-color: #333;
-    color: #aaa;
-}
-html[data-theme="dark"] .version-activities {
-    background-color: #191921 !important;
-    color: #bbb;
-}
-html[data-theme="dark"] .activity-category {
-    color: #999;
-}
-html[data-theme="dark"] .version-activities td:nth-child(1) {
-    background-color: rgb(31, 31, 35);
-}
-html[data-theme="dark"] .build-dashboard .group-title {
-    border-top: 2px solid #18181B;
-}
+
 .unchanged { color: #2d67ad; }
 .change-good { color: green }
 .change-bad { color: red }
 .change-unstable { color: orange }
+
+/* Version summary */
 
 .version-summary {
     border-top: 1px solid #ddd;
@@ -215,6 +200,8 @@ html[data-theme="dark"] .build-dashboard .group-title {
 .version-summary [health=bad] circle { color: #fff; fill: #fff; }
 .version-summary [health=pending] path { color: #3165c4 }
 
+/* Columns */
+
 div.col-3, div.col-2 {
     display: flex !important;
     flex-wrap: wrap;
@@ -224,4 +211,29 @@ div.col-2 > div {
 }
 div.col-3 > div {
     flex: 1 1 30%;
+}
+
+/* Dark theme */
+html[data-theme="dark"] .badge {
+    background-color: #333;
+    color: #aaa;
+}
+html[data-theme="dark"] .version-activities {
+    background-color: #191921 !important;
+    color: #bbb;
+}
+html[data-theme="dark"] .activity-category {
+    color: #999;
+}
+html[data-theme="dark"] .version-activities td:nth-child(1) {
+    background-color: rgb(31, 31, 35);
+}
+html[data-theme="dark"] .build-dashboard .group-title {
+    border-top: 2px solid #18181B;
+}
+html[data-theme="dark"] .version-summary, html[data-theme="dark"] .version-summary .card {
+    border-color: #111;
+}
+html[data-theme="dark"] .version-summary .title .status {
+    color: #aaa;
 }

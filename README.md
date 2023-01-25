@@ -491,11 +491,15 @@ Integration testing:
     - [x] SurefireUnitTestActivityReporter
     - [ ] JMeterPerformanceTestActivityReporter
     - [x] DependenciesAnalysisActivityReporter
-- [ ] Build dashboard: visual improvements
+- [x] Build dashboard: visual improvements
     - [x] Design
-    - [ ] Behaviour
-    - [ ] i18n
-    - [ ] Dark theme
+    - [x] Behaviour / TU
+    - [x] i18n
+    - [x] Dark theme
+- [ ] Documentation
+  - [ ] Update screenshots for build dashboard
+  - [ ] Explain the principe or the plugin (recording things)
+
 Next features:
 
 - [ ] Report dependencies analysis: implements with NPM

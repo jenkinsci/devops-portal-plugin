@@ -166,17 +166,17 @@ public class BuildDashboard extends View {
         public SummaryTitle getSummaryBuild(String applicationName, String applicationVersion) {
             ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
             if (status == null) {
-                return new SummaryTitle("warn", "help-circle-outline", "Unknown");
+                return new SummaryTitle("warn", "help-circle-outline", Messages.BuildDashboard_SummaryStatus_Unknown());
             }
             List<AbstractActivity> builds = status.getActivitiesByCategory(ActivityCategory.BUILD);
             if (builds.isEmpty()) {
-                return new SummaryTitle("warn", "help-circle-outline", "NotBuilt");
+                return new SummaryTitle("warn", "help-circle-outline", Messages.BuildDashboard_SummaryStatus_NotBuilt());
             }
             long success = builds.stream().filter(activity -> activity.getScore() == ActivityScore.A).count();
             if (success < builds.size()) {
-                return new SummaryTitle("bad", "skull-outline", "Failure");
+                return new SummaryTitle("bad", "skull-outline", Messages.BuildDashboard_SummaryStatus_Failure());
             }
-            return new SummaryTitle("good", "heart-outline", "Healthy");
+            return new SummaryTitle("good", "heart-outline", Messages.BuildDashboard_SummaryStatus_Healthy());
         }
 
         public String getSummaryArtifactsCount(String applicationName, String applicationVersion) {
@@ -216,7 +216,7 @@ public class BuildDashboard extends View {
         public SummaryTitle getSummaryQuality(String applicationName, String applicationVersion) {
             ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
             if (status == null) {
-                return new SummaryTitle("warn", "help-circle-outline", "Unknown");
+                return new SummaryTitle("warn", "help-circle-outline",  Messages.BuildDashboard_SummaryStatus_Unknown());
             }
             boolean incomplete = status
                     .getActivitiesByCategory(ActivityCategory.QUALITY_AUDIT)
@@ -224,10 +224,10 @@ public class BuildDashboard extends View {
                     .map(activity -> (QualityAuditActivity) activity)
                     .anyMatch(activity -> !activity.isComplete());
             if (incomplete) {
-                return new SummaryTitle("pending", "sync-circle-outline", "Updating");
+                return new SummaryTitle("pending", "sync-circle-outline", Messages.BuildDashboard_SummaryStatus_Updating());
             }
             if ("CRITICAL".equals(getSummaryWorstScore(applicationName, applicationVersion))) {
-                return new SummaryTitle("bad", "skull-outline", "Dependency Failure");
+                return new SummaryTitle("bad", "skull-outline", Messages.BuildDashboard_SummaryStatus_DependencyFailure());
             }
             List<String> scores = Arrays.asList(
                     getLowerQualityScore(status, QualityAuditActivity::getBugScore),
@@ -236,10 +236,10 @@ public class BuildDashboard extends View {
             );
             for (String score : Arrays.asList("E", "D", "C")) {
                 if (scores.contains(score)) {
-                    return new SummaryTitle("bad", "skull-outline", "Quality Failure");
+                    return new SummaryTitle("bad", "skull-outline", Messages.BuildDashboard_SummaryStatus_QualityFailure());
                 }
             }
-            return new SummaryTitle("good", "heart-outline", "Healthy");
+            return new SummaryTitle("good", "heart-outline", Messages.BuildDashboard_SummaryStatus_Healthy());
         }
 
         private static String getLowerQualityScore(ApplicationBuildStatus status,
@@ -316,12 +316,12 @@ public class BuildDashboard extends View {
         public SummaryTitle getSummaryRelease(String applicationName, String applicationVersion) {
             ApplicationBuildStatus status = getApplicationBuild(applicationName, applicationVersion);
             if (status == null) {
-                return new SummaryTitle("warn", "help-circle-outline", "Unknown");
+                return new SummaryTitle("warn", "help-circle-outline", Messages.BuildDashboard_SummaryStatus_Unknown());
             }
             if (status.getActivitiesByCategory(ActivityCategory.ARTIFACT_RELEASE).isEmpty()) {
-                return new SummaryTitle("bad", "skull-outline", "Missing");
+                return new SummaryTitle("bad", "skull-outline", Messages.BuildDashboard_SummaryStatus_Missing());
             }
-            return new SummaryTitle("good", "heart-outline", "Healthy");
+            return new SummaryTitle("good", "heart-outline", Messages.BuildDashboard_SummaryStatus_Healthy());
         }
 
         public String getSummaryReleasesCount(String applicationName, String applicationVersion) {
