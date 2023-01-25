@@ -191,6 +191,10 @@
     margin-top: 8px;
     line-height: 18px;
 }
+.summary-release > div:nth-of-type(1) {
+    width: 90px;
+    flex: 0 0 90px;
+}
 
 .version-summary [health=good] path { color: #34ba4d; fill: #34ba4d; }
 .version-summary [health=warn] path { color: #ba6e22; fill: #ba6e22; }
