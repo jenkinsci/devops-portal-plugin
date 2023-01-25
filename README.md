@@ -18,7 +18,10 @@ And allows you to check the deployment of your applications on your **run** envi
 
 ![Build Dashboard](.doc/RunDashboard.png)
 
-This plugin allows you to centralize in Jenkins several functionalities necessary for a good DevOps approach:
+This plugin allows you to centralize in a Jenkins dashboard several functionalities necessary for a good DevOps approach.
+It works on the principle of a set of **reporter tasks** that are added to the build steps of your projects. The reporters gather the information and then display it in the dashboard.
+
+This allows you to obtain a synthetic view of all the steps to validate your software:
 
 |  Step   | Feature                                                                                                                                              |
 |:-------:|------------------------------------------------------------------------------------------------------------------------------------------------------|
