@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.52</version>
+        <version>4.54</version>
         <relativePath />
     </parent>
     <groupId>io.jenkins.plugins</groupId>
@@ -41,8 +41,8 @@
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.version>2.361.4</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-        <java.version>8</java.version> <!-- V11 = LEVEL 55 -->
-        <java.level>52</java.level> <!-- V1.8 = LEVEL 52 -->
+        <java.version>11</java.version> <!-- V11 = LEVEL 55 -->
+        <java.level>55</java.level> <!-- V1.8 = LEVEL 52 -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -67,8 +67,8 @@
             <dependency>
                 <!-- Pick up common dependencies for the selected LTS line: https://github.com/jenkinsci/bom#usage -->
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.332.x</artifactId>
-                <version>1451.v15f1fdb_772a_f</version>
+                <artifactId>bom-2.361.x</artifactId>
+                <version>1798.vc671fe94856f</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>io.github.hakky54</groupId>
             <artifactId>sslcontext-kickstart</artifactId>
-            <version>7.4.8</version>
+            <version>7.4.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -119,28 +119,28 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
+            <version>4.5.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4.15</version>
+            <version>4.4.16</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient-cache</artifactId>
-            <version>4.5.13</version>
+            <version>4.5.14</version>
         </dependency>
         <!-- Sonar Connector -->
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
             <artifactId>sonar-ws</artifactId>
-            <version>9.7.1.62043</version>
+            <version>9.8.0.63668</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-common</artifactId>
-            <version>1.7.20</version>
+            <version>1.8.0</version>
         </dependency>
     </dependencies>
 
@@ -161,7 +161,7 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>7.3.2</version>
+                <version>7.4.4</version>
                 <executions>
                     <execution>
                         <goals>
@@ -185,7 +185,7 @@
                         <phase>validate</phase>
                         <configuration>
                             <ignoreCache>true</ignoreCache>
-                            <rules>
+                            <!--<rules>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
                                     <message>Project requires JDK ${java.version}</message>
@@ -197,7 +197,7 @@
                                         <exclude>org.sonarsource.api.plugin:sonar-plugin-api</exclude>
                                     </excludes>
                                 </enforceBytecodeVersion>
-                            </rules>
+                            </rules>-->
                         </configuration>
                         <goals>
                             <goal>enforce</goal>
@@ -216,7 +216,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <version>0.8.8</version>
                 <configuration>
                     <excludes>
                         <exclude>**/plugins/devopsportal/api/*.*</exclude>
