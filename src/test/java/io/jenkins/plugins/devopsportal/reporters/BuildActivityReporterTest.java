@@ -76,6 +76,9 @@ public class BuildActivityReporterTest {
         assertEquals("build.jar", artifact.getArtifactFileName());
         assertEquals(1024, artifact.getArtifactFileSizeLimit());
         assertEquals(5, artifact.getArtifactFileSize());
+
+        assertEquals(applicationComponent, activity.getApplicationComponent());
+        assertEquals("b43fdd98-b1fd-305a-a4c3-a10cf25aad8a", activity.getUUID());
     }
 
     @Test

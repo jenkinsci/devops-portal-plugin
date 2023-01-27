@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class TimeAgoUtils {
 
-    public static final List<Long> TIMES = Arrays.asList(
+    static final List<Long> TIMES = Arrays.asList(
         TimeUnit.DAYS.toMillis(365),
         TimeUnit.DAYS.toMillis(30),
         TimeUnit.DAYS.toMillis(1),

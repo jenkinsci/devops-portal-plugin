@@ -71,7 +71,7 @@ public class BuildActivity extends AbstractActivity {
     @SuppressWarnings("unused")
     public String getArtifactFileNameStr() {
         if (artifactFileName != null && !artifactFileName.isEmpty()) {
-            return Paths.get(artifactFileName).getFileName().toString();
+            return Paths.get(artifactFileName).getFileName() + "";
         }
         return "";
     }

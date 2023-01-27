@@ -3,6 +3,7 @@ package io.jenkins.plugins.devopsportal.models;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -53,7 +54,7 @@ public abstract class AbstractActivity implements Serializable {
 
     @SuppressWarnings("unused")
     public String getUUID() {
-        return UUID.nameUUIDFromBytes(applicationComponent.getBytes()).toString();
+        return UUID.nameUUIDFromBytes(applicationComponent.getBytes(StandardCharsets.UTF_8)).toString();
     }
 
 }
