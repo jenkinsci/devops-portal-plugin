@@ -177,44 +177,6 @@
                     </suppressionFiles>
                 </configuration>
             </plugin>
-            <!-- Maven rules enforcer -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>enforce</id>
-                        <phase>validate</phase>
-                        <configuration>
-                            <ignoreCache>true</ignoreCache>
-                            <!--<rules>
-                                <requireJavaVersion>
-                                    <version>${java.version}</version>
-                                    <message>Project requires JDK ${java.version}</message>
-                                </requireJavaVersion>
-                                <enforceBytecodeVersion>
-                                    <maxJdkVersion>${java.version}</maxJdkVersion>
-                                    <excludes>
-                                        <exclude>org.sonarsource.sonarqube:sonar-ws</exclude>
-                                        <exclude>org.sonarsource.api.plugin:sonar-plugin-api</exclude>
-                                    </excludes>
-                                </enforceBytecodeVersion>
-                            </rules>-->
-                        </configuration>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>extra-enforcer-rules</artifactId>
-                        <version>1.6.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
             <!-- Test coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
