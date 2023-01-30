@@ -81,11 +81,11 @@
                             </j:if>
                         </td>
                         <td class="actions">
-                            <a class="jenkins-button" href="javascript:toggleVisibility('${application}-${version}')">
+                            <a class="jenkins-button" href="javascript:toggleVisibility(this)" data-app-target="${application}-${version}">
                                 <l:icon class="symbol-apps-outline plugin-ionicons-api icon-sm" />
                             </a>
                             <l:isAdmin>
-                                <a class="jenkins-button" style="margin-left: .2rem" href="javascript:deleteApplicationVersion('${application}', '${version}')">
+                                <a class="jenkins-button" style="margin-left: .2rem" href="javascript:deleteApplicationVersion(this)" data-app-name="${application}" data-app-version="${version}">
                                     <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
                                 </a>
                             </l:isAdmin>
@@ -651,7 +651,8 @@
 
 
     <script type="text/javascript">
-        function toggleVisibility(version) {
+        function toggleVisibility(a) {
+            let version = a.getAttribute("data-app-target");
             let items = document.querySelectorAll("tr.version-activities[version='" + version + "']");
             for (const item of items) {
                 item.toggleAttribute('hidden');
@@ -661,7 +662,9 @@
                 item.toggleAttribute('hidden');
             }
         }
-        function deleteApplicationVersion(application, version) {
+        function deleteApplicationVersion(a) {
+            let application = a.getAttribute("data-app-name");
+            let version = a.getAttribute("data-app-version");
             if (confirm('${%confirm_delete_version}')) {
                 javascript:document.location.href = '${it.rootURL}/build-api/delete-build-status?application='
                     + escape(application) + '&amp;version=' + escape(version) + '&amp;origin=' + escape(window.location.href);

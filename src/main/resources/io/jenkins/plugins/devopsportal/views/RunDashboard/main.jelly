@@ -138,7 +138,7 @@
                         </td>
                         <td style="text-align:right">
                             <j:if test="${deployment != null}">
-                                <a class="jenkins-button" href="javascript:toggleModal('${service.id}')">
+                                <a class="jenkins-button" href="javascript:toggleModal(this)" data-service-id="${service.id}">
                                     <l:icon class="symbol-time-outline plugin-ionicons-api icon-sm" />
                                 </a>
                             </j:if>
@@ -206,7 +206,7 @@
                                     </td>
                                     <td style="text-align:right">
                                         <l:isAdmin>
-                                            <a class="jenkins-button" href="javascript:deleteOperation('${service.id}', '${deployment.buildJob}', '${deployment.buildNumber}')">
+                                            <a class="jenkins-button" href="javascript:deleteOperation(this)" data-service-id="${service.id}" data-deployment-build-job="${deployment.buildJob}" data-deployment-build-number="${deployment.buildNumber}">
                                                 <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
                                             </a>
                                         </l:isAdmin>
@@ -222,12 +222,16 @@
 
     <script type="text/javascript">
         function deleteOperation(environment, job, number) {
+            let environment = a.getAttribute("data-service-id");
+            let job = a.getAttribute("data-deployment-build-job");
+            let number = a.getAttribute("data-deployment-build-number");
             if (confirm('${%confirm_delete_operation}')) {
                 javascript:document.location.href = '${it.rootURL}/run-api/delete-operation?environment='
                     + escape(environment) + '&amp;job=' + escape(job) + '&amp;number=' + number + '&amp;origin=' + escape(window.location.href);
             }
         }
-        function toggleModal(id) {
+        function toggleModal(a) {
+            let id = a.getAttribute("data-service-id");
             var modal = document.getElementById('modal_' + id);
             var span = modal.querySelector('.close');
             modal.style.display = 'block';
