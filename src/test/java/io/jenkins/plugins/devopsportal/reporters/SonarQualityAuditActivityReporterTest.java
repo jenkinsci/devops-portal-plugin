@@ -45,7 +45,7 @@ public class SonarQualityAuditActivityReporterTest {
                 "       applicationVersion: '" + applicationVersion + "',\n" +
                 "       applicationComponent: '" + applicationComponent + "',\n" +
                 "       projectKey: 'project-key',\n" +
-                "       qualityGatePassed: false\n" +
+                "       acceptInvalidCertificate: false\n" +
                 "  )\n" +
                 "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
