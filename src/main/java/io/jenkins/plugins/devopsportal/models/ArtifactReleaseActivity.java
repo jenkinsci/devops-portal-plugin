@@ -4,6 +4,8 @@ import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +57,17 @@ public class ArtifactReleaseActivity extends AbstractActivity {
 
     @SuppressWarnings("unused")
     public boolean isUrlPresent() {
-        return artifactURL != null && !artifactURL.isEmpty();
+        if (artifactURL == null || !artifactURL.isEmpty()) {
+            return false;
+        }
+        try {
+            // JENSEC-1938 Restrict href protocol to only allow some https / http schemes
+            final String scheme = new URI(artifactURL).getScheme();
+            return "http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme);
+        }
+        catch (URISyntaxException ex) {
+            return false;
+        }
     }
 
     public List<String> getTags() {
