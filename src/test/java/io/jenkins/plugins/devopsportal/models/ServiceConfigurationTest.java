@@ -70,6 +70,7 @@ public class ServiceConfigurationTest {
         assertEquals("https://foo.mydomain.com/", service1.getUrl());
         assertEquals(5, service1.getDelayMonitoringMinutes());
         assertTrue(service1.isHttps());
+        assertTrue(service1.isValidURL());
         assertTrue(service1.isEnableMonitoring());
         assertTrue(service1.isAcceptInvalidCertificate());
         ServiceConfiguration service2 = getDescriptor().getService(service1.getId()).orElse(null);
@@ -88,6 +89,7 @@ public class ServiceConfigurationTest {
         assertEquals("foo.mydomain.com", service.getHostname());
         service.setUrl("inval!d://URL");
         assertFalse(service.isHttps());
+        assertFalse(service.isValidURL());
         assertEquals("", service.getHostname());
     }
 
