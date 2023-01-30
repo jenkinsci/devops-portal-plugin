@@ -203,7 +203,8 @@ withSonarQubeEnv(credentialsId: 'XXXXX', installationName: 'My SonarQube Server'
         applicationName: String,               // Name of application built
         applicationVersion: String,            // Version of application built
         applicationComponent: String,          // Name of application component built
-        projectKey: String                     // Project identifier on SonarQube server
+        projectKey: String,                    // Project identifier on SonarQube server
+        acceptInvalidCertificate: boolean      // Disable certificate verification (default: false)
     )
 }
 ```

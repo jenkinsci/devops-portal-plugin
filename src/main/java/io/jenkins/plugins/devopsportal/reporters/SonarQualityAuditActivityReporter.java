@@ -23,6 +23,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<QualityAuditActivity> {
 
     private String projectKey;
+    private boolean acceptInvalidCertificate;
 
     @DataBoundConstructor
     public SonarQualityAuditActivityReporter(String applicationName, String applicationVersion, String applicationComponent) {
@@ -36,6 +37,15 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
     @DataBoundSetter
     public void setProjectKey(String projectKey) {
         this.projectKey = projectKey;
+    }
+
+    public boolean isAcceptInvalidCertificate() {
+        return acceptInvalidCertificate;
+    }
+
+    @DataBoundSetter
+    public void setAcceptInvalidCertificate(boolean acceptInvalidCertificate) {
+        this.acceptInvalidCertificate = acceptInvalidCertificate;
     }
 
     @Override
@@ -59,7 +69,8 @@ public class SonarQualityAuditActivityReporter extends AbstractActivityReporter<
                 env.get("SONAR_AUTH_TOKEN"),
                 status.getApplicationName(),
                 status.getApplicationVersion(),
-                getApplicationComponent()
+                getApplicationComponent(),
+                acceptInvalidCertificate
         );
 
         return null;
