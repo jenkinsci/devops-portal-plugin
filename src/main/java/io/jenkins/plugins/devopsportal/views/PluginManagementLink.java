@@ -1,16 +1,20 @@
 package io.jenkins.plugins.devopsportal.views;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Extension;
+import hudson.Functions;
 import hudson.model.Descriptor;
 import hudson.model.ManagementLink;
 import io.jenkins.plugins.devopsportal.Messages;
 import io.jenkins.plugins.devopsportal.models.ServiceConfiguration;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +62,24 @@ public class PluginManagementLink extends ManagementLink {
 
     @SuppressWarnings("unused")
     public void doSaveSettings(final StaplerRequest req, final StaplerResponse rsp) throws IOException {
+
+        // Check jenkins instance
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
             return;
         }
+
+        // Check request crumb
+        @NonNull String expectedCrumb = Functions.getCrumb(Stapler.getCurrentRequest());
+        @Nullable String givenCrumb = req.getParameter("Jenkins-Crumb");
+        if (!expectedCrumb.equals(givenCrumb)) {
+            rsp.sendError(HttpServletResponse.SC_FORBIDDEN, "No valid crumb was included in the request");
+            return;
+        }
+
+        // Check user permissions
         jenkins.checkPermission(Jenkins.ADMINISTER);
+
         LOGGER.info("Plugin settings saved");
 
         // Extract list of services from request
