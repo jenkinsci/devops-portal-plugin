@@ -172,6 +172,9 @@
                 <configuration>
                     <format>ALL</format>
                     <outputDirectory>${project.basedir}/target</outputDirectory>
+                    <suppressionFiles>
+                        <suppressionFile>${project.basedir}/suppress-dependency-issues.xml</suppressionFile>
+                    </suppressionFiles>
                 </configuration>
             </plugin>
             <!-- Maven rules enforcer -->
