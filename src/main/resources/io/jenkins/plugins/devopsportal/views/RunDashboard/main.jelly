@@ -206,9 +206,19 @@
                                     </td>
                                     <td style="text-align:right">
                                         <l:isAdmin>
-                                            <a class="jenkins-button" href="javascript:deleteOperation(this)" data-service-id="${service.id}" data-deployment-build-job="${deployment.buildJob}" data-deployment-build-number="${deployment.buildNumber}">
+                                            <!--<a class="jenkins-button" href="javascript:deleteOperation(this)" data-service-id="${service.id}" data-deployment-build-job="${deployment.buildJob}" data-deployment-build-number="${deployment.buildNumber}">
                                                 <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
-                                            </a>
+                                            </a>-->
+                                            <form method="post" action="${it.rootURL}/run-api/delete-operation" onsubmit="confirmDelete(this)">
+                                                <input type="hidden" name="environment">${service.id}</input>
+                                                <input type="hidden" name="job">${deployment.buildJob}</input>
+                                                <input type="hidden" name="number">${deployment.buildNumber}</input>
+                                                <input type="submit">
+                                                    <span class="jenkins-button">
+                                                        <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
+                                                    </span>
+                                                </input>
+                                            </form>
                                         </l:isAdmin>
                                     </td>
                                 </tr>
@@ -221,14 +231,16 @@
     </j:forEach>
 
     <script type="text/javascript">
-        function deleteOperation(environment, job, number) {
-            let environment = a.getAttribute("data-service-id");
-            let job = a.getAttribute("data-deployment-build-job");
-            let number = a.getAttribute("data-deployment-build-number");
-            if (confirm('${%confirm_delete_operation}')) {
-                javascript:document.location.href = '${it.rootURL}/run-api/delete-operation?environment='
-                    + escape(environment) + '&amp;job=' + escape(job) + '&amp;number=' + number + '&amp;origin=' + escape(window.location.href);
+        function confirmDelete(form) {
+            if (!confirm('${%confirm_delete_operation}')) {
+                return false;
             }
+            var input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", "origin");
+            input.setAttribute("value", window.location.href);
+            form.appendChild(input);
+            return true;
         }
         function toggleModal(a) {
             let id = a.getAttribute("data-service-id");
