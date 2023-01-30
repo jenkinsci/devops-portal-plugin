@@ -138,7 +138,7 @@
                         </td>
                         <td style="text-align:right">
                             <j:if test="${deployment != null}">
-                                <a class="jenkins-button" href="javascript:toggleModal(this)" data-service-id="${service.id}">
+                                <a class="jenkins-button" href="javascript:;" onclick="toggleModal(this)" data-service-id="${service.id}">
                                     <l:icon class="symbol-time-outline plugin-ionicons-api icon-sm" />
                                 </a>
                             </j:if>
@@ -206,18 +206,13 @@
                                     </td>
                                     <td style="text-align:right">
                                         <l:isAdmin>
-                                            <!--<a class="jenkins-button" href="javascript:deleteOperation(this)" data-service-id="${service.id}" data-deployment-build-job="${deployment.buildJob}" data-deployment-build-number="${deployment.buildNumber}">
-                                                <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
-                                            </a>-->
-                                            <form method="post" action="${it.rootURL}/run-api/delete-operation" onsubmit="confirmDelete(this)">
-                                                <input type="hidden" name="environment">${service.id}</input>
-                                                <input type="hidden" name="job">${deployment.buildJob}</input>
-                                                <input type="hidden" name="number">${deployment.buildNumber}</input>
-                                                <input type="submit">
-                                                    <span class="jenkins-button">
-                                                        <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
-                                                    </span>
-                                                </input>
+                                            <form method="post" action="${it.rootURL}/run-api/delete-operation" onsubmit="return confirmDelete(this)">
+                                                <input type="hidden" name="environment" value="${service.id}" />
+                                                <input type="hidden" name="job" value="${deployment.buildJob}" />
+                                                <input type="hidden" name="number" value="${deployment.buildNumber}" />
+                                                <button type="submit" class="jenkins-button">
+                                                    <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
+                                                </button>
                                             </form>
                                         </l:isAdmin>
                                     </td>

@@ -81,21 +81,16 @@
                             </j:if>
                         </td>
                         <td class="actions">
-                            <a class="jenkins-button" href="javascript:toggleVisibility(this)" data-app-target="${application}-${version}">
+                            <a class="jenkins-button" href="javascript:;" onclick="toggleVisibility(this)" data-app-target="${application}-${version}">
                                 <l:icon class="symbol-apps-outline plugin-ionicons-api icon-sm" />
                             </a>
                             <l:isAdmin>
-                                <!--<a class="jenkins-button" style="margin-left: .2rem" href="javascript:deleteApplicationVersion(this)" data-app-name="${application}" data-app-version="${version}">
-                                    <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
-                                </a>-->
-                                <form method="post" action="${it.rootURL}/build-api/delete-build-status" onsubmit="confirmDelete(this)">
-                                    <input type="hidden" name="application">${application}</input>
-                                    <input type="hidden" name="version">${version}</input>
-                                    <input type="submit">
-                                        <span class="jenkins-button" style="margin-left: .2rem">
-                                            <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
-                                        </span>
-                                    </input>
+                                <form method="post" action="${it.rootURL}/build-api/delete-build-status" onsubmit="return confirmDelete(this)">
+                                    <input type="hidden" name="application" value="${application}" />
+                                    <input type="hidden" name="version" value="${version}" />
+                                    <button type="submit" class="jenkins-button" style="margin-left: .2rem">
+                                        <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
+                                    </button>
                                 </form>
                             </l:isAdmin>
                         </td>
