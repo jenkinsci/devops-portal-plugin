@@ -104,7 +104,7 @@ public class DeploymentOperationReporter extends Builder implements SimpleBuildS
             record.setTags(tags);
 
             listener.getLogger().printf(
-                    "Report run operation 'DEPLOYMENT' on application '%s' to environment '%s' (%s)\n",
+                    "Report run operation 'DEPLOYMENT' on application '%s' to environment '%s' (%s)%n",
                     applicationName,
                     service.getCategory(),
                     service.getHostname()

@@ -17,6 +17,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;
@@ -276,7 +277,7 @@ public class ApplicationBuildStatus implements Describable<ApplicationBuildStatu
 
     @SuppressWarnings("unused")
     public String getUUID() {
-        return UUID.nameUUIDFromBytes((applicationName + applicationVersion).getBytes()).toString();
+        return UUID.nameUUIDFromBytes((applicationName + applicationVersion).getBytes(StandardCharsets.UTF_8)).toString();
     }
 
     @Extension

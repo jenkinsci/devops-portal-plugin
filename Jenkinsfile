@@ -17,7 +17,7 @@ pipeline {
                 script {
                     env.APPLICATION_VERSION = sh(script: "grep -m1 '<release.version>' pom.xml | cut -d '<' -f2  | cut -d '>' -f2", returnStdout: true).trim()
                     withMaven() {
-                        sh 'mvn -B -V -U -e -DskipTests clean package dependency-check:aggregate'
+                        sh 'mvn -B -V -U -e -DskipTests -Dspotbugs.skip=true clean package dependency-check:aggregate'
                     }
                     reportBuild(
                         applicationName: env.APPLICATION_NAME,

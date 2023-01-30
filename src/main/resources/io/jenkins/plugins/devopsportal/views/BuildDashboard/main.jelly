@@ -81,13 +81,17 @@
                             </j:if>
                         </td>
                         <td class="actions">
-                            <a class="jenkins-button" href="javascript:toggleVisibility('${application}-${version}')">
+                            <a class="jenkins-button" href="javascript:;" onclick="toggleVisibility(this)" data-app-target="${application}-${version}">
                                 <l:icon class="symbol-apps-outline plugin-ionicons-api icon-sm" />
                             </a>
                             <l:isAdmin>
-                                <a class="jenkins-button" style="margin-left: .2rem" href="javascript:deleteApplicationVersion('${application}', '${version}')">
-                                    <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
-                                </a>
+                                <form method="post" action="${it.rootURL}/build-api/delete-build-status" onsubmit="return confirmDelete(this)">
+                                    <input type="hidden" name="application" value="${application}" />
+                                    <input type="hidden" name="version" value="${version}" />
+                                    <button type="submit" class="jenkins-button" style="margin-left: .2rem">
+                                        <l:icon class="symbol-trash-outline plugin-ionicons-api icon-sm" />
+                                    </button>
+                                </form>
                             </l:isAdmin>
                         </td>
                     </tr>
@@ -651,7 +655,8 @@
 
 
     <script type="text/javascript">
-        function toggleVisibility(version) {
+        function toggleVisibility(a) {
+            let version = a.getAttribute("data-app-target");
             let items = document.querySelectorAll("tr.version-activities[version='" + version + "']");
             for (const item of items) {
                 item.toggleAttribute('hidden');
@@ -661,11 +666,16 @@
                 item.toggleAttribute('hidden');
             }
         }
-        function deleteApplicationVersion(application, version) {
-            if (confirm('${%confirm_delete_version}')) {
-                javascript:document.location.href = '${it.rootURL}/build-api/delete-build-status?application='
-                    + escape(application) + '&amp;version=' + escape(version) + '&amp;origin=' + escape(window.location.href);
+        function confirmDelete(form) {
+            if (!confirm('${%confirm_delete_version}')) {
+                return false;
             }
+            var input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", "origin");
+            input.setAttribute("value", window.location.href);
+            form.appendChild(input);
+            return true;
         }
         function toggleModal(id) {
             var modal = document.getElementById('modal_' + id);

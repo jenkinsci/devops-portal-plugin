@@ -233,7 +233,8 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
     public static void push(@NonNull String jobName, @NonNull String buildNumber, @NonNull String projectKey,
                             @NonNull QualityAuditActivity activity, @NonNull String sonarUrl,
                             @NonNull String sonarToken, @NonNull String applicationName,
-                            @NonNull String applicationVersion, @NonNull String applicationComponent) {
+                            @NonNull String applicationVersion, @NonNull String applicationComponent,
+                            boolean acceptInvalidCertificate) {
 
         // Check arguments
         checkNotEmpty(jobName, buildNumber, projectKey, sonarUrl, sonarToken, applicationName,
@@ -259,10 +260,12 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             // Push new action to do
             ACTIONS.add(new WorkItem(
                     jobName, buildNumber, projectKey, activity, sonarUrl,
-                    sonarToken, applicationName, applicationVersion, applicationComponent
+                    sonarToken, applicationName, applicationVersion, applicationComponent,
+                    acceptInvalidCertificate
             ));
             LOGGER.info("New SonarQube async task: job='" + jobName + "' build='" + buildNumber + "' project='"
-                    + applicationName + ":" + applicationVersion + "/" + applicationComponent + "'");
+                    + applicationName + ":" + applicationVersion + "/" + applicationComponent
+                    + "' unsafe=" + acceptInvalidCertificate);
 
         }
     }
@@ -282,7 +285,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         public WorkItem(@NonNull String jobName, @NonNull String buildNumber, @NonNull String projectKey,
                         @NonNull QualityAuditActivity activity, @NonNull String sonarUrl, @NonNull String sonarToken,
                         @NonNull String applicationName, @NonNull String applicationVersion,
-                        @NonNull String applicationComponent) {
+                        @NonNull String applicationComponent, boolean acceptInvalidCertificate) {
             this.jobName = jobName;
             this.buildNumber = buildNumber;
             this.projectKey = projectKey;
@@ -290,15 +293,18 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             this.applicationName = applicationName;
             this.applicationVersion = applicationVersion;
             this.applicationComponent = applicationComponent;
-            X509TrustManager manager = SSLUtils.getUntrustedManager();
-            SSLContext context = SSLUtils.getSSLContext(manager);
-            HttpConnector httpConnector = HttpConnector
+            HttpConnector.Builder httpBuilder = HttpConnector
                     .newBuilder()
                     .url(sonarUrl)
-                    .token(sonarToken)
-                    .setSSLSocketFactory(context.getSocketFactory())
-                    .setTrustManager(manager)
-                    .build();
+                    .token(sonarToken);
+            if (acceptInvalidCertificate) {
+                X509TrustManager manager = SSLUtils.getUntrustedManager();
+                SSLContext context = SSLUtils.getSSLContext(manager);
+                httpBuilder
+                        .setSSLSocketFactory(context.getSocketFactory())
+                        .setTrustManager(manager);
+            }
+            HttpConnector httpConnector = httpBuilder.build();
             this.wsClient = WsClientFactories.getDefault().newClient(httpConnector);
         }
 
