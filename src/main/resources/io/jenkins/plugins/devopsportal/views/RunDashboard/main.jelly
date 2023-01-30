@@ -68,7 +68,7 @@
                             </j:if>
                         </td>
                         <td class="host-information">
-                            <j:if test="${service.url != null &amp;&amp; !url.isEmpty()}">
+                            <j:if test="${service.isValidURL()}">
                                 <a class="host-label" href="${service.url}" target="_blank">${service.hostname}</a>
                             </j:if>
                             <j:if test="${service.monitoringAvailable &amp;&amp; monitoring.getCertificateExpiration() != null}">

@@ -7,6 +7,7 @@ import hudson.model.Descriptor;
 import hudson.util.CopyOnWriteList;
 import hudson.util.FormValidation;
 import io.jenkins.plugins.devopsportal.Messages;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -114,9 +115,13 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration>, 
         this.acceptInvalidCertificate = acceptInvalidCertificate;
     }
 
+    public boolean isValidURL() {
+        return MiscUtils.isValidURL(this.url);
+    }
+
     public boolean isHttps() {
         try {
-            URI uri = new URI(url);
+            URI uri = new URI(this.url);
             return uri.getScheme().equalsIgnoreCase("https");
         }
         catch (URISyntaxException ex) {
@@ -126,7 +131,7 @@ public class ServiceConfiguration implements Describable<ServiceConfiguration>, 
 
     public String getHostname() {
         try {
-            URI uri = new URI(url);
+            URI uri = new URI(this.url);
             return uri.getHost();
         }
         catch (URISyntaxException ex) {

@@ -57,17 +57,7 @@ public class ArtifactReleaseActivity extends AbstractActivity {
 
     @SuppressWarnings("unused")
     public boolean isUrlPresent() {
-        if (artifactURL == null || artifactURL.trim().isEmpty()) {
-            return false;
-        }
-        try {
-            // JENSEC-1938 Restrict href protocol to only allow some https / http schemes
-            final String scheme = new URL(artifactURL).getProtocol();
-            return "http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme);
-        }
-        catch (MalformedURLException ex) {
-            return false;
-        }
+        return MiscUtils.isValidURL(this.artifactURL);
     }
 
     public List<String> getTags() {

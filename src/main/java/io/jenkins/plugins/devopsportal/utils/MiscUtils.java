@@ -1,6 +1,10 @@
 package io.jenkins.plugins.devopsportal.utils;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
+
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
@@ -73,6 +77,20 @@ public final class MiscUtils {
             if (value == null || value.trim().isEmpty()) {
                 throw new IllegalArgumentException();
             }
+        }
+    }
+
+    public static boolean isValidURL(@Nullable String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return false;
+        }
+        try {
+            // JENSEC-1938 Restrict href protocol to only allow some https / http schemes
+            final String scheme = new URI(url).getScheme();
+            return "http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme);
+        }
+        catch (URISyntaxException ex) {
+            return false;
         }
     }
 
