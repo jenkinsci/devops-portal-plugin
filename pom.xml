@@ -41,13 +41,6 @@
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.version>2.361.4</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-        <java.version>11</java.version> <!-- V11 = LEVEL 55 -->
-        <java.level>55</java.level> <!-- V1.8 = LEVEL 52 -->
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.compiler.release>${java.version}</maven.compiler.release>
-        <maven.compiler.testRelease>${java.version}</maven.compiler.testRelease>
-        <enforcer.skip>true</enforcer.skip>
 
         <!-- SonarQube configuration -->
         <sonar.projectName>DevOpsPortal v${project.version}</sonar.projectName>
@@ -102,7 +95,6 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>ionicons-api</artifactId>
-            <version>31.v4757b_6987003</version>
         </dependency>
         <!-- SSL Context Helper -->
         <dependency>
@@ -117,46 +109,24 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.14</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.16</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-cache</artifactId>
-            <version>4.5.14</version>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>apache-httpcomponents-client-4-api</artifactId>
         </dependency>
         <!-- Sonar Connector -->
-        <dependency>
-            <groupId>org.sonarsource.sonarqube</groupId>
-            <artifactId>sonar-ws</artifactId>
-            <version>9.8.0.63668</version>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-common</artifactId>
             <version>1.8.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.sonarsource.sonarqube</groupId>
+            <artifactId>sonar-ws</artifactId>
+            <version>9.8.0.63668</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Compiler -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
-                <configuration>
-                    <release>${java.version}</release>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
             <!-- Dependencies analysis -->
             <plugin>
                 <groupId>org.owasp</groupId>
@@ -176,44 +146,6 @@
                         <suppressionFile>${project.basedir}/suppress-dependency-issues.xml</suppressionFile>
                     </suppressionFiles>
                 </configuration>
-            </plugin>
-            <!-- Maven rules enforcer -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>enforce</id>
-                        <phase>validate</phase>
-                        <configuration>
-                            <ignoreCache>true</ignoreCache>
-                            <!--<rules>
-                                <requireJavaVersion>
-                                    <version>${java.version}</version>
-                                    <message>Project requires JDK ${java.version}</message>
-                                </requireJavaVersion>
-                                <enforceBytecodeVersion>
-                                    <maxJdkVersion>${java.version}</maxJdkVersion>
-                                    <excludes>
-                                        <exclude>org.sonarsource.sonarqube:sonar-ws</exclude>
-                                        <exclude>org.sonarsource.api.plugin:sonar-plugin-api</exclude>
-                                    </excludes>
-                                </enforceBytecodeVersion>
-                            </rules>-->
-                        </configuration>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>extra-enforcer-rules</artifactId>
-                        <version>1.6.1</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <!-- Test coverage -->
             <plugin>

@@ -1,5 +1,5 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
 
     <link href="${rootURL}/plugin/devops-portal/css/run-dashboard.css" type="text/css" rel="stylesheet"/>
     <link href="${rootURL}/plugin/devops-portal/css/modal.css" type="text/css" rel="stylesheet"/>
@@ -7,7 +7,7 @@
     <h1>
         ${it.displayName}
     </h1>
-    <table class="run-dashboard jenkins-table">
+    <table class="run-dashboard jenkins-table" id="dashboard-table" data-translate-popup-delete="${%confirm_delete_operation}">
         <thead>
             <j:set var="categories" value="${it.descriptor.getConfigurationCategories(it.filter)}"/>
             <j:if test="${categories.isEmpty()}">
@@ -225,36 +225,6 @@
         </div>
     </j:forEach>
 
-    <script type="text/javascript">
-        function confirmDelete(form) {
-            if (!confirm('${%confirm_delete_operation}')) {
-                return false;
-            }
-            var input = document.createElement("input");
-            input.setAttribute("type", "hidden");
-            input.setAttribute("name", "origin");
-            input.setAttribute("value", window.location.href);
-            form.appendChild(input);
-            return true;
-        }
-        function toggleModal(a) {
-            let id = a.getAttribute("data-service-id");
-            var modal = document.getElementById('modal_' + id);
-            var span = modal.querySelector('.close');
-            modal.style.display = 'block';
-            function close() {
-                modal.style.display = 'none';
-                span.removeEventListener('click', close);
-                window.removeEventListener('click', windowClose);
-            }
-            function windowClose(event) {
-                if (event.target === modal) {
-                    close();
-                }
-            }
-            window.addEventListener('click', windowClose);
-            span.addEventListener('click', close);
-        }
-    </script>
+    <st:adjunct includes="io.jenkins.plugins.devopsportal.views.RunDashboard.scripts" />
 
 </j:jelly>
