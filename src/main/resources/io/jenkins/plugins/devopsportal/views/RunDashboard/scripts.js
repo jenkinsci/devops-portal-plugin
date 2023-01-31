@@ -9,9 +9,9 @@ function getDeleteMessageTranslated() {
 
 function confirmDelete(form) {
     let msg = getDeleteMessageTranslated() || "Are you sure to delete this deployment?";
-        if (!confirm(msg)) {
-            return false;
-        }
+    if (!confirm(msg)) {
+        return false;
+    }
     var input = document.createElement("input");
     input.setAttribute("type", "hidden");
     input.setAttribute("name", "origin");
