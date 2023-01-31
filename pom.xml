@@ -9,7 +9,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>devops-portal</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>DevOps Portal</name>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
@@ -158,20 +158,6 @@
                         <exclude>**/plugins/devopsportal/api/*.*</exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
