@@ -1,5 +1,5 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
 
     <link href="${rootURL}/plugin/devops-portal/css/build-dashboard.css" type="text/css" rel="stylesheet"/>
     <link href="${rootURL}/plugin/devops-portal/css/modal.css" type="text/css" rel="stylesheet"/>
@@ -7,7 +7,7 @@
     <h1>
         ${it.displayName}
     </h1>
-    <table class="build-dashboard jenkins-table">
+    <table class="build-dashboard jenkins-table" id="dashboard-table" data-translate-popup-delete="${%confirm_delete_version}">
         <thead>
             <j:set var="applications" value="${it.descriptor.getApplicationNames(it.filter)}"/>
             <j:if test="${applications.isEmpty()}">
@@ -652,48 +652,6 @@
         </j:forEach>
     </j:forEach>
 
-
-
-    <script type="text/javascript">
-        function toggleVisibility(a) {
-            let version = a.getAttribute("data-app-target");
-            let items = document.querySelectorAll("tr.version-activities[version='" + version + "']");
-            for (const item of items) {
-                item.toggleAttribute('hidden');
-            }
-            items = document.querySelectorAll("tr.version-summary-tr[version='" + version + "']");
-            for (const item of items) {
-                item.toggleAttribute('hidden');
-            }
-        }
-        function confirmDelete(form) {
-            if (!confirm('${%confirm_delete_version}')) {
-                return false;
-            }
-            var input = document.createElement("input");
-            input.setAttribute("type", "hidden");
-            input.setAttribute("name", "origin");
-            input.setAttribute("value", window.location.href);
-            form.appendChild(input);
-            return true;
-        }
-        function toggleModal(id) {
-            var modal = document.getElementById('modal_' + id);
-            var span = modal.querySelector('.close');
-            modal.style.display = 'block';
-            function close() {
-                modal.style.display = 'none';
-                span.removeEventListener('click', close);
-                window.removeEventListener('click', windowClose);
-            }
-            function windowClose(event) {
-                if (event.target === modal) {
-                    close();
-                }
-            }
-            window.addEventListener('click', windowClose);
-            span.addEventListener('click', close);
-        }
-    </script>
+    <st:adjunct includes="io.jenkins.plugins.devopsportal.views.BuildDashboard.scripts" />
 
 </j:jelly>
