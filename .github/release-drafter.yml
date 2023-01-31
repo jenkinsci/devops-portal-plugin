@@ -1,2 +1,2 @@
 _extends: .github
-tag-template: jenkins-plugin-release-dashboard-$NEXT_MINOR_VERSION
+tag-template: devops-portal-$NEXT_MINOR_VERSION

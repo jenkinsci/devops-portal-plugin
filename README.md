@@ -410,7 +410,7 @@ reportDeployOperation(
 
 ## <a name="section-dev"></a> Setup as Developer
 
-1. Checkout from: https://github.com/rbello/jenkins-plugin-devops-portal.git
+1. Checkout from: https://github.com/jenkinsci/devops-portal-plugin.git
 2. Recommended IDE is **Intellij IDEA**
 3. JDK 11 is preferred (newer JDK may introduce serialization issues)
 4. The minimal Jenkins version is: 2.361.4
@@ -479,8 +479,7 @@ To debug plugin behavior, configure a jenkins logger on the package:
 
 ## Author & Licence
 
-This plugin is provided by Rémi BELLO \
-https://github.com/rbello/jenkins-plugin-devops-portal
+This plugin is provided by 💗 + [Rémi BELLO](https://github.com/rbello)
 
 **Licence** \
 GNU GENERAL PUBLIC LICENSE \
