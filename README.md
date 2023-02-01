@@ -35,8 +35,6 @@ This allows you to obtain a synthetic view of all the steps to validate your sof
 | OPERATE | Furthermore, it centralizes application performance testing (especially with JMeter)                                                                 |
 | MONITOR | Finally, a dashboard allows to monitor uptime for HTTP(S) services and certificate information.                                                      |
 
-
-
 ## <a name="table-of-contents"></a> Table of Contents
 
 1. [Installing Prerequisites](#section-setup)
@@ -56,7 +54,7 @@ This allows you to obtain a synthetic view of all the steps to validate your sof
 ## <a name="section-setup"></a> Installing Prerequisites
 
 - Supported translations: 🇫🇷 🇬🇧
-- Install and enable plugin from Jenkins Administration
+- Install and enable plugin from `Jenkins Administration` > `Plugins` > `Available plugins` and search for "Devops Portal"
 
 ## <a name="section-build"></a> 📦 Manage Build Activities
 
