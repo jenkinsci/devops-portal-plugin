@@ -1,2 +1,0 @@
-_extends: .github
-tag-template: devops-portal-$NEXT_MINOR_VERSION

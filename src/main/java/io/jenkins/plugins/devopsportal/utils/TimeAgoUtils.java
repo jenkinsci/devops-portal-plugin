@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Utility class for date & time manipulation
+ * Utility class for date &amp; time manipulation
  *
  * @author Rémi BELLO {@literal <remi@evolya.fr>}
  */

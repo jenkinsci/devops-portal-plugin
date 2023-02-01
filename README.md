@@ -1,9 +1,11 @@
 
-![License](https://img.shields.io/github/license/rbello/jenkins-plugin-devops-portal)
-![Language](https://img.shields.io/github/languages/top/rbello/jenkins-plugin-devops-portal)
-![Issues](https://img.shields.io/github/issues-raw/rbello/jenkins-plugin-devops-portal)
-![Activity](https://img.shields.io/github/last-commit/rbello/jenkins-plugin-devops-portal)
-![Release](https://img.shields.io/github/v/release/rbello/jenkins-plugin-devops-portal?display_name=tag)
+![License](https://img.shields.io/github/license/jenkinsci/devops-portal-plugin)
+![Language](https://img.shields.io/github/languages/top/jenkinsci/devops-portal-plugin)
+![Issues](https://img.shields.io/github/issues-raw/jenkinsci/devops-portal-plugin)
+![LastActivity](https://img.shields.io/github/last-commit/jenkinsci/devops-portal-plugin)
+![LastVersion](https://img.shields.io/jenkins/plugin/v/devops-portal.svg)
+![LastRelease](https://img.shields.io/github/v/release/jenkinsci/devops-portal-plugin?display_name=tag)
+![Installs](https://img.shields.io/jenkins/plugin/i/devops-portal.svg?color=blue)
 
 # DevOps Portal Jenkins Plugin
 --- *Brings some DevOps to your Jenkins !*
@@ -33,8 +35,6 @@ This allows you to obtain a synthetic view of all the steps to validate your sof
 | OPERATE | Furthermore, it centralizes application performance testing (especially with JMeter)                                                                 |
 | MONITOR | Finally, a dashboard allows to monitor uptime for HTTP(S) services and certificate information.                                                      |
 
-
-
 ## <a name="table-of-contents"></a> Table of Contents
 
 1. [Installing Prerequisites](#section-setup)
@@ -53,9 +53,8 @@ This allows you to obtain a synthetic view of all the steps to validate your sof
 
 ## <a name="section-setup"></a> Installing Prerequisites
 
-- Jenkins version: >= 2.346.1
 - Supported translations: 🇫🇷 🇬🇧
-- Install and enable plugin from Jenkins Administration
+- Install and enable plugin from `Jenkins Administration` > `Plugins` > `Available plugins` and search for "Devops Portal"
 
 ## <a name="section-build"></a> 📦 Manage Build Activities
 
@@ -404,20 +403,17 @@ reportDeployOperation(
 
 ## <a name="section-sample"></a> Samples
 
-| Sample                                        | Content                                                          |
-|-----------------------------------------------|------------------------------------------------------------------|
-| [Plugin build pipeline](src/test/Jenkinsfile) | Provides a complete example of integrating many BUILD activities |
+| Sample                                             | Content                                                          |
+|----------------------------------------------------|------------------------------------------------------------------|
+| [Plugin build pipeline](src/test/jobs/Jenkinsfile) | Provides a complete example of integrating many BUILD activities |
 
 ## <a name="section-dev"></a> Setup as Developer
 
 1. Checkout from: https://github.com/jenkinsci/devops-portal-plugin.git
 2. Recommended IDE is **Intellij IDEA**
 3. JDK 11 is preferred (newer JDK may introduce serialization issues)
-4. The minimal Jenkins version is: 2.361.4
-5. Run locally with: `mvn hpi:run -Djetty.port=5000`
-6. Create HPI package with: `mvn hpi:hpi`
-7. Suggest any change by Forking the project and opening a Pull Request
-8. Release with: `mvn release:prepare release:perform -Dusername=****** -Dpassword=******`
+4. Run locally with: `mvn hpi:run -Djetty.port=5000`
+5. Suggest any change by Forking the project and opening a Pull Request
 
 ## <a name="section-archi"></a> Application architecture
 
@@ -479,7 +475,7 @@ To debug plugin behavior, configure a jenkins logger on the package:
 
 ## Author & Licence
 
-This plugin is provided by 💗 + [Rémi BELLO](https://github.com/rbello)
+This plugin is provided with 💗 by [Rémi BELLO](https://github.com/rbello)
 
 **Licence** \
 GNU GENERAL PUBLIC LICENSE \
