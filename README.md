@@ -403,9 +403,9 @@ reportDeployOperation(
 
 ## <a name="section-sample"></a> Samples
 
-| Sample                                        | Content                                                          |
-|-----------------------------------------------|------------------------------------------------------------------|
-| [Plugin build pipeline](src/test/Jenkinsfile) | Provides a complete example of integrating many BUILD activities |
+| Sample                                             | Content                                                          |
+|----------------------------------------------------|------------------------------------------------------------------|
+| [Plugin build pipeline](src/test/jobs/Jenkinsfile) | Provides a complete example of integrating many BUILD activities |
 
 ## <a name="section-dev"></a> Setup as Developer
 
