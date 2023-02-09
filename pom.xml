@@ -9,7 +9,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>devops-portal</artifactId>
-    <version>${revision}-${changelist}</version>
+    <version>${changelist}</version>
     <packaging>hpi</packaging>
     <name>DevOps Portal</name>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
@@ -35,7 +35,6 @@
     </scm>
 
     <properties>
-        <revision>1.0</revision>
         <changelist>999999-SNAPSHOT</changelist>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.version>2.361.4</jenkins.version>
