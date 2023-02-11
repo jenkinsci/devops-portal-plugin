@@ -4,5 +4,7 @@
 -->
 <?jelly escape-by-default='true'?>
 <div>
-    Brings some DevOps to your Jenkins !
+    Bring together all the information about the DEVELOPMENT activities of your applications on a single dashboard,
+    and allows you to check the DEPLOYMENT of your applications on your run environments and MONITOR the availability
+    of deployed services.
 </div>
