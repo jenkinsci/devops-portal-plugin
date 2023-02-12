@@ -55,7 +55,6 @@ public class SonarApiClient {
                 projectKey,
                 // Quality Gate
         "alert_status",
-                "quality_gate_details",
                 // Scores
                 "sqale_rating", // Maintainability (code smells)
                 "reliability_rating", // Reliability (bugs)
@@ -78,7 +77,7 @@ public class SonarApiClient {
     public List<Map<String, Object>> getHotspots(String projectKey) {
         return execute("/api/hotspots/search", "hotspots", request -> {
             request.setParameter("projectKey", projectKey);
-            request.setParameter("status", "TO_REVIEW");
+            //request.setParameter("status", "TO_REVIEW");
             request.setParameter("ps", "500");
         });
     }
@@ -127,6 +126,37 @@ public class SonarApiClient {
 
     private static void debug(String data, List<Map<String, Object>> values) {
         System.out.println(" " + data +" >>> " + values.size());
+        System.out.println(values);
+        switch (data) {
+            case "metrics":
+                for (Map<String, Object> metric : values) {
+                    System.out.println(" - " + metric.get("metric") + " = " + metric.get("value"));
+                }
+                break;
+            case "issues":
+                for (Map<String, Object> metric : values) {
+                    System.out.println(
+                            " - type="+ metric.get("type")
+                                    + " rule=" + metric.get("rule")
+                                    + " severity=" + metric.get("severity")
+                                    + " message='" + metric.get("message")
+                                    + "' cdate=" + metric.get("creationDate")
+                                    + " file=" + metric.get("component")
+                                    + " line=" + metric.get("line"));
+                }
+                break;
+            case "hotspots":
+                for (Map<String, Object> metric : values) {
+                    System.out.println(
+                            " - category="+ metric.get("securityCategory")
+                                    + " probability=" + metric.get("probability")
+                                    + " message='" + metric.get("message")
+                                    + "' cdate=" + metric.get("creationDate")
+                                    + " file=" + metric.get("component")
+                                    + " line=" + metric.get("line"));
+                }
+                break;
+        }
     }
 
 }
