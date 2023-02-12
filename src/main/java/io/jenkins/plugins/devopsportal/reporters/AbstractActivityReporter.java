@@ -13,6 +13,9 @@ import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Abstract class for BUILD activity reporters.
  *
@@ -20,6 +23,8 @@ import org.kohsuke.stapler.DataBoundSetter;
  */
 public abstract class AbstractActivityReporter<T extends AbstractActivity> extends Builder
         implements SimpleBuildStep, GenericActivityHandler<T> {
+
+    private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
     private String applicationName;
     private String applicationVersion;
@@ -105,6 +110,9 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
                         ex.getClass().getSimpleName(),
                         ex.getMessage()
                 );
+                if (LOGGER.isLoggable(Level.FINER)) {
+                    LOGGER.log(Level.FINER, "Failed to execute: " + getClass().getName(), ex);
+                }
                 run.setResult(Result.FAILURE);
             }
 
