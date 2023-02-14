@@ -19,6 +19,11 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Utility class to fetch data from Sonar Qube using REST API.
+ *
+ * @author Rémi BELLO {@literal <remi@evolya.fr>}
+ */
 public class SonarApiClient {
 
     private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
@@ -124,7 +129,8 @@ public class SonarApiClient {
             LOGGER.log(
                     Level.WARNING,
                     String.format("Unable to fetch api '%s': %s %s", path,
-                            ex.getClass().getSimpleName(), ex.getMessage())
+                            ex.getClass().getSimpleName(), ex.getMessage()),
+                    ex
             );
             return Collections.emptyList();
         }
