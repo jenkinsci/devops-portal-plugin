@@ -49,11 +49,11 @@ public class QualityAuditActivityTest {
         activity.setHotSpots((List<Map<String, Object>>) hotspots);
         assertEquals(3, activity.getBugCount());
         assertEquals(4, activity.getVulnerabilityCount());
-        assertEquals(0, activity.getHotspotCount());
+        assertEquals(2, activity.getHotspotCount());
         assertEquals(ActivityScore.A, activity.getBugScore());
         assertEquals(ActivityScore.B, activity.getVulnerabilityScore());
-        assertEquals(ActivityScore.C, activity.getHotspotScore());
-        assertTrue(activity.isQualityGatePassed());
+        assertEquals(ActivityScore.E, activity.getHotspotScore());
+        assertFalse(activity.isQualityGatePassed());
         assertFalse(activity.isComplete());
         assertTrue(activity.hasIssues());
         assertNotNull(activity.getBugs());
@@ -61,7 +61,7 @@ public class QualityAuditActivityTest {
         assertNotNull(activity.getHotspots());
         assertEquals(3, activity.getBugs().size());
         assertEquals(4, activity.getVulnerabilities().size());
-        assertEquals(0, activity.getHotspots().size());
+        assertEquals(2, activity.getHotspots().size());
         assertEquals(0.56, activity.getTestCoverage(), 0.001);
         assertEquals("56.00%", activity.getTestCoverageStr());
         assertEquals(0.084, activity.getDuplicationRate(), 0.0001);

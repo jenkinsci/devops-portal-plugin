@@ -124,11 +124,6 @@ public class SonarApiClient {
                     String.format("Unable to fetch api '%s': %s %s", path,
                             ex.getClass().getSimpleName(), ex.getMessage())
             );
-            // fake hotspot
-            final String MONGO_REG = "(mongodb://.+:)(.*)(@.+)";
-            final String PASSWD_REPLACEMENT = "XXXXXXXXXX";
-            String mongoUri = "mongodb://myDBReader:D1fficultP%40ssw0rd@mongodb0.example.com:27017/?authSource=admin";
-            String newMongoUri = mongoUri.replaceAll(MONGO_REG, "$1" + PASSWD_REPLACEMENT + "$3");
             return Collections.emptyList();
         }
     }
