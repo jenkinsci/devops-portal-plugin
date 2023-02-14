@@ -1,5 +1,6 @@
 package io.jenkins.plugins.devopsportal.reporters;
 
+import com.google.common.base.Strings;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -70,6 +71,19 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
     @Override
     public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env,
                         @NonNull Launcher launcher, @NonNull TaskListener listener) {
+
+        // Check if identifiers are missing
+        if (Strings.isNullOrEmpty(applicationName) || Strings.isNullOrEmpty(applicationVersion) || Strings.isNullOrEmpty(applicationComponent)) {
+            // Log
+            listener.getLogger().printf(
+                    "Unable to report build activity '%s': missing identifier (name='%s' version='%s' component='%s')",
+                    getActivityCategory(),
+                    applicationName,
+                    applicationVersion,
+                    applicationComponent
+            );
+            return;
+        }
 
         // Create or update BuildStatus
         getBuildStatusDescriptor().update(applicationName, applicationVersion, record -> {
