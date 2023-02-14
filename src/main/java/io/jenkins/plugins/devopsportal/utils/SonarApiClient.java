@@ -86,7 +86,7 @@ public class SonarApiClient {
         });
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "java:S2647"})
     public List<Map<String, Object>> execute(String path, String listAttribute, Consumer<URIBuilder> consumer) {
         HttpGet request;
         try {
@@ -97,6 +97,8 @@ public class SonarApiClient {
         catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
+        // Sonar throws a vulnerability here: Use a more secure method than basic authentication.
+        // But this is the standard token-based authentication on Sonar.
         request.setHeader("Authorization", "Basic " + authenticationToken);
         try (CloseableHttpClient httpClient = this.builder.build()) {
             CloseableHttpResponse response = httpClient.execute(request);
