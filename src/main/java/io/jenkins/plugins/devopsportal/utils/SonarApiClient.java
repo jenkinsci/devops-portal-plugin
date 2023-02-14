@@ -12,6 +12,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 
 import javax.net.ssl.SSLContext;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.function.Consumer;
@@ -28,7 +29,8 @@ public class SonarApiClient {
 
     public SonarApiClient(String url, String authenticationToken, boolean acceptInvalidCertificate) {
         this.url = url;
-        this.authenticationToken = Base64.getEncoder().withoutPadding().encodeToString((authenticationToken+":").getBytes());
+        this.authenticationToken = Base64.getEncoder().withoutPadding()
+                .encodeToString((authenticationToken+":").getBytes(StandardCharsets.UTF_8));
         this.builder = HttpClients.custom();
         if (acceptInvalidCertificate) {
             try {
