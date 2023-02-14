@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     withMaven() {
-                        sh 'mvn -B test'
+                        sh 'mvn -B test -Duser.language=en -Duser.region=US'
                     }
                     reportSurefireTest(
                         applicationName: env.APPLICATION_NAME,

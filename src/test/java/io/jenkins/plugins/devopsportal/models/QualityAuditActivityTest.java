@@ -30,9 +30,9 @@ public class QualityAuditActivityTest {
         assertEquals(0, activity.getVulnerabilities().size());
         assertEquals(0, activity.getHotspots().size());
         assertEquals(0, activity.getTestCoverage(), 0);
-        assertEquals("0,00%", activity.getTestCoverageStr());
+        assertEquals("0.00%", activity.getTestCoverageStr());
         assertEquals(0, activity.getDuplicationRate(), 0);
-        assertEquals("0,00%", activity.getDuplicationRateStr());
+        assertEquals("0.00%", activity.getDuplicationRateStr());
         assertEquals(0, activity.getLinesCount());
         assertEquals("0", activity.getLinesCountStr());
     }
@@ -63,9 +63,9 @@ public class QualityAuditActivityTest {
         assertEquals(4, activity.getVulnerabilities().size());
         assertEquals(0, activity.getHotspots().size());
         assertEquals(0.56, activity.getTestCoverage(), 0.001);
-        assertEquals("56,00%", activity.getTestCoverageStr());
+        assertEquals("56.00%", activity.getTestCoverageStr());
         assertEquals(0.084, activity.getDuplicationRate(), 0.0001);
-        assertEquals("8,40%", activity.getDuplicationRateStr());
+        assertEquals("8.40%", activity.getDuplicationRateStr());
         assertEquals(4774, activity.getLinesCount());
         assertEquals("5k", activity.getLinesCountStr());
     }

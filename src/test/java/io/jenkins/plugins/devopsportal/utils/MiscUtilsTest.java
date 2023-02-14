@@ -17,16 +17,16 @@ public class MiscUtilsTest {
         assertEquals("0 kB", MiscUtils.readableFileSize(-1));
         assertEquals("0 kB", MiscUtils.readableFileSize(0));
         assertEquals("256 B", MiscUtils.readableFileSize(256));
-        assertEquals("1 023 B", MiscUtils.readableFileSize(1023));
+        assertEquals("1,023 B", MiscUtils.readableFileSize(1023));
         assertEquals("1 kB", MiscUtils.readableFileSize(1024));
         assertEquals("128 kB", MiscUtils.readableFileSize(1024 * 128));
         assertEquals("1 MB", MiscUtils.readableFileSize(1024 * 1024));
-        assertEquals("1 011 MB", MiscUtils.readableFileSize(1024 * 1024 * 1011));
+        assertEquals("1,011 MB", MiscUtils.readableFileSize(1024 * 1024 * 1011));
         assertEquals("1 GB", MiscUtils.readableFileSize(1024 * 1024 * 1057));
         assertEquals("57 GB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 57));
         assertEquals("1 TB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 1024));
         assertEquals("613 TB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 1024 * 613));
-        assertEquals("9 781 TB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 1024 * 9781));
+        assertEquals("9,781 TB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 1024 * 9781));
     }
 
     @Test
