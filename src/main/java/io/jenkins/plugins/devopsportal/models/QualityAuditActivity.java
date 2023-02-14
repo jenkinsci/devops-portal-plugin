@@ -1,12 +1,14 @@
 package io.jenkins.plugins.devopsportal.models;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.sonarqube.ws.Hotspots;
-import org.sonarqube.ws.Issues;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A persistent record of a QUALITY_AUDIT activity.
@@ -178,25 +180,54 @@ public class QualityAuditActivity extends AbstractActivity {
                 (bugs.size() > 0 || vulnerabilities.size() > 0 || hotspots.size() > 0);
     }
 
-    public void addBug(Issues.Issue issue) {
-        if (issue != null) {
-            this.bugCount++;
-            this.bugs.add(new QualityIssue(issue));
-        }
+    public void setMetrics(List<Map<String, Object>> metrics) {
+
+        setQualityGatePassed(!"ERROR".equalsIgnoreCase(MiscUtils.getStringOrEmpty(
+                metrics, "metric", "alert_status", "value")));
+
+        setBugScore(ActivityScore.parseString(MiscUtils.getStringOrEmpty(
+                metrics, "metric", "reliability_rating", "value")));
+
+        setVulnerabilityScore(ActivityScore.parseString(MiscUtils.getStringOrEmpty(
+                metrics, "metric", "security_rating", "value")));
+
+        setHotspotScore(ActivityScore.parseString(MiscUtils.getStringOrEmpty(
+                metrics, "metric", "security_review_rating", "value")));
+
+        String value = MiscUtils.getStringOrEmpty(metrics, "metric", "coverage", "value");
+        setTestCoverage(MiscUtils.getFloatOrZero(value) / 100f);
+
+        value = MiscUtils.getStringOrEmpty(metrics, "metric", "duplicated_lines_density", "value");
+        setDuplicationRate(MiscUtils.getFloatOrZero(value) / 100f);
+
+        value = MiscUtils.getStringOrEmpty(metrics, "metric", "ncloc", "value");
+        setLinesCount(MiscUtils.getIntOrZero(value));
+
     }
 
-    public void addVulnerability(Issues.Issue issue) {
-        if (issue != null) {
-            this.vulnerabilityCount++;
-            this.vulnerabilities.add(new QualityIssue(issue));
+    public void setIssues(List<Map<String, Object>> issues) {
+        setBugCount(0);
+        setVulnerabilityCount(0);
+        for (Map<String, Object> item : issues) {
+            if ("java:S1135".equals(MiscUtils.getStringOrEmpty(item, "rule"))) {
+                // Ignore TO DO issues
+                continue;
+            }
+            String type = MiscUtils.getStringOrEmpty(item, "type").toUpperCase();
+            if ("BUG".equals(type)) {
+                this.bugs.add(new QualityIssue(item));
+            }
+            else if ("VULNERABILITY".equals(type)) {
+                this.vulnerabilities.add(new QualityIssue(item));
+            }
         }
+        bugCount = this.bugs.size();
+        vulnerabilityCount = this.vulnerabilities.size();
     }
 
-    public void addHotSpot(Hotspots.SearchWsResponse.Hotspot issue) {
-        if (issue != null) {
-            this.hotspotCount++;
-            this.hotspots.add(new SecurityHotspot(issue));
-        }
+    public void setHotSpots(@NonNull List<Map<String, Object>> hotspots) {
+        this.hotspotCount = hotspots.size();
+        this.hotspots = hotspots.stream().map(SecurityHotspot::new).collect(Collectors.toList());
     }
 
 }

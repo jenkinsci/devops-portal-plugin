@@ -47,6 +47,8 @@
         <sonar.projectVersion>${project.version}</sonar.projectVersion>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.sonar.junit.reportsPath>target/surefire-reports</sonar.sonar.junit.reportsPath>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.coverage.jacoco.reportPath>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.reportPath>
         <sonar.dependencyCheck.reportPath>target/dependency-check-report.xml</sonar.dependencyCheck.reportPath>
         <sonar.dependencyCheck.htmlReportPath>target/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
@@ -66,13 +68,6 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <!-- TODO to remove -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
@@ -123,18 +118,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.14.2</version>
         </dependency>
-        <!-- Sonar Connector TODO To Remove -->
-        <dependency>
-            <groupId>org.sonarsource.sonarqube</groupId>
-            <artifactId>sonar-ws</artifactId>
-            <version>9.8.0.63668</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <artifactId>kotlin-stdlib-common</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 
     <build>
@@ -167,6 +150,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/plugins/devopsportal/api/*.*</exclude>
+                        <exclude>**/plugins/devopsportal/workers/*.*</exclude>
                     </excludes>
                 </configuration>
             </plugin>

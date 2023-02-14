@@ -110,9 +110,7 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
                         ex.getClass().getSimpleName(),
                         ex.getMessage()
                 );
-                if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.log(Level.FINER, "Failed to execute: " + getClass().getName(), ex);
-                }
+                LOGGER.log(Level.INFO, "Failed to execute: " + getClass().getName(), ex);
                 run.setResult(Result.FAILURE);
             }
 
