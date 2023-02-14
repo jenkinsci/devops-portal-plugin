@@ -153,6 +153,14 @@
                     </excludes>
                 </configuration>
                 <executions>
+                    <!--first execution : for preparing JaCoCo runtime agent-->
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <!--second execution : for creating code coverage reports-->
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
