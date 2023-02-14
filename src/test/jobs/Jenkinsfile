@@ -15,7 +15,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    env.APPLICATION_VERSION = sh(script: "grep -m1 '<release.version>' pom.xml | cut -d '<' -f2  | cut -d '>' -f2", returnStdout: true).trim()
+                    env.APPLICATION_VERSION = sh(script: "grep -m1 '<changelist>' pom.xml | cut -d '<' -f2  | cut -d '>' -f2", returnStdout: true).trim()
                     withMaven() {
                         sh 'mvn -B -V -U -e -DskipTests -Dspotbugs.skip=true clean package dependency-check:aggregate'
                     }
@@ -88,7 +88,7 @@ pipeline {
                         repositoryName: "github.com",
                         artifactName: env.APPLICATION_NAME,
                         tags: "hpi,${env.APPLICATION_VERSION}",
-                        artifactURL: "https://github.com/rbello/jenkins-plugin-devops-portal/releases/tag/${env.APPLICATION_VERSION}"
+                        artifactURL: "https://github.com/jenkinsci/devops-portal-plugin/releases/tag/${env.APPLICATION_VERSION}"
                     )
                 }
             }
