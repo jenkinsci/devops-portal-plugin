@@ -1,5 +1,6 @@
 package io.jenkins.plugins.devopsportal.reporters;
 
+import com.google.common.base.Strings;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -13,6 +14,9 @@ import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Abstract class for BUILD activity reporters.
  *
@@ -20,6 +24,8 @@ import org.kohsuke.stapler.DataBoundSetter;
  */
 public abstract class AbstractActivityReporter<T extends AbstractActivity> extends Builder
         implements SimpleBuildStep, GenericActivityHandler<T> {
+
+    private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
     private String applicationName;
     private String applicationVersion;
@@ -66,6 +72,19 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
     public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env,
                         @NonNull Launcher launcher, @NonNull TaskListener listener) {
 
+        // Check if identifiers are missing
+        if (Strings.isNullOrEmpty(applicationName) || Strings.isNullOrEmpty(applicationVersion) || Strings.isNullOrEmpty(applicationComponent)) {
+            // Log
+            listener.getLogger().printf(
+                    "Unable to report build activity '%s': missing identifier (name='%s' version='%s' component='%s')",
+                    getActivityCategory(),
+                    applicationName,
+                    applicationVersion,
+                    applicationComponent
+            );
+            return;
+        }
+
         // Create or update BuildStatus
         getBuildStatusDescriptor().update(applicationName, applicationVersion, record -> {
 
@@ -105,6 +124,7 @@ public abstract class AbstractActivityReporter<T extends AbstractActivity> exten
                         ex.getClass().getSimpleName(),
                         ex.getMessage()
                 );
+                LOGGER.log(Level.INFO, "Failed to execute: " + getClass().getName(), ex);
                 run.setResult(Result.FAILURE);
             }
 

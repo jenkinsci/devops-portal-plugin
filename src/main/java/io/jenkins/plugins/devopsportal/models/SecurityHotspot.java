@@ -1,11 +1,12 @@
 package io.jenkins.plugins.devopsportal.models;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.sonarqube.ws.Hotspots;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Model for a security hotspot in a quality audit activity
@@ -25,13 +26,13 @@ public class SecurityHotspot implements Serializable {
     public SecurityHotspot() {
     }
 
-    public SecurityHotspot(@NonNull Hotspots.SearchWsResponse.Hotspot issue) {
-        category = issue.getSecurityCategory();
-        file = issue.getComponent();
-        line = issue.getLine();
-        message = issue.getMessage();
-        probability = issue.getVulnerabilityProbability();
-        creation = issue.getCreationDate();
+    public SecurityHotspot(@NonNull Map<String, Object> issue) {
+        category = MiscUtils.getStringOrEmpty(issue, "securityCategory");
+        file = MiscUtils.getStringOrEmpty(issue, "component");
+        line = MiscUtils.getIntOrZero(issue, "line");
+        message = MiscUtils.getStringOrEmpty(issue, "message");
+        probability = MiscUtils.getStringOrEmpty(issue, "vulnerabilityProbability");
+        creation = MiscUtils.getStringOrEmpty(issue, "creationDate");
     }
 
     public String getCategory() {

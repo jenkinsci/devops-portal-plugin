@@ -5,30 +5,17 @@ import hudson.Extension;
 import hudson.model.AsyncPeriodicWork;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.devopsportal.models.ActivityCategory;
-import io.jenkins.plugins.devopsportal.models.ActivityScore;
 import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.QualityAuditActivity;
-import io.jenkins.plugins.devopsportal.utils.SSLUtils;
+import io.jenkins.plugins.devopsportal.utils.SonarApiClient;
 import jenkins.model.Jenkins;
-import org.sonarqube.ws.Hotspots;
-import org.sonarqube.ws.Issues;
-import org.sonarqube.ws.Measures;
-import org.sonarqube.ws.client.HttpConnector;
-import org.sonarqube.ws.client.WsClient;
-import org.sonarqube.ws.client.WsClientFactories;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static io.jenkins.plugins.devopsportal.utils.MiscUtils.checkNotEmpty;
-import static org.sonarqube.ws.Common.RuleType.*;
 
 /**
  * Scheduled task that monitor a SonarQube server.
@@ -122,112 +109,12 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             return false;
         }
         // METRICS
-        handleMetrics(item);
+        item.activity.setMetrics(item.wsClient.getMetrics(item.projectKey));
         // ISSUES
-        handleIssues(item);
+        item.activity.setIssues(item.wsClient.getIssues(item.projectKey));
         // HOTSPOTS
-        handleHotspots(item);
+        item.activity.setHotSpots(item.wsClient.getHotspots(item.projectKey));
         return true;
-    }
-
-    private static void handleHotspots(@NonNull WorkItem item) {
-        org.sonarqube.ws.client.hotspots.SearchRequest request = new org.sonarqube.ws.client.hotspots.SearchRequest();
-        request.setProjectKey(item.projectKey);
-        request.setStatus("TO_REVIEW");
-        Hotspots.SearchWsResponse response = item.wsClient.hotspots().search(request);
-        item.activity.setHotspotCount(0);
-        for (Hotspots.SearchWsResponse.Hotspot hotspot : response.getHotspotsList()) {
-            item.activity.addHotSpot(hotspot);
-        }
-    }
-
-    private static void handleIssues(@NonNull WorkItem item) {
-        org.sonarqube.ws.client.issues.SearchRequest request = new org.sonarqube.ws.client.issues.SearchRequest();
-        request.setComponentKeys(Collections.singletonList(item.projectKey));
-        request.setTypes(Arrays.asList("BUG", "VULNERABILITY", "CODE_SMELL"));
-        request.setSeverities(Arrays.asList("MAJOR", "CRITICAL", "BLOCKER"));
-        request.setStatuses(Collections.singletonList("OPEN"));
-        request.setResolved("no");
-        request.setPs("500");
-        Issues.SearchWsResponse response = item.wsClient.issues().search(request);
-        item.activity.setBugCount(0);
-        item.activity.setVulnerabilityCount(0);
-        for (Issues.Issue issue : response.getIssuesList()) {
-            if ("java:S1135".equals(issue.getRule())) {
-                // Ignore TODOs
-                continue;
-            }
-            if (issue.getType() == BUG) {
-                item.activity.addBug(issue);
-            }
-            else if (issue.getType() == VULNERABILITY) {
-                item.activity.addVulnerability(issue);
-            }
-        }
-    }
-
-    private static void handleMetrics(@NonNull WorkItem item) {
-        org.sonarqube.ws.client.measures.SearchRequest request = new org.sonarqube.ws.client.measures.SearchRequest();
-        request.setProjectKeys(Collections.singletonList(item.projectKey));
-        request.setMetricKeys(Arrays.asList(
-                // Quality Gate
-                "alert_status",
-                "quality_gate_details",
-                // Scores
-                "sqale_rating", // Maintainability (code smells)
-                "reliability_rating", // Reliability (bugs)
-                "security_rating", // Security (vulnerabilities)
-                "security_review_rating", // Security review (hotspots)
-                // Metrics
-                "coverage", // Test coverage
-                "duplicated_lines_density", // Duplication
-                "ncloc" // Lines of code
-        ));
-        Measures.SearchWsResponse response = item.wsClient.measures().search(request);
-        item.activity.setQualityGatePassed(!"ERROR".equals(getMeasure(response, "alert_status", String.class)));
-        item.activity.setBugScore(getMeasure(response, "reliability_rating", ActivityScore.class));
-        item.activity.setVulnerabilityScore(getMeasure(response, "security_rating", ActivityScore.class));
-        item.activity.setHotspotScore(getMeasure(response, "security_review_rating", ActivityScore.class));
-        item.activity.setTestCoverage(getMeasure(response, "coverage", Float.class) / 100f); //NOSONAR
-        item.activity.setDuplicationRate(getMeasure(response, "duplicated_lines_density", Float.class) / 100f); //NOSONAR
-        item.activity.setLinesCount(getMeasure(response, "ncloc", Integer.class)); //NOSONAR
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T getMeasure(Measures.SearchWsResponse response, String name, Class<T> type) {
-        for (int i = 0, l = response.getMeasuresCount(); i < l; i++) {
-            Measures.Measure measure = response.getMeasures(i);
-            if (!name.equals(measure.getMetric().toLowerCase())) {
-                continue;
-            }
-            if (type == String.class) {
-                return (T) measure.getValue();
-            }
-            if (type == Integer.class) {
-                return (T) Integer.valueOf(Integer.parseInt(measure.getValue()));
-            }
-            if (type == Float.class) {
-                return (T) Float.valueOf(Float.parseFloat(measure.getValue()));
-            }
-            if (type == Boolean.class) {
-                return (T) Boolean.valueOf(measure.getValue());
-            }
-            if (type == ActivityScore.class) {
-                return (T) ActivityScore.parseString(measure.getValue());
-            }
-            throw new IllegalArgumentException("Unable to convert measure '" + name + "' into " + type.getSimpleName());
-        }
-        LOGGER.warning("Unable to get measure '" + name + "' from response");
-        if (type == Integer.class) {
-            return (T) Integer.valueOf(-1);
-        }
-        if (type == Float.class) {
-            return (T) Float.valueOf(-1f);
-        }
-        if (type == Boolean.class) {
-            return (T) Boolean.valueOf(false);
-        }
-        return (T) null;
     }
 
     public static void push(@NonNull String jobName, @NonNull String buildNumber, @NonNull String projectKey,
@@ -276,7 +163,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
         private final String buildNumber;
         private final String projectKey;
         private final QualityAuditActivity activity;
-        private final WsClient wsClient;
+        private final SonarApiClient wsClient;
         private final String applicationName;
         private final String applicationVersion;
         private final String applicationComponent;
@@ -293,19 +180,7 @@ public class SonarQubeCheckPeriodicWork extends AsyncPeriodicWork {
             this.applicationName = applicationName;
             this.applicationVersion = applicationVersion;
             this.applicationComponent = applicationComponent;
-            HttpConnector.Builder httpBuilder = HttpConnector
-                    .newBuilder()
-                    .url(sonarUrl)
-                    .token(sonarToken);
-            if (acceptInvalidCertificate) {
-                X509TrustManager manager = SSLUtils.getUntrustedManager();
-                SSLContext context = SSLUtils.getSSLContext(manager);
-                httpBuilder
-                        .setSSLSocketFactory(context.getSocketFactory())
-                        .setTrustManager(manager);
-            }
-            HttpConnector httpConnector = httpBuilder.build();
-            this.wsClient = WsClientFactories.getDefault().newClient(httpConnector);
+            this.wsClient = new SonarApiClient(sonarUrl, sonarToken, acceptInvalidCertificate);
         }
 
         public WorkItem close() {

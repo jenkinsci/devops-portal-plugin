@@ -26,6 +26,9 @@ public final class MiscUtils {
         if (size <= 0) return "0 kB";
         final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
         int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        if (digitGroups > 4) {
+            digitGroups = 4;
+        }
         return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
@@ -91,6 +94,60 @@ public final class MiscUtils {
         }
         catch (URISyntaxException ex) {
             return false;
+        }
+    }
+
+    public static String getStringOrEmpty(Map<String, Object> map, String key) {
+        if (map == null || key == null || !map.containsKey(key)) {
+            return "";
+        }
+        return "" + map.get(key);
+    }
+
+    public static String getStringOrEmpty(List<Map<String, Object>> map, String itemKey, String itemValue,
+                                          String valueKey) {
+        if (map == null || itemKey == null || itemValue == null || valueKey == null) {
+            return "";
+        }
+        for (Map<String, Object> item : map) {
+            if (!item.containsKey(itemKey) || !item.containsKey(valueKey)) {
+                continue;
+            }
+            if (!itemValue.equalsIgnoreCase("" + item.get(itemKey))) {
+                continue;
+            }
+            return "" + item.get(valueKey);
+        }
+        return "";
+    }
+
+    public static int getIntOrZero(Map<String, Object> map, String key) {
+        if (map == null || key == null || !map.containsKey(key)) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt("" + map.get(key));
+        }
+        catch (Exception ex) {
+            return 0;
+        }
+    }
+
+    public static float getFloatOrZero(String value) {
+        try {
+            return Float.parseFloat(value);
+        }
+        catch (Exception ex) {
+            return 0;
+        }
+    }
+
+    public static int getIntOrZero(String value) {
+        try {
+            return Integer.parseInt(value);
+        }
+        catch (Exception ex) {
+            return 0;
         }
     }
 

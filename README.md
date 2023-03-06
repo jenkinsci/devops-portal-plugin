@@ -4,7 +4,6 @@
 ![Issues](https://img.shields.io/github/issues-raw/jenkinsci/devops-portal-plugin)
 ![LastActivity](https://img.shields.io/github/last-commit/jenkinsci/devops-portal-plugin)
 ![LastVersion](https://img.shields.io/jenkins/plugin/v/devops-portal.svg)
-![LastRelease](https://img.shields.io/github/v/release/jenkinsci/devops-portal-plugin?display_name=tag)
 ![Installs](https://img.shields.io/jenkins/plugin/i/devops-portal.svg?color=blue)
 ![cd](https://github.com/jenkinsci/devops-portal-plugin/actions/workflows/cd.yaml/badge.svg)
 

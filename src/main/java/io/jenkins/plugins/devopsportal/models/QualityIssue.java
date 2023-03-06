@@ -1,11 +1,12 @@
 package io.jenkins.plugins.devopsportal.models;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.sonarqube.ws.Issues;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Model for an issue in a quality audit activity
@@ -25,13 +26,13 @@ public class QualityIssue implements Serializable {
     public QualityIssue() {
     }
 
-    public QualityIssue(@NonNull Issues.Issue issue) {
-        severity = issue.getSeverity().name();
-        file = issue.getComponent();
-        line = issue.getLine();
-        rule = issue.getRule();
-        message = issue.getMessage();
-        creation = issue.getCreationDate();
+    public QualityIssue(@NonNull Map<String, Object> issue) {
+        severity = MiscUtils.getStringOrEmpty(issue, "severity");
+        file = MiscUtils.getStringOrEmpty(issue, "component");
+        line = MiscUtils.getIntOrZero(issue, "line");
+        message = MiscUtils.getStringOrEmpty(issue, "message");
+        rule = MiscUtils.getStringOrEmpty(issue, "rule");
+        creation = MiscUtils.getStringOrEmpty(issue, "creationDate");
     }
 
     public String getSeverity() {

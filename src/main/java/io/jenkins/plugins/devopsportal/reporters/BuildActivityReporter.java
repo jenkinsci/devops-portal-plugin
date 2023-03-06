@@ -14,7 +14,6 @@ import io.jenkins.plugins.devopsportal.models.ApplicationBuildStatus;
 import io.jenkins.plugins.devopsportal.models.BuildActivity;
 import io.jenkins.plugins.devopsportal.utils.MiscUtils;
 import io.jenkins.plugins.devopsportal.utils.RemoteFileSizeGetter;
-import org.jetbrains.annotations.NotNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import org.jenkinsci.Symbol;
@@ -122,7 +121,7 @@ public class BuildActivityReporter extends AbstractActivityReporter<BuildActivit
         activity.setArtifactFileSize(size);
     }
 
-    private void getFileSizeFromLocalWorkspace(@NotNull BuildActivity activity, @NotNull EnvVars env) {
+    private void getFileSizeFromLocalWorkspace(@NonNull BuildActivity activity, @NonNull EnvVars env) {
         final File file = MiscUtils.checkFilePathIllegalAccess(
             env.get("WORKSPACE", null),
             artifactFileName
