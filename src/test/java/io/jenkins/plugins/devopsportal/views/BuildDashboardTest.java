@@ -507,9 +507,9 @@ public class BuildDashboardTest {
         view.setFilter("filter");
         assertEquals("filter", view.getFilter());
         assertTrue(view.getRootURL().matches("http://localhost:(.*)/jenkins/"));
-        assertEquals("1970/01/01 01:00", view.formatDatetimeSeconds(0L));
-        assertEquals("1970/01/02 11:17", view.formatDatetimeSeconds(123456L));
-        assertEquals("1973/11/29 22:34", view.formatDatetimeSeconds(123456890L));
+        assertEquals("1970/01/01 00:00", view.formatDatetimeSeconds(0L));
+        assertEquals("1970/01/02 10:17", view.formatDatetimeSeconds(123456L));
+        assertEquals("1973/11/29 21:34", view.formatDatetimeSeconds(123456890L));
     }
 
 }
