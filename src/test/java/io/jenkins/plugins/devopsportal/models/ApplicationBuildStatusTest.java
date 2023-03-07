@@ -37,6 +37,11 @@ public class ApplicationBuildStatusTest {
         assertNotEquals(cfg1, cfg2);
         assertEquals("icon-disabled", cfg1.getBuildStatusClass());
         assertEquals("90b89598-89e9-311b-b7e9-da5cf48e1a9e", cfg1.getUUID());
+        assertEquals("master", cfg1.getBuildBranch());
+        assertEquals("f5a9d6a3", cfg1.getBuildCommit());
+        assertEquals("https://jenkins.mydomain.com/", cfg1.getBuildURL());
+        assertTrue(cfg1.isBuildBranchPresent());
+        assertTrue(cfg1.isBuildCommitPresent());
     }
 
     @Test

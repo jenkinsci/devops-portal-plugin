@@ -65,7 +65,7 @@ public class SonarApiClient {
         return getMetrics(
                 projectKey,
                 // Quality Gate
-        "alert_status",
+                "alert_status",
                 // Scores
                 "sqale_rating", // Maintainability (code smells)
                 "reliability_rating", // Reliability (bugs)
