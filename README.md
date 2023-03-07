@@ -437,7 +437,7 @@ flowchart TD
         SurefireUnitTestActivityReporter:::reporter -.-> UnitTestActivityReporter:::reporter
         MavenDependenciesAnalysisActivityReporter:::reporter -.-> AbstractActivity:::entity
         PerformanceTestActivityReporter:::reporter -.-> AbstractActivity:::entity
-        JMeterPerformanceTestActivity:::reporter -.-> PerformanceTestActivity:::entity
+        JMeterPerformanceTestActivity:::reporter -.-> PerformanceTestActivity:::reporter
         PerformanceTestActivity:::reporter -.-> AbstractActivity:::entity
         QualityAuditActivityReporter:::reporter -.-> AbstractActivity:::entity
         SonarQualityAuditReporter:::reporter -.-> QualityAuditActivityReporter:::reporter
