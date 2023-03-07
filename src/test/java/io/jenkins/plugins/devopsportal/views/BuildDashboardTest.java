@@ -7,6 +7,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import javax.servlet.ServletException;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 
@@ -313,6 +315,8 @@ public class BuildDashboardTest {
         assertNotNull(service);
         assertEquals("Server 1", service.getLabel());
         assertEquals("foo.mydomain.com", service.getHostname());
+        service = getViewDescriptor().getDeploymentTarget(null);
+        assertNull(service);
     }
 
     @Test
@@ -490,6 +494,22 @@ public class BuildDashboardTest {
         assertEquals(FormValidation.ok(), getViewDescriptor().doCheckFilter("Valid"));
         assertEquals(FormValidation.ok(), getViewDescriptor().doCheckFilter("V.?lid"));
         assertNotEquals(FormValidation.ok(), getViewDescriptor().doCheckFilter("In{v}4.lid"));
+    }
+
+    @Test
+    public void testInstance() throws ServletException, IOException {
+        BuildDashboard view = new BuildDashboard("Name");
+        assertNotNull(view.getItems());
+        assertEquals(0, view.getItems().size());
+        assertFalse(view.contains(null));
+        assertNull(view.doCreateItem(null, null));
+        assertEquals("", view.getFilter());
+        view.setFilter("filter");
+        assertEquals("filter", view.getFilter());
+        assertTrue(view.getRootURL().matches("http://localhost:(.*)/jenkins/"));
+        assertEquals("1970/01/01 01:00", view.formatDatetimeSeconds(0L));
+        assertEquals("1970/01/02 11:17", view.formatDatetimeSeconds(123456L));
+        assertEquals("1973/11/29 22:34", view.formatDatetimeSeconds(123456890L));
     }
 
 }

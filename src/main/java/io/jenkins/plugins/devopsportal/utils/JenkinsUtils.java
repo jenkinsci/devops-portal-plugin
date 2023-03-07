@@ -17,6 +17,9 @@ public final class JenkinsUtils {
 
     private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
+    private JenkinsUtils() {
+    }
+
     public static Optional<Run<?, ?>> getBuild(String jobName, String branchName, String buildNumber) {
         if (Jenkins.getInstanceOrNull() == null) {
             return Optional.empty();

@@ -21,6 +21,9 @@ public final class MiscUtils {
 
     private static final Logger LOGGER = Logger.getLogger("io.jenkins.plugins.devopsportal");
 
+    private MiscUtils() {
+    }
+
     @SuppressWarnings("unused")
     public static String readableFileSize(long size) {
         if (size <= 0) return "0 kB";

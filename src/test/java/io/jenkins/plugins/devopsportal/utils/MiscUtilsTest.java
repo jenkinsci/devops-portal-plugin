@@ -2,6 +2,7 @@ package io.jenkins.plugins.devopsportal.utils;
 
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,14 @@ public class MiscUtilsTest {
 
     @Test
     public void testSplit() {
+        org.hamcrest.MatcherAssert.assertThat(
+                MiscUtils.split(null,","),
+                is(List.of())
+        );
+        org.hamcrest.MatcherAssert.assertThat(
+                MiscUtils.split("",","),
+                is(List.of())
+        );
         org.hamcrest.MatcherAssert.assertThat(
                 MiscUtils.split("A,B,C",","),
                 is(Arrays.asList("A", "B", "C"))
@@ -80,6 +89,8 @@ public class MiscUtilsTest {
         assertTrue(MiscUtils.isValidURL("http://www.sample.io//double"));
         assertFalse(MiscUtils.isValidURL("http//invalid/"));
         assertFalse(MiscUtils.isValidURL("www.invalid.org"));
+        assertFalse(MiscUtils.isValidURL(""));
+        assertFalse(MiscUtils.isValidURL(null));
     }
 
     @Test
@@ -106,6 +117,7 @@ public class MiscUtilsTest {
         map2.put("value", "BBBB");
         map2.put("foo", "bar");
         List<Map<String, Object>> list = Arrays.asList(map1, map2);
+        assertEquals("", MiscUtils.getStringOrEmpty(null, "a", "b", "value"));
         assertEquals("", MiscUtils.getStringOrEmpty(list, null, "a", "value"));
         assertEquals("", MiscUtils.getStringOrEmpty(list, "unknown", null, "value"));
         assertEquals("", MiscUtils.getStringOrEmpty(list, "unknown", "a", null));
@@ -156,6 +168,20 @@ public class MiscUtilsTest {
         assertEquals(256, MiscUtils.getIntOrZero("256"));
         assertEquals(-512, MiscUtils.getIntOrZero("-512"));
         assertEquals(0, MiscUtils.getIntOrZero("1024f"));
+    }
+
+    @Test
+    public void testCheckFilePathIllegalAccess() {
+        File file = MiscUtils.checkFilePathIllegalAccess(null, null);
+        assertNull(file);
+        file = MiscUtils.checkFilePathIllegalAccess("", "");
+        assertNull(file);
+        file = MiscUtils.checkFilePathIllegalAccess(".", "test");
+        assertNull(file);
+        file = MiscUtils.checkFilePathIllegalAccess(".", "pom.xml");
+        assertNotNull(file);
+        file = MiscUtils.checkFilePathIllegalAccess(".", "../pom.xml");
+        assertNull(file);
     }
 
 }
