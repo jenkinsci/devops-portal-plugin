@@ -7,6 +7,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class QualityAuditActivityTest {
@@ -30,9 +33,9 @@ public class QualityAuditActivityTest {
         assertEquals(0, activity.getVulnerabilities().size());
         assertEquals(0, activity.getHotspots().size());
         assertEquals(0, activity.getTestCoverage(), 0);
-        assertEquals("0.00%", activity.getTestCoverageStr());
+        assertThat(activity.getTestCoverageStr(), anyOf(equalTo("0.00%"), equalTo("0,00%")));
         assertEquals(0, activity.getDuplicationRate(), 0);
-        assertEquals("0.00%", activity.getDuplicationRateStr());
+        assertThat(activity.getDuplicationRateStr(), anyOf(equalTo("0.00%"), equalTo("0,00%")));
         assertEquals(0, activity.getLinesCount());
         assertEquals("0", activity.getLinesCountStr());
     }
@@ -63,9 +66,9 @@ public class QualityAuditActivityTest {
         assertEquals(4, activity.getVulnerabilities().size());
         assertEquals(2, activity.getHotspots().size());
         assertEquals(0.56, activity.getTestCoverage(), 0.001);
-        assertEquals("56.00%", activity.getTestCoverageStr());
+        assertThat(activity.getTestCoverageStr(), anyOf(equalTo("56.00%"), equalTo("56,00%")));
         assertEquals(0.084, activity.getDuplicationRate(), 0.0001);
-        assertEquals("8.40%", activity.getDuplicationRateStr());
+        assertThat(activity.getDuplicationRateStr(), anyOf(equalTo("8.40%"), equalTo("8,40%")));
         assertEquals(4774, activity.getLinesCount());
         assertEquals("5k", activity.getLinesCountStr());
     }
