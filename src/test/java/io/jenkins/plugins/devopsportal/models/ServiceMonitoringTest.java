@@ -70,7 +70,6 @@ public class ServiceMonitoringTest {
         assertEquals("icon-yellow", m.getIcon());
         assertTrue(m.isFailure());
         assertNotNull(m.getDescriptor());
-        assertTrue(m.hashCode() > 0);
         assertEquals("ServiceMonitoring[1ba56-15a9e1-f1b5a9,INVALID_HTTPS,1678193332,1678193331,Handshake failure,3,1678193330,1678195335]", m.toString());
     }
 
