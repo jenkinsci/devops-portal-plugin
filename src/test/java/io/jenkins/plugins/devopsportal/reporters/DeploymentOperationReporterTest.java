@@ -93,7 +93,7 @@ public class DeploymentOperationReporterTest {
         FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
         jenkins.assertLogContains(
                 "Report run operation 'DEPLOYMENT' on application '" + applicationName +
-                        "' to environment 'production' (bar.mydomain.com)",
+                        "' to environment 'production' (target: bar.mydomain.com, success: unknown)",
                 build
         );
 
@@ -155,7 +155,7 @@ public class DeploymentOperationReporterTest {
         WorkflowRun build = jenkins.assertBuildStatus(Result.SUCCESS, job.scheduleBuild2(0));
         jenkins.assertLogContains(
                 "Report run operation 'DEPLOYMENT' on application '" + applicationName +
-                        "' to environment 'production' (bar.mydomain.com)",
+                        "' to environment 'production' (target: bar.mydomain.com, success: unknown)",
                 build
         );
 

@@ -124,7 +124,7 @@ public class DeploymentOperationReporter extends Builder implements SimpleBuildS
             }
 
             listener.getLogger().printf(
-                    "Report run operation 'DEPLOYMENT' on application '%s' to environment '%s' (hostname: %s, success: %s)%n",
+                    "Report run operation 'DEPLOYMENT' on application '%s' to environment '%s' (target: %s, success: %s)%n",
                     applicationName,
                     service.getCategory(),
                     service.getHostname(),

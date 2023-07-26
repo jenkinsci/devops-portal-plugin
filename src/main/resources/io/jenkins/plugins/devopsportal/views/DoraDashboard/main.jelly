@@ -10,6 +10,31 @@
     <j:set var="application" value="${it.descriptor.getApplication(it.filterApplication)}"/>
     <j:set var="environments" value="${it.descriptor.getEnvironments(it.filterEnvironments, it.filterDeploymentTags)}"/>
 
+    <j:if test="${application == null}">
+        Pas d'application, ou trop d'applications
+    </j:if>
+    <j:if test="${environments.isEmpty()}">
+        Pas d'environnements
+    </j:if>
+    <h2>${application} vs ${environments}</h2>
+
+    <h3>Lead Time for Changes — The amount of time it takes a commit to get into production</h3>
+    <p>Quand un déploiement a lieu, on peut théoriquement avoir la liste des changes / commits</p>
+    <p>Il faut aussi un accès à GIT, car on a besoin de la date de la création du commit...</p>
+    <p>Partant de la date du commit, on peut normalement déduire le temps qu'il aura fallu pour le déployer...</p>
+    <p>On peut aussi calculer le temps entre staging et production...</p>
+
+    <h3>Deployment Frequency — How often an organization successfully releases to production</h3>
+    <p>Compter le nombre de déploiements avec succès dans un intervalle de temps</p>
+
+    <h3>Change Failure Rate — The percentage of deployments causing a failure in production</h3>
+    <p>Pour cela, il faut déjà faire le lien entre une erreur de supervision et un déploiement</p>
+    <p>Ensuite, on tag les déploiements qui ont provoqué une erreur, et on calcule le % sur le nombre total de déploiements</p>
+
+    <h3>Time to Restore Service — How long it takes an organization to recover from a failure in production</h3>
+    <p>Pour cela, il faut historiser les données de UP/DOWN des services</p>
+    <p>On fait la moyenne de temps DOWN pour avoir le temps moyen de résolution</p>
+
     <st:adjunct includes="io.jenkins.plugins.devopsportal.views.BuildDashboard.scripts" />
 
 </j:jelly>
