@@ -8,9 +8,13 @@ pipeline {
 
     environment {
         APPLICATION_NAME = 'jenkins-plugin-devops-portal'
-        SONAR_CREDENTIAL = ''
-        SONAR_CUSTOM_DOMAIN = ''
+        // Enable the reporting of the quality analysis to a remote SonarQube instance
+        SONAR_CREDENTIAL = null
+        // Enable custom SSL certificate to reach the remote SonarQube instance
+        SONAR_CUSTOM_DOMAIN = null
         SONAR_CUSTOM_PORT = '443'
+        // Simulate a deployment over the given environment
+        DEPLOYMENT_ENV = null
     }
 
     stages {
@@ -68,7 +72,7 @@ pipeline {
 
         stage('Audit') {
             when {
-                expression { !env.SONAR_CREDENTIAL.isEmpty() }
+                expression { env.SONAR_CREDENTIAL != null }
             }
             steps {
                 script {
@@ -76,14 +80,14 @@ pipeline {
                     // Quality audit reported from SonarQube
                     withSonarQubeEnv(credentialsId: env.SONAR_CREDENTIAL, installationName: 'SonarQube Scanner') {
                         withMaven() {
-                            if (env.SONAR_CUSTOM_DOMAIN.isEmpty()) {
-                                sh 'mvn sonar:sonar'
-                            }
-                            else {
+                            if (env.SONAR_CUSTOM_DOMAIN != null) {
                                 dir ('src/test/jobs') {
                                     sh "./generate_jks.sh ${env.SONAR_CUSTOM_DOMAIN} ${env.SONAR_CUSTOM_PORT}"
                                 }
                                 sh 'mvn -Djavax.net.ssl.trustStore=src/test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
+                            }
+                            else {
+                                sh 'mvn sonar:sonar'
                             }
                         }
                         reportSonarQubeAudit(
@@ -113,6 +117,22 @@ pipeline {
                     )
                 }
             }
+        }
+
+        stage('Deploy') {
+            when {
+                expression { env.DEPLOYMENT_ENV != null }
+            }
+            steps {
+                script {
+                    reportDeployOperation(
+                        targetService: env.DEPLOYMENT_ENV,
+                        applicationName: env.APPLICATION_NAME,
+                        applicationVersion: env.APPLICATION_VERSION
+                    )
+                }
+            }
+
         }
 
     }
