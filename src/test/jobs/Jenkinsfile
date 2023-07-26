@@ -7,10 +7,19 @@ pipeline {
     }
 
     environment {
-        APPLICATION_NAME = "jenkins-plugin-devops-portal"
+        APPLICATION_NAME = 'jenkins-plugin-devops-portal'
+        SONAR_CREDENTIAL = ''
+        SONAR_CUSTOM_DOMAIN = ''
+        SONAR_CUSTOM_PORT = '443'
     }
 
     stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/jenkinsci/devops-portal-plugin.git'
+            }
+        }
 
         stage('Build') {
             steps {
@@ -22,14 +31,14 @@ pipeline {
                     reportBuild(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin-devops-portal",
-                        artifactFileName: "target/devops-portal.hpi"
+                        applicationComponent: 'plugin-devops-portal',
+                        artifactFileName: 'target/devops-portal.hpi'
                     )
                     reportMavenDependenciesAnalysis(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin-devops-portal",
-                        reportPath: "target/dependency-check-report.xml"
+                        applicationComponent: 'plugin-devops-portal',
+                        reportPath: 'target/dependency-check-report.xml'
                     )
                 }
             }
@@ -49,27 +58,38 @@ pipeline {
                     reportSurefireTest(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin-devops-portal",
-                        surefireReportPath: "target/surefire-reports/*.xml"
+                        applicationComponent: 'plugin-devops-portal',
+                        surefireReportPath: 'target/surefire-reports/*.xml'
                     )
                 }
             }
         }
 
         stage('Audit') {
+            when {
+                expression { !env.SONAR_CREDENTIAL.isEmpty() }
+            }
             steps {
                 script {
 
                     // Quality audit reported from Sonar Qube
-                    withSonarQubeEnv(credentialsId: 'sonar-forge', installationName: 'SonarQube Scanner') {
+                    withSonarQubeEnv(credentialsId: env.SONAR_CREDENTIAL, installationName: 'SonarQube Scanner') {
                         withMaven() {
-                            sh 'mvn -Djavax.net.ssl.trustStore=src/test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
+                            if (env.SONAR_CUSTOM_DOMAIN.isEmpty()) {
+                                sh 'mvn sonar:sonar'
+                            }
+                            else {
+                                dir ('src/test/jobs') {
+                                    sh "./generate_jks.sh ${env.SONAR_CUSTOM_DOMAIN} ${env.SONAR_CUSTOM_PORT}"
+                                }
+                                sh 'mvn -Djavax.net.ssl.trustStore=src/test/jobs/test.jks -Djavax.net.ssl.trustStorePassword=123456789 sonar:sonar'
+                            }
                         }
                         reportSonarQubeAudit(
                             applicationName: env.APPLICATION_NAME,
                             applicationVersion: env.APPLICATION_VERSION,
-                            applicationComponent: "plugin-devops-portal",
-                            projectKey: "io.jenkins.plugins.devops-portal:" + env.APPLICATION_VERSION,
+                            applicationComponent: 'plugin-devops-portal',
+                            projectKey: 'io.jenkins.plugins.devops-portal:' + env.APPLICATION_VERSION,
                             acceptInvalidCertificate: true
                         )
                     }
@@ -84,8 +104,8 @@ pipeline {
                     reportArtifactRelease(
                         applicationName: env.APPLICATION_NAME,
                         applicationVersion: env.APPLICATION_VERSION,
-                        applicationComponent: "plugin-devops-portal",
-                        repositoryName: "github.com",
+                        applicationComponent: 'plugin-devops-portal',
+                        repositoryName: 'github.com',
                         artifactName: env.APPLICATION_NAME,
                         tags: "hpi,${env.APPLICATION_VERSION}",
                         artifactURL: "https://github.com/jenkinsci/devops-portal-plugin/releases/tag/${env.APPLICATION_VERSION}"

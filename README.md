@@ -409,11 +409,25 @@ reportDeployOperation(
 
 ## <a name="section-dev"></a> Setup as Developer
 
-1. Checkout from: https://github.com/jenkinsci/devops-portal-plugin.git
+1. Checkout source code from: https://github.com/jenkinsci/devops-portal-plugin.git
 2. Recommended IDE is **Intellij IDEA**
-3. JDK 11 is preferred (newer JDK may introduce serialization issues)
-4. Run locally with: `mvn hpi:run -Djetty.port=5000`
-5. Suggest any change by Forking the project and opening a Pull Request
+3. ⚠️JDK 11 is **mandatory** to run the project (newer JDK may introduce serialization issues)
+4. For Windows users, make sure the git folder `C:\Program Files\Git\usr\bin` is present in your PATH environment variable
+5. Run locally with: `mvn hpi:run -Djetty.port=5000`
+6. Make sure you have updated all plugins (in Jenkins Administration)
+7. Install some required plugins:
+   - Pipeline
+   - Git
+   - Pipeline Maven Integration
+8. Define a Global Tool Configuration
+   - Add `maven` installation
+   - Name: `3.8.7`
+   - Install automatically from Apache the version `3.8.7` 
+9. Create a new job
+   - Type: Pipeline
+   - Pipeline script: copy/past content of file `src/test/jobs/Jenkinsfile`
+   - If you want to enable the reporting of quality indicators on a remote SonarQube instance, set up a credential and put the ID into the `SONAR_CREDENTIAL` property.
+   - If your self-hosted instance of SonarQube is using a self-signed certificate, fill the property `SONAR_CUSTOM_DOMAIN` with the DNS name of your server.
 
 ## <a name="section-archi"></a> Application architecture
 
