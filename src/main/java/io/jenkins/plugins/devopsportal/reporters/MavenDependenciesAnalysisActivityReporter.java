@@ -49,6 +49,7 @@ public class MavenDependenciesAnalysisActivityReporter extends AbstractActivityR
 
         // Log
         listener.getLogger().println(Messages.DependenciesAnalysisActivityReporter_AnalysisStarted()
+                .replace("%manager%", "MAVEN")
                 .replace("%file%", reportPath)
         );
 
