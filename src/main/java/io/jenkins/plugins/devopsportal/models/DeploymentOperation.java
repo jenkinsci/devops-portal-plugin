@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.util.CopyOnWriteList;
 import io.jenkins.plugins.devopsportal.Messages;
@@ -41,6 +42,7 @@ public class DeploymentOperation implements Describable<DeploymentOperation>, Se
     private String buildURL;
     private String buildBranch;
     private String buildCommit;
+    private Boolean failure;
 
     private final List<String> tags;
 
@@ -145,6 +147,33 @@ public class DeploymentOperation implements Describable<DeploymentOperation>, Se
         if (tags != null && !tags.trim().isEmpty()) {
             this.tags.addAll(MiscUtils.split(tags, ","));
         }
+    }
+
+    public Optional<Boolean> isFailure() {
+        return Optional.ofNullable(failure);
+    }
+
+    @DataBoundSetter
+    public void setFailure(boolean failure) {
+        this.failure = failure;
+    }
+
+    public boolean setFailure(Result result) {
+        if (result == null) {
+            return false;
+        }
+        if (result.isCompleteBuild()) {
+            this.failure = result.isBetterOrEqualTo(Result.FAILURE);
+            return true;
+        }
+        return false;
+    }
+
+    public String getSuccessState() {
+        if (failure == null) {
+            return "unknown";
+        }
+        return failure ? "failure" : "success";
     }
 
     @SuppressWarnings("unused")

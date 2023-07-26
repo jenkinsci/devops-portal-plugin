@@ -397,6 +397,8 @@ reportDeployOperation(
     targetService: String,        // Name for target environment to deploy to
     applicationName: String,      // Name of application deployed
     applicationVersion: String,   // Version of application deployed
+    failure: Boolean = null,      // Optional: indicates whether the deployment was successful or unsuccessful.
+                                  // If this argument is not specified, the build state is used to determine the value.
     tags: String = null           // Optional: comma-separated list
 )
 ```
@@ -428,6 +430,7 @@ reportDeployOperation(
    - Pipeline script: copy/past content of file `src/test/jobs/Jenkinsfile`
    - If you want to enable the reporting of quality indicators on a remote SonarQube instance, set up a credential and put the ID into the `SONAR_CREDENTIAL` property.
    - If your self-hosted instance of SonarQube is using a self-signed certificate, fill the property `SONAR_CUSTOM_DOMAIN` with the DNS name of your server.
+   - If you want to simulate a deployment, select a configured environment using `DEPLOYMENT_ENV` property
 
 ## <a name="section-archi"></a> Application architecture
 

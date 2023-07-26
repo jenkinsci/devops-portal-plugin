@@ -38,6 +38,8 @@ public class DeploymentOperationReporter extends Builder implements SimpleBuildS
     private String applicationVersion;
     private String tags;
 
+    private Boolean failure;
+
     @DataBoundConstructor
     public DeploymentOperationReporter(String targetService, String applicationName, String applicationVersion) {
         this.targetService = targetService;
@@ -81,6 +83,15 @@ public class DeploymentOperationReporter extends Builder implements SimpleBuildS
         this.tags = tags;
     }
 
+    public Boolean getFailure() {
+        return failure;
+    }
+
+    @DataBoundSetter
+    public void setFailure(Boolean failure) {
+        this.failure = failure;
+    }
+
     @Override
     public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env,
                         @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
@@ -103,11 +114,21 @@ public class DeploymentOperationReporter extends Builder implements SimpleBuildS
             record.setApplicationVersion(applicationVersion);
             record.setTags(tags);
 
+            if (failure != null) {
+                record.setFailure(failure);
+            }
+            else if (!record.setFailure(run.getResult())) {
+                listener.getLogger().printf(
+                        "Unable to guess deployment status: build is not complete or its status is invalid%n"
+                );
+            }
+
             listener.getLogger().printf(
-                    "Report run operation 'DEPLOYMENT' on application '%s' to environment '%s' (%s)%n",
+                    "Report run operation 'DEPLOYMENT' on application '%s' to environment '%s' (hostname: %s, success: %s)%n",
                     applicationName,
                     service.getCategory(),
-                    service.getHostname()
+                    service.getHostname(),
+                    record.getSuccessState()
             );
         });
     }
@@ -133,7 +154,7 @@ public class DeploymentOperationReporter extends Builder implements SimpleBuildS
             if (targetService == null || targetService.trim().isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_EmptyProperty());
             }
-            if (!getServiceDescriptor().getService(targetService).isPresent()) {
+            if (getServiceDescriptor().getService(targetService).isEmpty()) {
                 return FormValidation.error(Messages.FormValidation_Error_ServiceNotFound());
             }
             return FormValidation.ok();
