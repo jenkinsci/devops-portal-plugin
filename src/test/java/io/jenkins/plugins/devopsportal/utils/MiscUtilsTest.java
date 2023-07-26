@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 
 public class MiscUtilsTest {
@@ -18,16 +21,16 @@ public class MiscUtilsTest {
         assertEquals("0 kB", MiscUtils.readableFileSize(-1));
         assertEquals("0 kB", MiscUtils.readableFileSize(0));
         assertEquals("256 B", MiscUtils.readableFileSize(256));
-        assertEquals("1,023 B", MiscUtils.readableFileSize(1023));
+        assertThat(MiscUtils.readableFileSize(1023), anyOf(equalTo("1,023 B"), equalTo("1 023 B")));
         assertEquals("1 kB", MiscUtils.readableFileSize(1024));
         assertEquals("128 kB", MiscUtils.readableFileSize(1024 * 128));
         assertEquals("1 MB", MiscUtils.readableFileSize(1024 * 1024));
-        assertEquals("1,011 MB", MiscUtils.readableFileSize(1024 * 1024 * 1011));
+        assertThat(MiscUtils.readableFileSize(1024 * 1024 * 1011), anyOf(equalTo("1,011 MB"), equalTo("1 011 MB")));
         assertEquals("1 GB", MiscUtils.readableFileSize(1024 * 1024 * 1057));
         assertEquals("57 GB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 57));
         assertEquals("1 TB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 1024));
         assertEquals("613 TB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 1024 * 613));
-        assertEquals("9,781 TB", MiscUtils.readableFileSize(1024L * 1024 * 1024 * 1024 * 9781));
+        assertThat(MiscUtils.readableFileSize(1024L * 1024 * 1024 * 1024 * 9781), anyOf(equalTo("9,781 TB"), equalTo("9 781 TB")));
     }
 
     @Test
