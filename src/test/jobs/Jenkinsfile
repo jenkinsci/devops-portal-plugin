@@ -17,7 +17,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                cleanWs()
+                deleteDir()
                 git branch: 'develop', url: 'https://github.com/jenkinsci/devops-portal-plugin.git'
             }
         }
