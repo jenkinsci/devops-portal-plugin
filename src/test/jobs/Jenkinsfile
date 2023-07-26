@@ -17,7 +17,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/jenkinsci/devops-portal-plugin.git'
+                cleanWs()
+                git branch: 'develop', url: 'https://github.com/jenkinsci/devops-portal-plugin.git'
             }
         }
 
@@ -72,7 +73,7 @@ pipeline {
             steps {
                 script {
 
-                    // Quality audit reported from Sonar Qube
+                    // Quality audit reported from SonarQube
                     withSonarQubeEnv(credentialsId: env.SONAR_CREDENTIAL, installationName: 'SonarQube Scanner') {
                         withMaven() {
                             if (env.SONAR_CUSTOM_DOMAIN.isEmpty()) {
