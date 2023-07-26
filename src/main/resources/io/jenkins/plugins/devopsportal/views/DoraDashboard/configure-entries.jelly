@@ -1,0 +1,16 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+    <f:section title="${%label_header}">
+        <f:entry title="${%entry_filterApplication}" description="${%entry_filterApplication_desc}" >
+            <f:textbox name="filterApplication" field="filterApplication" />
+        </f:entry>
+        <f:entry title="${%entry_filterEnvironments}" description="${%entry_filterEnvironments_desc}">
+            <f:textbox name="filterEnvironments" field="filterEnvironments" />
+        </f:entry>
+        <f:entry title="${%entry_filterDeploymentTags}" description="${%entry_filterDeploymentTags_desc}">
+            <f:textbox name="filterDeploymentTags" field="filterDeploymentTags" />
+        </f:entry>
+    </f:section>
+
+</j:jelly>

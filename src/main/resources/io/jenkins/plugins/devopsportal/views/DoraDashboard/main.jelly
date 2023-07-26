@@ -1,0 +1,15 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+
+    <link href="${rootURL}/plugin/devops-portal/css/build-dashboard.css" type="text/css" rel="stylesheet"/>
+    <link href="${rootURL}/plugin/devops-portal/css/modal.css" type="text/css" rel="stylesheet"/>
+
+    <h1>
+        ${it.displayName}
+    </h1>
+    <j:set var="application" value="${it.descriptor.getApplication(it.filterApplication)}"/>
+    <j:set var="environments" value="${it.descriptor.getEnvironments(it.filterEnvironments, it.filterDeploymentTags)}"/>
+
+    <st:adjunct includes="io.jenkins.plugins.devopsportal.views.BuildDashboard.scripts" />
+
+</j:jelly>
